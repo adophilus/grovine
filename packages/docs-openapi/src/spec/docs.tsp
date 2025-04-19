@@ -102,114 +102,192 @@ namespace Api {
       updated_at: DateTime | null;
     }
 
+    namespace Verification {
+      namespace Verify {
+        namespace Request {
+          model Body {
+            email: Email;
+            otp: Otp;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model AuthCredentials {
+              code: "AUTH_CREDENTIALS";
+              data: {
+                access_token: Token;
+                refresh_token: Token;
+              };
+            }
+
+            alias Success = AuthCredentials;
+          }
+
+          namespace Error {
+            @error
+            model InvalidOrExpiredOtpError {
+              @statusCode _code: 400;
+              code: "ERR_INVALID_OR_EXPIRED_OTP";
+            }
+
+            alias Error = InvalidOrExpiredOtpError | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+      }
+
+      namespace SendVerificationEmail {
+        namespace Request {
+          model Body {
+            email: Email;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model VerificationEmailSent {
+              code: "VERIFICATION_EMAIL_SENT";
+            }
+
+            alias Success = VerificationEmailSent;
+          }
+
+          namespace Error {
+            @error
+            model VerificationEmailAlreadySentError {
+              @statusCode _code: 400;
+              code: "ERR_VERIFICATION_EMAIL_ALREADY_SENT";
+              data: {
+                expires_at: DateTime;
+              };
+            }
+
+            alias Error = VerificationEmailAlreadySentError | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+      }
+    }
+
     @route("/sign-up")
     namespace SignUp {
-      namespace Request {
-        model Body
-          extends OmitProperties<
-            Api.Authentication.User,
-            "created_at" | "updated_at"
-          > {
-          referral_code: ReferralCode;
+      @route("/")
+      namespace SignUp {
+        namespace Request {
+          model Body
+            extends OmitProperties<
+              Api.Authentication.User,
+              "created_at" | "updated_at"
+            > {
+            referral_code: ReferralCode;
+          }
         }
-      }
 
-      namespace Response {
-        namespace Success {
-          model VerificationEmailSent {
-            code: "VERIFICATION_EMAIL_SENT";
+        namespace Response {
+          namespace Success {
+            model VerificationEmailSent {
+              code: "VERIFICATION_EMAIL_SENT";
+            }
+
+            alias Success = VerificationEmailSent;
           }
 
-          alias Success = VerificationEmailSent;
-        }
+          namespace Error {
+            @error
+            model EmailAlreadyInUseError {
+              @statusCode _code: 409;
+              code: "ERR_EMAIL_ALREADY_IN_USE";
+            }
 
-        namespace Error {
-          @error
-          model EmailAlreadyInUseError {
-            @statusCode _code: 409;
-            code: "ERR_EMAIL_ALREADY_IN_USE";
+            alias Error = EmailAlreadyInUseError | BadRequestError | UnexpectedError;
           }
 
-          alias Error = EmailAlreadyInUseError | BadRequestError | UnexpectedError;
+          alias Response = Success.Success | Error.Error;
         }
 
-        alias Response = Success.Success | Error.Error;
+        @post
+        @doc("Sign up new user")
+        op signUp(@body body: Request.Body): Response.Response;
       }
 
-      @post
-      @doc("Sign up new user")
-      op signUp(@body body: Request.Body): Response.Response;
+      @route("/verification")
+      namespace Verification {
+        namespace Verify {
+          alias Request = Api.Authentication.Verification.Verify.Request;
+          alias Response = Api.Authentication.Verification.Verify.Response;
+
+          @post
+          @doc("Verify email")
+          op verifyEmail(@body body: Request.Body): Response.Response;
+        }
+
+        @route("/resend")
+        namespace ResendVerification {
+          alias Request = Api.Authentication.Verification.SendVerificationEmail.Request;
+          alias Response = Api.Authentication.Verification.SendVerificationEmail.Response;
+
+          @post
+          @doc("Resend verification email")
+          op resendVerificationEmail(
+            @body body: Request.Body,
+          ): Response.Response;
+        }
+      }
     }
 
     @route("/sign-in")
     namespace SignIn {
-      namespace Request {
-        model Body {
-          email: Email;
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          alias Success = Api.Authentication.SignUp.Response.Success.VerificationEmailSent;
-
-          // model AuthCredentials {
-          //   code: "AUTH_CREDENTIALS";
-          //   data: {
-          //     access_token: Token;
-          //     refresh_token: Token;
-          //   };
-          // }
-
-          // alias Success = AuthCredentials;
+      namespace SignIn {
+        namespace Request {
+          model Body {
+            email: Email;
+          }
         }
 
-        namespace Error {
-          alias Error = UnauthorizedError | UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
-      }
-
-      @post
-      @doc("Send email to sign in user")
-      op sendSignInEmail(@body body: Request.Body): Response.Response;
-    }
-
-    @route("/verify")
-    namespace VerifyEmail {
-      namespace Request {
-        model Body {
-          email: Email;
-          otp: Otp;
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          model VerificationSuccessful {
-            code: "VERIFICATION_SUCCESSFUL";
+        namespace Response {
+          namespace Success {
+            alias Success = Api.Authentication.SignUp.SignUp.Response.Success.VerificationEmailSent;
           }
 
-          alias Success = VerificationSuccessful;
-        }
-
-        namespace Error {
-          @error
-          model InvalidOrExpiredOtpError {
-            @statusCode _code: 400;
-            code: "ERR_INVALID_OR_EXPIRED_OTP";
+          namespace Error {
+            alias Error = UnauthorizedError | UnexpectedError;
           }
 
-          alias Error = InvalidOrExpiredOtpError | BadRequestError | UnexpectedError;
+          alias Response = Success.Success | Error.Error;
         }
 
-        alias Response = Success.Success | Error.Error;
+        @post
+        @doc("Send email to sign in user")
+        op sendSignInEmail(@body body: Request.Body): Response.Response;
       }
 
-      @post
-      @doc("Verify email")
-      op verifyEmail(@body body: Request.Body): Response.Response;
+      @route("/verification")
+      namespace Verification {
+        namespace Verify {
+          alias Request = Api.Authentication.Verification.Verify.Request;
+          alias Response = Api.Authentication.Verification.Verify.Response;
+
+          @post
+          @doc("Verify email")
+          op verifyEmail(@body body: Request.Body): Response.Response;
+        }
+
+        @route("/resend")
+        namespace ResendVerification {
+          alias Request = Api.Authentication.Verification.SendVerificationEmail.Request;
+          alias Response = Api.Authentication.Verification.SendVerificationEmail.Response;
+
+          @post
+          @doc("Resend verification email")
+          op resendVerificationEmail(
+            @body body: Request.Body,
+          ): Response.Response;
+        }
+      }
     }
   }
 }
+
