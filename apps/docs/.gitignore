@@ -25,5 +25,3 @@ dist-ssr
 .vercel
 result
 .vite
-schema/
-schema.ts
