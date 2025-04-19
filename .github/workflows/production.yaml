@@ -1,9 +1,9 @@
-name: staging
+name: production
 
 on:
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Deploy docs
         working-directory: apps/docs
-        run: pnpm vercel:build && pnpm vercel:deploy --target preview
+        run: pnpm vercel:build && pnpm vercel:deploy --target production
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}

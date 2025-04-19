@@ -5,10 +5,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nx serve --port 3002",
     "lint": "tsc",
-    "build": "pnpm lint && nx vite:build",
-    "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN"
+    "vercel:build": "vercel build",
+    "vercel:deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@grovine/docs-openapi": "workspace:^",
@@ -16,14 +18,9 @@
     "@types/node": "^22.7.2",
     "@types/react": "^18.3.9",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react-swc": "^3.7.0",
-    "vite": "^5.4.8",
-    "zod": "^3.24.3"
+    "vitepress": "^1.6.3"
   },
   "dependencies": {
-    "@scalar/api-reference": "^1.25.21",
-    "@scalar/api-reference-react": "^0.3.97",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@scalar/api-reference": "^1.25.21"
   }
 }

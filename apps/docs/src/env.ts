@@ -12,6 +12,6 @@ export const env = createEnv({
   server: {},
   runtimeEnv: {
     VITE_NODE_ENV: ENV.VITE_NODE_ENV,
-    VITE_BACKEND_URL: ENV.BACKEND_URL,
+    VITE_BACKEND_URL: ENV.VITE_BACKEND_URL,
   },
 });
