@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "lint": "tsc",
-    "vercel:build": "vercel build",
+    "vercel:build": "vercel pull --yes --token $VERCEL_TOKEN && vercel build --token $VERCEL_TOKEN",
     "vercel:deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
