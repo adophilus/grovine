@@ -152,3 +152,10 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node
 .env.*
 !.env.*.example
+
+
+
+.nx/cache
+.nx/workspace-data
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
