@@ -39,7 +39,6 @@ jobs:
         run: echo '${{ secrets.ENV_PRODUCTION }}' > .env
 
       - name: Build monorepo
-        working-directory: packages
         run: |
           set -a            
           source .env
