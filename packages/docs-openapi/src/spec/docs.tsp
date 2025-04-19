@@ -7,48 +7,53 @@ using TypeSpec.Http;
 })
 namespace ApiDocs;
 
-@example("f47ac10b-58cc-4372-a567-0e02b2c3d479")
-scalar Id extends string;
-
-@example("Mary Slessor")
-scalar FullName extends string;
-
-@example("HE6G1U")
-scalar ReferralCode extends string;
-
-@example("2000-01-01")
-scalar DateOfBirth extends string;
-
-@example("+2348123456789")
-scalar PhoneNumber extends string;
-
-@example("2021-09-01T12:00:00Z")
-scalar DateTime extends string;
-
-@example("745731af4484f323968969eda289aeee")
-scalar Token extends string;
-
-@example("123456")
-scalar Otp extends string;
-
-enum Role {
-  ADMIN,
-  USER,
-}
-
-@example("mary.slessor@mail.com")
-scalar Email extends string;
-
-model Media {
-  public_id: Id;
-
-  @example("https://google.com")
-  url: string;
-}
-
 @route("/api")
 @doc("API")
 namespace Api {
+  @example("f47ac10b-58cc-4372-a567-0e02b2c3d479")
+  scalar Id extends string;
+
+  @example("Mary Slessor")
+  scalar FullName extends string;
+
+  @example("HE6G1U")
+  scalar ReferralCode extends string;
+
+  @example("2000-01-01")
+  scalar DateOfBirth extends string;
+
+  @example("+2348123456789")
+  scalar PhoneNumber extends string;
+
+  @example("2021-09-01T12:00:00Z")
+  scalar DateTime extends string;
+
+  @example("745731af4484f323968969eda289aeee")
+  scalar Token extends string;
+
+  @example("Seafood")
+  scalar FoodType extends string;
+
+  @example("Nigeria")
+  scalar CuisineRegion extends string;
+
+  @example("123456")
+  scalar Otp extends string;
+
+  enum Role {
+    ADMIN,
+    USER,
+  }
+
+  @example("mary.slessor@mail.com")
+  scalar Email extends string;
+
+  model Media {
+    public_id: Id;
+
+    @example("https://google.com")
+    url: string;
+  }
   namespace Pagination {
     model Options {
       page: int64;
@@ -289,5 +294,100 @@ namespace Api {
       }
     }
   }
-}
 
+  @tag("Onboarding")
+  @route("/onboarding")
+  namespace Onboarding {
+    @route("/preferences")
+    namespace Preferences {
+      namespace Request {
+        model Body {
+          foods: FoodType[];
+          regions: CuisineRegion[];
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model PreferencesSet {
+            code: "PREFERENCES_SET";
+          }
+
+          alias Success = PreferencesSet;
+        }
+
+        namespace Error {
+          @doc("One or more foods entered were not found")
+          model FoodNotFoundError {
+            @statusCode _code: 404;
+            code: "ERR_FOOD_NOT_FOUND";
+          }
+
+          @doc("One or more regions entered were not found")
+          model RegionNotFoundError {
+            @statusCode _code: 404;
+            code: "ERR_REGION_NOT_FOUND";
+          }
+
+          alias Error =
+            | FoodNotFoundError
+            | RegionNotFoundError
+            | BadRequestError
+            | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Set the user preferences during onboarding")
+      op setUserPreferences(@body body: Request.Body): Response.Response;
+    }
+  }
+
+  @tag("Food")
+  @route("/foods")
+  namespace Food {
+    @route("/types")
+    namespace Types {
+      namespace Response {
+        namespace Success {
+          alias Success = FoodType[];
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @doc("Fetch all food types")
+      @get
+      op getFoodTypes(): Response.Response;
+    }
+  }
+
+  @tag("Cuisine")
+  @route("/cuisine")
+  namespace Cuisine {
+    @route("/regions")
+    namespace Region {
+      namespace Response {
+        namespace Success {
+          alias Success = Api.CuisineRegion[];
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @doc("Fetch all cuisine regions")
+      @get
+      op getRegions(): Response.Response;
+    }
+  }
+}
