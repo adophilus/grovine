@@ -51,7 +51,9 @@ jobs:
           source .env
           set +a
           cd apps/docs
-          pnpm vercel:build && pnpm vercel:deploy --target preview
+          pnpm vercel pull --yes --token $VERCEL_TOKEN --target preview
+          pnpm vercel build
+          pnpm vercel deploy --prebuilt --target preview
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}
