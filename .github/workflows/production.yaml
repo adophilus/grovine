@@ -51,8 +51,8 @@ jobs:
           source .env
           set +a
           cd apps/docs
-          pnpm vercel pull --yes --token $VERCEL_TOKEN --target production
-          pnpm vercel build
+          pnpm vercel pull --yes --token $VERCEL_TOKEN
+          pnpm vercel build --target production
           pnpm vercel deploy --prebuilt --target production
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
