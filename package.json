@@ -1,0 +1,25 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"scripts": {
+		"dev": "pnpm --recursive --parallel dev",
+		"build": "pnpm --recursive --parallel build",
+		"lint": "pnpm --recursive --parallel lint",
+		"test": "pnpm --recursive --parallel test"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.8",
+		"@hono/zod-validator": "^0.4.2",
+		"@t3-oss/env-core": "^0.9.2",
+		"hono": "^4.7.4",
+		"http-status-codes": "^2.3.0",
+		"true-myth": "^7.1.0",
+		"tsx": "^4.7.1",
+		"ulidx": "^2.3.0",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"dotenv-cli": "^8.0.0",
+		"typescript": "^5.5.3",
+		"vercel": "^39.3.0"
+	}
+}
