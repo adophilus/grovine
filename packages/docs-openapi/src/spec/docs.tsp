@@ -39,6 +39,10 @@ namespace Api {
 
   @example("123456")
   scalar Otp extends string;
+  
+  model ImageFile extends File {
+    contentType: "image/jpeg" | "image/png" | "image/webp";
+  }
 
   enum Role {
     ADMIN,
@@ -54,6 +58,7 @@ namespace Api {
     @example("https://google.com")
     url: string;
   }
+
   namespace Pagination {
     model Options {
       page: int64;
@@ -69,6 +74,16 @@ namespace Api {
       data: T[];
       meta: Api.Pagination.Meta;
     }
+    
+    model Query {
+      @query
+      @minValue(1)
+      page?: int64;
+      @query
+      @minValue(10)
+      @maxValue(100)
+      per_page?: int64;
+    }
   }
 
   @error
@@ -81,6 +96,12 @@ namespace Api {
   model BadRequestError {
     @statusCode _code: 400;
     code: "ERR_EXPECTED_DATA_NOT_RECEIVED";
+  }
+
+  @error
+  model NotFoundError<T> {
+    @statusCode _code: 404;
+    code: "${T}_NOT_FOUND";
   }
 
   @error
@@ -388,6 +409,151 @@ namespace Api {
       @doc("Fetch all cuisine regions")
       @get
       op getRegions(): Response.Response;
+    }
+  }
+
+  @tag("Advertisement")
+  @route("/ads")
+  namespace Advertisement {
+    model Advertisement {
+      id: Id;
+      media: Media;
+      expires_at: DateTime;
+      created_at: DateTime;
+    }
+    
+    namespace Create {
+      namespace Request {
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+
+        model Body {
+          expires_at: HttpPart<DateTime>;
+          image: HttpPart<ImageFile>;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 201;
+            code: "ADVERTISEMENT_CREATED";
+          }
+        }
+        
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
+        }
+        
+        alias Response = Success.Success | Error.Error;
+      }
+      
+      @post
+      @doc("Create new advertisement")
+      op createAdvertisement(
+        ...Request.Headers,
+        @multipartBody body: Request.Body
+      ): Response.Response;
+    }
+
+    namespace List {
+      namespace Request {
+        alias Query = Pagination.Query;
+      }
+
+      namespace Response {
+        namespace Success {
+          alias Success = Pagination.Paginated<Advertisement>;
+        }
+        
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+        
+        alias Response = Success.Success | Error.Error;
+      }
+      
+      @get
+      @doc("List advertisements")
+      op listAdvertisements(
+        ...Request.Query
+      ): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace Update {
+      namespace Request {
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+        
+        model Path {
+          @path
+          id: Id;
+        }
+        
+        model Body {
+          expires_at?: HttpPart<DateTime>;
+          image?: HttpPart<ImageFile>;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "ADVERTISEMENT_UPDATED";
+          }
+        }
+        
+        namespace Error {
+          alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
+        }
+        
+        alias Response = Success.Success | Error.Error;
+      }
+      
+      @patch
+      @doc("Update an advertisement by id")
+      op updateAdvertisementById(
+        ...Request.Headers,
+        ...Request.Path,
+        @multipartBody body: Request.Body
+      ): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace Delete {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "ADVERTISEMENT_DELETED";
+          }
+        }
+        
+        namespace Error {
+          alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
+        }
+        
+        alias Response = Success.Success | Error.Error;
+      }
+      
+      @delete
+      @doc("Delete an advertisement by id")
+      op deleteAdvertisementById(
+        ...Request.Path,
+      ): Response.Response;
     }
   }
 }
