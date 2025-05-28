@@ -1,9 +1,9 @@
-name: staging
+name: production
 
 on:
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
@@ -29,31 +29,59 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Create output folder
-        run: mkdir __site
-
       - name: Install dependencies
+        working-directory: packages
         run: pnpm install
 
-      - name: Load .env file
-        run: echo '${{ secrets.ENV_STAGING }}' > .env
-
-      - name: Build monorepo
+      - name: Setup assets
+        working-directory: packages
         run: |
-          set -a
-          source .env
-          set +a
-          pnpm build
+          pnpm compile
+          pnpm typegen
+
+      - name: Load .env file
+        working-directory: packages
+        run: |
+          DOCS_ENV_FILE="$(mktemp)"
+          BACKEND_ENV_FILE="$(mktemp)"
+
+          VERCEL_ENVIRONMENT="preview"
+
+          export VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}
+          export VERCEL_TOKEN=${{ secrets.VERCEL_TOKEN }}
+
+          export VERCEL_PROJECT_ID=${{ secrets.VERCEL_DOCS_PROJECT_ID }}
+          pnpm vercel env pull "$DOCS_ENV_FILE" --yes --environment "$VERCEL_ENVIRONMENT" --token "$VERCEL_TOKEN"
+
+          export VERCEL_PROJECT_ID=${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+          pnpm vercel env pull "$BACKEND_ENV_FILE" --yes --environment "$VERCEL_ENVIRONMENT"  --token "$VERCEL_TOKEN"
+
+          cat "$DOCS_ENV_FILE" >> .env
+          cat "$BACKEND_ENV_FILE" >> .env
+          echo VERCEL_TOKEN="$VERCEL_TOKEN" >> .env
+          echo VERCEL_ENVIRONMENT="$VERCEL_ENVIRONMENT" >> .env
+
+          cat .env | grep -v '^#' | sed -E 's/^(.*)?="(.*)"/\1=\2/' >> "$GITHUB_ENV"
+
+      - name: Check built internal docs
+        working-directory: docs/docs
+        run: nix flake check
+
+      - name: Build stack
+        working-directory: packages
+        run: pnpm build
 
       - name: Deploy docs
-        run: |
-          set -a
-          source .env
-          set +a
-          cd apps/docs
-          pnpm vercel --token $VERCEL_TOKEN pull --yes
-          pnpm vercel --token $VERCEL_TOKEN build --target preview
-          pnpm vercel --token $VERCEL_TOKEN deploy --prebuilt --target preview
+        working-directory: __site
+        run: pnpm --filter @grovine/docs run deploy --target "$VERCEL_ENVIRONMENT"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}
+
+      - name: Deploy backend
+        working-directory: packages
+        run: pnpm --filter @grovine/standup-backend run deploy --target "$VERCEL_ENVIRONMENT"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+

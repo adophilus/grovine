@@ -47,6 +47,10 @@ namespace Api {
     contentType: "image/jpeg" | "image/png" | "image/webp";
   }
 
+  model WithoutTimestamp<T> {
+    ...OmitProperties<T, "created_at" | "updated_at" | "deleted_at">;
+  }
+
   enum Role {
     ADMIN,
     USER,
@@ -56,9 +60,10 @@ namespace Api {
   scalar Email extends string;
 
   model Media {
-    public_id: Id;
+    @example("h93suhw7mzyujf9tbugy")
+    public_id: string;
 
-    @example("https://google.com")
+    @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
     url: string;
   }
 
@@ -207,12 +212,9 @@ namespace Api {
       @route("/")
       namespace SignUp {
         namespace Request {
-          model Body
-            extends OmitProperties<
-              Api.Authentication.User,
-              "created_at" | "updated_at"
-            > {
-            referral_code: ReferralCode;
+          model Body {
+            ...WithoutTimestamp<OmitProperties<Api.Authentication.User, "id">>;
+            referral_code?: ReferralCode;
           }
         }
 
@@ -251,7 +253,7 @@ namespace Api {
 
           @post
           @doc("Verify email")
-          op verifyEmail(@body body: Request.Body): Response.Response;
+          op verifySignUpEmail(@body body: Request.Body): Response.Response;
         }
 
         @route("/resend")
@@ -261,7 +263,7 @@ namespace Api {
 
           @post
           @doc("Resend verification email")
-          op resendVerificationEmail(
+          op resendSignUpVerificationEmail(
             @body body: Request.Body,
           ): Response.Response;
         }
@@ -302,7 +304,7 @@ namespace Api {
 
           @post
           @doc("Verify email")
-          op verifyEmail(@body body: Request.Body): Response.Response;
+          op verifySignInEmail(@body body: Request.Body): Response.Response;
         }
 
         @route("/resend")
@@ -312,7 +314,7 @@ namespace Api {
 
           @post
           @doc("Resend verification email")
-          op resendVerificationEmail(
+          op resendSignInVerificationEmail(
             @body body: Request.Body,
           ): Response.Response;
         }
@@ -731,4 +733,3 @@ namespace Api {
     }
   }
 }
-
