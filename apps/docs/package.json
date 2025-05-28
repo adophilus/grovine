@@ -1,6 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@grovine/docs",
+  "packageManager": "pnpm@10.10.0",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +9,8 @@
     "lint": "tsc",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs"
+    "preview": "vitepress preview docs",
+    "deploy": "vercel deploy"
   },
   "devDependencies": {
     "@grovine/docs-openapi": "workspace:^",

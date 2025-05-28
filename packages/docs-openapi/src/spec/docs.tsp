@@ -34,14 +34,21 @@ namespace Api {
   @example("Seafood")
   scalar FoodType extends string;
 
+  @example(4800.50)
+  scalar Price extends numeric;
+
   @example("Nigeria")
   scalar CuisineRegion extends string;
 
   @example("123456")
   scalar Otp extends string;
-  
+
   model ImageFile extends File {
     contentType: "image/jpeg" | "image/png" | "image/webp";
+  }
+
+  model WithoutTimestamp<T> {
+    ...OmitProperties<T, "created_at" | "updated_at" | "deleted_at">;
   }
 
   enum Role {
@@ -53,9 +60,10 @@ namespace Api {
   scalar Email extends string;
 
   model Media {
-    public_id: Id;
+    @example("h93suhw7mzyujf9tbugy")
+    public_id: string;
 
-    @example("https://google.com")
+    @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
     url: string;
   }
 
@@ -74,11 +82,12 @@ namespace Api {
       data: T[];
       meta: Api.Pagination.Meta;
     }
-    
+
     model Query {
       @query
       @minValue(1)
       page?: int64;
+
       @query
       @minValue(10)
       @maxValue(100)
@@ -203,12 +212,9 @@ namespace Api {
       @route("/")
       namespace SignUp {
         namespace Request {
-          model Body
-            extends OmitProperties<
-              Api.Authentication.User,
-              "created_at" | "updated_at"
-            > {
-            referral_code: ReferralCode;
+          model Body {
+            ...WithoutTimestamp<OmitProperties<Api.Authentication.User, "id">>;
+            referral_code?: ReferralCode;
           }
         }
 
@@ -247,7 +253,7 @@ namespace Api {
 
           @post
           @doc("Verify email")
-          op verifyEmail(@body body: Request.Body): Response.Response;
+          op verifySignUpEmail(@body body: Request.Body): Response.Response;
         }
 
         @route("/resend")
@@ -257,7 +263,7 @@ namespace Api {
 
           @post
           @doc("Resend verification email")
-          op resendVerificationEmail(
+          op resendSignUpVerificationEmail(
             @body body: Request.Body,
           ): Response.Response;
         }
@@ -298,7 +304,7 @@ namespace Api {
 
           @post
           @doc("Verify email")
-          op verifyEmail(@body body: Request.Body): Response.Response;
+          op verifySignInEmail(@body body: Request.Body): Response.Response;
         }
 
         @route("/resend")
@@ -308,7 +314,7 @@ namespace Api {
 
           @post
           @doc("Resend verification email")
-          op resendVerificationEmail(
+          op resendSignInVerificationEmail(
             @body body: Request.Body,
           ): Response.Response;
         }
@@ -369,6 +375,39 @@ namespace Api {
   @tag("Food")
   @route("/foods")
   namespace Food {
+    model Food {
+      id: Id;
+      name: string;
+      description: string;
+      price: Price;
+      media: Media;
+      is_available: boolean;
+      created_at: DateTime;
+      updated_at: DateTime | null;
+    }
+
+    namespace List {
+      namespace Request {
+        alias Query = Pagination.Query;
+      }
+
+      namespace Response {
+        namespace Success {
+          alias Success = Pagination.Paginated<Food>;
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("List foods")
+      op listFoods(...Request.Query): Response.Response;
+    }
+
     @route("/types")
     namespace Types {
       namespace Response {
@@ -386,6 +425,147 @@ namespace Api {
       @doc("Fetch all food types")
       @get
       op getFoodTypes(): Response.Response;
+    }
+
+    namespace Create {
+      namespace Request {
+        model Body {
+          name: HttpPart<string>;
+          description: HttpPart<string>;
+          price: HttpPart<Price>;
+          image: HttpPart<ImageFile>;
+        }
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 201;
+            code: "FOOD_CREATED";
+            data: Food;
+          }
+        }
+
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Create a new food item")
+      op createFood(
+        ...Request.Headers,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace FoodById {
+      namespace Get {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              data: Food;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"FOOD"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("Get a food item by ID")
+        op getFoodById(@path id: Request.Path): Response.Response;
+      }
+    }
+
+    namespace Update {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
+        model Body {
+          name?: HttpPart<string>;
+          description?: HttpPart<string>;
+          price?: HttpPart<Price>;
+          image?: HttpPart<ImageFile>;
+          is_available?: HttpPart<boolean>;
+        }
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "FOOD_UPDATED";
+            data: Food;
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @patch
+      @doc("Update a food item by ID")
+      op updateFoodById(
+        ...Request.Headers,
+        @path id: Request.Path,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
+    }
+
+    namespace Delete {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "FOOD_DELETED";
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"FOOD"> | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @delete
+      @doc("Delete a food item by ID")
+      op deleteFoodById(@path id: Request.Path): Response.Response;
     }
   }
 
@@ -421,7 +601,7 @@ namespace Api {
       expires_at: DateTime;
       created_at: DateTime;
     }
-    
+
     namespace Create {
       namespace Request {
         model Headers {
@@ -442,19 +622,19 @@ namespace Api {
             code: "ADVERTISEMENT_CREATED";
           }
         }
-        
+
         namespace Error {
           alias Error = BadRequestError | UnexpectedError;
         }
-        
+
         alias Response = Success.Success | Error.Error;
       }
-      
+
       @post
       @doc("Create new advertisement")
       op createAdvertisement(
         ...Request.Headers,
-        @multipartBody body: Request.Body
+        @multipartBody body: Request.Body,
       ): Response.Response;
     }
 
@@ -467,19 +647,17 @@ namespace Api {
         namespace Success {
           alias Success = Pagination.Paginated<Advertisement>;
         }
-        
+
         namespace Error {
           alias Error = UnexpectedError;
         }
-        
+
         alias Response = Success.Success | Error.Error;
       }
-      
+
       @get
       @doc("List advertisements")
-      op listAdvertisements(
-        ...Request.Query
-      ): Response.Response;
+      op listAdvertisements(...Request.Query): Response.Response;
     }
 
     @route("/{id}")
@@ -489,12 +667,12 @@ namespace Api {
           @header
           contentType: "multipart/form-data";
         }
-        
+
         model Path {
           @path
           id: Id;
         }
-        
+
         model Body {
           expires_at?: HttpPart<DateTime>;
           image?: HttpPart<ImageFile>;
@@ -508,20 +686,20 @@ namespace Api {
             code: "ADVERTISEMENT_UPDATED";
           }
         }
-        
+
         namespace Error {
           alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
         }
-        
+
         alias Response = Success.Success | Error.Error;
       }
-      
+
       @patch
       @doc("Update an advertisement by id")
       op updateAdvertisementById(
         ...Request.Headers,
         ...Request.Path,
-        @multipartBody body: Request.Body
+        @multipartBody body: Request.Body,
       ): Response.Response;
     }
 
@@ -541,19 +719,17 @@ namespace Api {
             code: "ADVERTISEMENT_DELETED";
           }
         }
-        
+
         namespace Error {
           alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
         }
-        
+
         alias Response = Success.Success | Error.Error;
       }
-      
+
       @delete
       @doc("Delete an advertisement by id")
-      op deleteAdvertisementById(
-        ...Request.Path,
-      ): Response.Response;
+      op deleteAdvertisementById(...Request.Path): Response.Response;
     }
   }
 }
