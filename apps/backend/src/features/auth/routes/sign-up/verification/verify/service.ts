@@ -4,7 +4,9 @@ import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY, type User } from "@/types";
 import type { Request } from "./types";
 import { Mailer } from "@/features/mailer";
 import VerificationSuccessful from "./mail/verification-successful";
-import * as jose from "jose";
+import { SignJWT } from "jose";
+import { addMinutes } from "date-fns";
+import { config } from "@/features/config";
 
 export type Payload = Request.Body;
 
@@ -57,24 +59,36 @@ export default async (payload: Payload): Promise<Result<Tokens, Error>> => {
 		email: VerificationSuccessful({ user }),
 	});
 
-	const tokens = await generateTokens();
+	const tokens = await generateTokens(user);
 
 	return Result.ok(tokens);
 };
 
-// TODO: make this function work
-const alg = "HS256"; //TODO: This should be in the .env file
+const alg = "HS256";
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-const JWT_EXPIRATION = "1h"; // Set the expiration time for the JWT
 
-const generateTokens = async (): Promise<string> => {
-  const token = await new jose.SignJWT({ 
-  })
-	.setProtectedHeader({ alg })
-	.setIssuedAt()
-	.setExpirationTime(JWT_EXPIRATION)
-	.sign(secret);
+const generateTokens = async (user: User.Selectable): Promise<Tokens> => {
+	const accessTokenExpiration = addMinutes(
+		Date.now(),
+		config.auth.token.access.expiry,
+	);
 
-  return token;
+	const accessToken = await new SignJWT({ user_id: user.id })
+		.setProtectedHeader({ alg })
+		.setIssuedAt()
+		.setExpirationTime(accessTokenExpiration)
+		.sign(secret);
+
+	const refreshTokenExpiration = addMinutes(
+		Date.now(),
+		config.auth.token.refresh.expiry,
+	);
+
+	const refreshToken = await new SignJWT({ user_id: user.id })
+		.setProtectedHeader({ alg })
+		.setIssuedAt()
+		.setExpirationTime(refreshTokenExpiration)
+		.sign(secret);
+
+	return { access_token: accessToken, refresh_token: refreshToken };
 };
-
