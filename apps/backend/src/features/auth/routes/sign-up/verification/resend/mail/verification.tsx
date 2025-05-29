@@ -102,7 +102,7 @@ const link = {
 
 const logoUrl = "https://via.placeholder.com/512";
 
-export default function SignUpVerificationMail({ token }: Props) {
+export default function VerificationMail({ token }: Props) {
 	return (
 		<Html>
 			<Head />
