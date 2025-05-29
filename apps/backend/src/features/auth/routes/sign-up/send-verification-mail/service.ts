@@ -7,6 +7,7 @@ import { ulid } from "ulidx";
 import { config } from "@/features/config";
 import { addMinutes, getUnixTime } from "date-fns";
 import type { Request } from "./types";
+import { generateToken } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
 
@@ -55,8 +56,4 @@ export default async (
 	});
 
 	return Result.ok(user);
-};
-
-const generateToken = (): string => {
-  return Math.floor(10000 + Math.random() * 90000).toString();
 };

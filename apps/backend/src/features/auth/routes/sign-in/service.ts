@@ -1,9 +1,6 @@
 import { Result } from "true-myth";
 import Repository from "@/features/auth/repository";
-import {
-	generateAccessToken,
-	generateRefreshToken,
-} from "../../utils/token-utils";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 import { comparePasswords } from "../../utils/password-utils";
 
 type Payload = {
