@@ -58,4 +58,8 @@ export default async (
 };
 
 // TODO: make this function work
-const generateToken = (): string => {};
+const generateToken = (): string => {
+  const token = Math.floor(100000 + Math.random() * 900000).toString();
+  return token;
+};
+
