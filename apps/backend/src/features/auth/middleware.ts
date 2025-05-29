@@ -1,80 +1,78 @@
-import type { MiddlewareHandler } from 'hono'
-import type { User } from './types'
-import { AuthServiceImpl } from './service'
-import { StatusCodes } from '../http'
-import { Logger } from '../logger'
-import type { schema } from '@beta-lyfe/api'
+import type { MiddlewareHandler } from "hono";
+import type { User } from "./types";
+import { AuthServiceImpl } from "./service";
+import { StatusCodes } from "../http";
+import type { types } from "@grovine/api";
 
 export type Response =
-  | schema.components['schemas']['Api.UnauthorizedError']
-  | schema.components['schemas']['Api.UserNotVerifiedError']
-  | schema.components['schemas']['Api.UnexpectedError']
+	| types.components["schemas"]["Api.UnauthorizedError"]
+	| types.components["schemas"]["Api.UserNotVerifiedError"]
+	| types.components["schemas"]["Api.UnexpectedError"];
 
 namespace Middleware {
-  export const middleware: MiddlewareHandler<{
-    Variables: {
-      user: User
-    }
-  }> = async (c, next) => {
-    const authService = new AuthServiceImpl()
+	export const middleware: MiddlewareHandler<{
+		Variables: {
+			user: User;
+		};
+	}> = async (c, next) => {
+		const authService = new AuthServiceImpl();
 
-    let response: Response
+		let response: Response;
 
-    const authHeader = c.req.header('authorization')
-    Logger.info(authHeader)
-    if (!authHeader) {
-      response = {
-        code: 'UNAUTHORIZED_ERROR'
-      }
-      return c.json(response, StatusCodes.UNAUTHORIZED)
-    }
+		const authHeader = c.req.header("authorization");
+		if (!authHeader) {
+			response = {
+				code: "ERR_UNAUTHORIZED",
+			};
+			return c.json(response, StatusCodes.UNAUTHORIZED);
+		}
 
-    const [, accessToken] = authHeader.split(' ')
-    if (!accessToken) {
-      response = {
-        code: 'UNAUTHORIZED_ERROR'
-      }
-      return c.json(response, StatusCodes.UNAUTHORIZED)
-    }
+		const [, accessToken] = authHeader.split(" ");
+		if (!accessToken) {
+			response = {
+				code: "ERR_UNAUTHORIZED",
+			};
+			return c.json(response, StatusCodes.UNAUTHORIZED);
+		}
 
-    const res = await authService.getUserWithProfile(accessToken)
+		const res = await authService.getUserWithProfile(accessToken);
 
-    if (res.isErr) {
-      switch (res.error) {
-        case 'USER_NOT_VERIFIED': {
-          response = {
-            code: 'USER_NOT_VERIFIED'
-          }
-          return c.json(response, StatusCodes.UNAUTHORIZED)
-        }
-        case 'INVALID_OR_EXPIRED_TOKEN': {
-          response = {
-            code: 'UNAUTHORIZED_ERROR'
-          }
-          return c.json(response, StatusCodes.UNAUTHORIZED)
-        }
-        case 'FAILED_TO_FETCH_USER': {
-          response = {
-            code: 'UNEXPECTED_ERROR'
-          }
-          return c.json(response, StatusCodes.INTERNAL_SERVER_ERROR)
-        }
-      }
-    }
+		if (res.isErr) {
+			switch (res.error) {
+				case "USER_NOT_VERIFIED": {
+					response = {
+						code: "ERR_USER_NOT_VERIFIED",
+					};
+					return c.json(response, StatusCodes.UNAUTHORIZED);
+				}
+				case "INVALID_OR_EXPIRED_TOKEN": {
+					response = {
+						code: "ERR_UNAUTHORIZED",
+					};
+					return c.json(response, StatusCodes.UNAUTHORIZED);
+				}
+				case "FAILED_TO_FETCH_USER": {
+					response = {
+						code: "ERR_UNEXPECTED",
+					};
+					return c.json(response, StatusCodes.INTERNAL_SERVER_ERROR);
+				}
+			}
+		}
 
-    const user = res.value
+		const user = res.value;
 
-    if (!user) {
-      response = {
-        code: 'UNAUTHORIZED_ERROR'
-      }
-      return c.json(response, StatusCodes.UNAUTHORIZED)
-    }
+		if (!user) {
+			response = {
+				code: "ERR_UNAUTHORIZED",
+			};
+			return c.json(response, StatusCodes.UNAUTHORIZED);
+		}
 
-    c.set('user', user)
+		c.set("user", user);
 
-    await next()
-  }
+		await next();
+	};
 }
 
-export default Middleware
+export default Middleware;

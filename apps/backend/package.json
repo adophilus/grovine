@@ -3,7 +3,7 @@
 	"name": "@grovine/backend",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "tsx watch ./scripts/dev.ts",
 		"build": "tsx ./scripts/build.ts",
 		"deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
 		"db:migration": "tsx ./scripts/migrate.ts"
