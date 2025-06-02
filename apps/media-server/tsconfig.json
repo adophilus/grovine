@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"noEmit": true,
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"strict": true,
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
+		"types": [
+			"node"
+		],
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx"
+	}
+}

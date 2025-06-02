@@ -3,7 +3,6 @@
 
 ### direnv ###
 .direnv
-.envrc
 
 # End of https://www.toptal.com/developers/gitignore/api/direnv
 # Created by https://www.toptal.com/developers/gitignore/api/node

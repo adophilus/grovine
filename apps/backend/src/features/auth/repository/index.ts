@@ -134,6 +134,29 @@ namespace Repository {
 			return Result.err("ERR_UNEXPECTED");
 		}
 	};
+
+	export type UpdateTokenByIdPayload = Omit<
+		Token.Updateable,
+		"id" | "purpose" | "user_id" | "updated_at"
+	>;
+
+	export const updateTokenById = async (
+		id: Token.Selectable["id"],
+		payload: UpdateTokenByIdPayload,
+	): Promise<Result<Token.Selectable, Error>> => {
+		try {
+			const token = await db
+				.updateTable("tokens")
+				.set(payload)
+				.where("id", "=", id)
+				.returningAll()
+				.executeTakeFirstOrThrow();
+			return Result.ok(token);
+		} catch (err) {
+			logger.error("failed to update token by id:", id, err);
+			return Result.err("ERR_UNEXPECTED");
+		}
+	};
 }
 
 export default Repository;

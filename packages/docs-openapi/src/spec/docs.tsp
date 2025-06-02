@@ -40,7 +40,7 @@ namespace Api {
   @example("Nigeria")
   scalar CuisineRegion extends string;
 
-  @example("123456")
+  @example("12345")
   scalar Otp extends string;
 
   model ImageFile extends File {
@@ -58,6 +58,9 @@ namespace Api {
 
   @example("mary.slessor@mail.com")
   scalar Email extends string;
+
+  @example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30")
+  scalar Jwt extends string;
 
   model Media {
     @example("h93suhw7mzyujf9tbugy")
@@ -151,8 +154,8 @@ namespace Api {
             model AuthCredentials {
               code: "AUTH_CREDENTIALS";
               data: {
-                access_token: Token;
-                refresh_token: Token;
+                access_token: Jwt;
+                refresh_token: Jwt;
               };
             }
 
@@ -191,6 +194,12 @@ namespace Api {
 
           namespace Error {
             @error
+            model UserAlreadyVerifiedError {
+              @statusCode _code: 400;
+              code: "ERR_USER_ALREADY_VERIFIED";
+            }
+
+            @error
             model VerificationEmailAlreadySentError {
               @statusCode _code: 400;
               code: "ERR_VERIFICATION_EMAIL_ALREADY_SENT";
@@ -199,7 +208,12 @@ namespace Api {
               };
             }
 
-            alias Error = VerificationEmailAlreadySentError | BadRequestError | UnexpectedError;
+            alias Error =
+              | VerificationEmailAlreadySentError
+              | UserAlreadyVerifiedError
+              | NotFoundError<"USER">
+              | BadRequestError
+              | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
@@ -248,8 +262,36 @@ namespace Api {
       @route("/verification")
       namespace Verification {
         namespace Verify {
-          alias Request = Api.Authentication.Verification.Verify.Request;
-          alias Response = Api.Authentication.Verification.Verify.Response;
+          namespace Request {
+            model Body {
+              email: Email;
+              token: Otp;
+            }
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                code: "AUTH_CREDENTIALS";
+                data: {
+                  access_token: Jwt;
+                  refresh_token: Jwt;
+                };
+              }
+            }
+
+            namespace Error {
+              @error
+              model InvalidOrExpiredTokenError {
+                @statusCode _code: 400;
+                code: "ERR_INVALID_OR_EXPIRED_TOKEN";
+              }
+
+              alias Error = InvalidOrExpiredTokenError | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
 
           @post
           @doc("Verify email")
@@ -258,8 +300,28 @@ namespace Api {
 
         @route("/resend")
         namespace ResendVerification {
-          alias Request = Api.Authentication.Verification.SendVerificationEmail.Request;
-          alias Response = Api.Authentication.Verification.SendVerificationEmail.Response;
+          namespace Request {
+            model Body
+              extends Api.Authentication.Verification.SendVerificationEmail.Request.Body {}
+          }
+
+          namespace Response {
+            namespace Success {
+              alias Success = Api.Authentication.Verification.SendVerificationEmail.Response.Success;
+            }
+
+            namespace Error {
+              @error
+              model TokenNotExpiredError {
+                @statusCode _code: 400;
+                code: "ERR_TOKEN_NOT_EXPIRED";
+              }
+
+              alias Error = TokenNotExpiredError | Api.Authentication.Verification.SendVerificationEmail.Response.Error.Error;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
 
           @post
           @doc("Resend verification email")
@@ -285,7 +347,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = UnauthorizedError | UnexpectedError;
+            alias Error = NotFoundError<"USER"> | BadRequestError | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;

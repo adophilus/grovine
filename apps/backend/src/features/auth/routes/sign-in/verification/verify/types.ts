@@ -3,14 +3,13 @@ import { schema as apiSchema, type types } from "@grovine/api";
 
 export namespace Request {
 	export const body =
-		apiSchema.schemas
-			.Api_Authentication_SignUp_Verification_ResendVerification_Request_Body;
+		apiSchema.schemas.Api_Authentication_Verification_Verify_Request_Body;
 
 	export type Body = z.infer<typeof body>;
 }
 
 export namespace Response {
-	type Endpoint = "/api/auth/sign-up/verification/resend";
+	type Endpoint = "/api/auth/sign-up/verification";
 
 	export type Response =
 		types.paths[Endpoint]["post"]["responses"][keyof types.paths[Endpoint]["post"]["responses"]]["content"]["application/json"];

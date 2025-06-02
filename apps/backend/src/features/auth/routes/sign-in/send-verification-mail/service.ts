@@ -1,6 +1,6 @@
 import { Result } from "true-myth";
 import Repository from "../../../repository";
-import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY, type User } from "@/types";
+import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY, type User } from "@/types";
 import { Mailer } from "@/features/mailer";
 import SignUpVerificationMail from "./mail/sign-up-verification";
 import { ulid } from "ulidx";
@@ -11,7 +11,7 @@ import { generateToken } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
 
-type Error = "ERR_EMAIL_ALREADY_IN_USE" | "ERR_UNEXPECTED";
+type Error = "ERR_UNEXPECTED" | "ERR_USER_NOT_FOUND";
 
 export default async (
 	payload: Payload,
@@ -21,14 +21,8 @@ export default async (
 		return Result.err("ERR_UNEXPECTED");
 	}
 
-	const existingUser = existingUserResult.value;
-	if (existingUser) return Result.err("ERR_EMAIL_ALREADY_IN_USE");
-
-	const userCreationResult = await Repository.createUser(payload);
-
-	if (userCreationResult.isErr) return Result.err("ERR_UNEXPECTED");
-
-	const user = userCreationResult.value;
+	const user = existingUserResult.value;
+	if (!user) return Result.err("ERR_USER_NOT_FOUND");
 
 	const tokenExpiryTime = getUnixTime(
 		addMinutes(
@@ -40,7 +34,7 @@ export default async (
 	const tokenCreationResult = await Repository.createToken({
 		id: ulid(),
 		token: generateToken(),
-		purpose: SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY,
+		purpose: SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY,
 		user_id: user.id,
 		expires_at: tokenExpiryTime,
 	});
@@ -51,7 +45,7 @@ export default async (
 
 	await Mailer.send({
 		recipients: [user.email],
-		subject: "Verify your account",
+		subject: "Here's your verification code",
 		email: SignUpVerificationMail({ token }),
 	});
 

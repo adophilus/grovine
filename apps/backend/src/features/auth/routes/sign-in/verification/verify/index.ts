@@ -13,22 +13,10 @@ export default new Hono().post("/", middleware, async (c) => {
 
 	if (result.isErr) {
 		switch (result.error) {
-			case "ERR_TOKEN_NOT_EXPIRED": {
+			case "ERR_INVALID_OR_EXPIRED_TOKEN": {
 				response = {
-					code: "",
+					code: "ERR_INVALID_OR_EXPIRED_TOKEN",
 				};
-				return c.json(response, StatusCodes.CONFLICT);
-			}
-			case "ERR_USER_ALREADY_VERIFIED": {
-				response = {};
-				return c.json(response, StatusCodes.BAD_REQUEST);
-			}
-			case "ERR_USER_NOT_FOUND": {
-				response = {};
-				return c.json(response, StatusCodes.NOT_FOUND);
-			}
-			case "ERR_VERIFICATION_EMAIL_ALREADY_SENT": {
-				response = {};
 				return c.json(response, StatusCodes.BAD_REQUEST);
 			}
 			case "ERR_UNEXPECTED": {
@@ -40,9 +28,11 @@ export default new Hono().post("/", middleware, async (c) => {
 		}
 	}
 
+	const tokens = result.value;
+
 	response = {
-		code: "VERIFICATION_EMAIL_SENT",
-		data: result.value,
+		code: "AUTH_CREDENTIALS",
+		data: tokens,
 	};
 
 	return c.json(response);
