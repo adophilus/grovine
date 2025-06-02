@@ -22,7 +22,7 @@ export default async (
 	const existingUser = existingUserResult.value;
 	if (!existingUser) {
 		return Result.err({
-			code: "ERR_INVALID_OR_EXPIRED_TOKEN",
+			code: "ERR_INVALID_OR_EXPIRED_OTP",
 		});
 	}
 
@@ -45,7 +45,7 @@ export default async (
 		compareAsc(Date.now(), existingToken.expires_at) === 1
 	) {
 		return Result.err({
-			code: "ERR_INVALID_OR_EXPIRED_TOKEN",
+			code: "ERR_INVALID_OR_EXPIRED_OTP",
 		});
 	}
 
