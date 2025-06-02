@@ -75,6 +75,9 @@ importers:
       '@grovine/backend':
         specifier: workspace:^
         version: 'link:'
+      '@grovine/media-server':
+        specifier: workspace:^
+        version: link:../media-server
       '@hono/node-server':
         specifier: ^1.14.2
         version: 1.14.2(hono@4.7.10)
@@ -167,6 +170,16 @@ importers:
       vitepress:
         specifier: ^1.6.3
         version: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.14.1)(@types/react@18.3.20)(axios@1.8.4)(change-case@5.4.4)(fuse.js@7.1.0)(postcss@8.5.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)(terser@5.39.2)(typescript@5.8.3)
+
+  apps/media-server:
+    dependencies:
+      '@beta-lyfe/media-server':
+        specifier: 'file:'
+        version: 'link:'
+    devDependencies:
+      '@types/node':
+        specifier: ^22.13.13
+        version: 22.14.1
 
   packages/api:
     dependencies:

@@ -1,8 +1,9 @@
 import type { MiddlewareHandler } from "hono";
-import type { User } from "./types";
-import { AuthServiceImpl } from "./service";
+import type { User } from "@/types";
 import { StatusCodes } from "../http";
 import type { types } from "@grovine/api";
+import Repository from "./repository";
+import { verifyToken } from "./utils/token";
 
 export type Response =
 	| types.components["schemas"]["Api.UnauthorizedError"]
@@ -12,11 +13,9 @@ export type Response =
 namespace Middleware {
 	export const middleware: MiddlewareHandler<{
 		Variables: {
-			user: User;
+			user: User.Selectable;
 		};
 	}> = async (c, next) => {
-		const authService = new AuthServiceImpl();
-
 		let response: Response;
 
 		const authHeader = c.req.header("authorization");
@@ -35,36 +34,37 @@ namespace Middleware {
 			return c.json(response, StatusCodes.UNAUTHORIZED);
 		}
 
-		const res = await authService.getUserWithProfile(accessToken);
-
-		if (res.isErr) {
-			switch (res.error) {
-				case "USER_NOT_VERIFIED": {
-					response = {
-						code: "ERR_USER_NOT_VERIFIED",
-					};
-					return c.json(response, StatusCodes.UNAUTHORIZED);
-				}
-				case "INVALID_OR_EXPIRED_TOKEN": {
-					response = {
-						code: "ERR_UNAUTHORIZED",
-					};
-					return c.json(response, StatusCodes.UNAUTHORIZED);
-				}
-				case "FAILED_TO_FETCH_USER": {
-					response = {
-						code: "ERR_UNEXPECTED",
-					};
-					return c.json(response, StatusCodes.INTERNAL_SERVER_ERROR);
-				}
-			}
+		const tokenVerificationResult = await verifyToken(accessToken);
+		if (tokenVerificationResult.isErr) {
+			response = {
+				code: "ERR_UNAUTHORIZED",
+			};
+			return c.json(response, StatusCodes.UNAUTHORIZED);
 		}
 
-		const user = res.value;
+		const findUserResult = await Repository.findUserById({
+			id: tokenVerificationResult.value.id,
+		});
+
+		if (findUserResult.isErr) {
+			response = {
+				code: "ERR_UNEXPECTED",
+			};
+			return c.json(response, StatusCodes.UNAUTHORIZED);
+		}
+
+		const user = findUserResult.value;
 
 		if (!user) {
 			response = {
 				code: "ERR_UNAUTHORIZED",
+			};
+			return c.json(response, StatusCodes.UNAUTHORIZED);
+		}
+
+		if (user.verified_at === null) {
+			response = {
+				code: "ERR_USER_NOT_VERIFIED",
 			};
 			return c.json(response, StatusCodes.UNAUTHORIZED);
 		}

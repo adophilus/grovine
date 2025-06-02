@@ -1,17 +1,15 @@
-import { Hono } from 'hono'
-import Middleware from '../../middleware'
-import type { paths } from '@beta-lyfe/api/types'
+import type { z } from "zod";
+import { schema as apiSchema, type types } from "@grovine/api";
 
-export type Response =
-  paths['/api/auth/profile']['get']['responses'][keyof paths['/api/auth/profile']['get']['responses']]['content']['application/json']
+export namespace Request {
+  export const body = apiSchema.schemas.api_authentication_profile;
 
-export default new Hono().get('/profile', Middleware.middleware, (c) => {
-  const user = c.get('user')
+  export type Body = z.infer<typeof body>;
+}
 
-  const response: Response = {
-    code: 'FETCHED_PROFILE',
-    data: user.data
-  }
+export namespace Response {
+  type Endpoint = "/api/auth/profile";
 
-  return c.json(response)
-})
+  export type Response =
+    types.paths[Endpoint]["get"]["responses"][keyof types.paths[Endpoint]["get"]["responses"]]["content"]["application/json"];
+}

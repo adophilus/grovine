@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch ./scripts/dev.ts",
-		"build": "tsx ./scripts/build.ts",
+		"build": "tsc && tsx ./scripts/build.ts",
 		"deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
 		"db:migration": "tsx ./scripts/migrate.ts"
 	},
@@ -12,6 +12,7 @@
 		".": "./src/index.ts"
 	},
 	"dependencies": {
+		"@grovine/media-server": "workspace:^",
 		"@grovine/api": "workspace:^",
 		"@grovine/backend": "workspace:^",
 		"@hono/node-server": "^1.14.2",
