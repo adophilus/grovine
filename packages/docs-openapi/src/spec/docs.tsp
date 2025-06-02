@@ -347,7 +347,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = UnauthorizedError | UnexpectedError;
+            alias Error = NotFoundError<"USER"> | BadRequestError | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
