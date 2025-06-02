@@ -6,4 +6,4 @@ import authProfileRouter from "./profile";
 export default new Hono()
 	.route("/sign-in", signInRouter)
 	.route("/sign-up", signUpRouter)
-	.route("/", authProfileRouter);
+	.route("/profile", authProfileRouter);
