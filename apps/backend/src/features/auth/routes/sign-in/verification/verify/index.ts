@@ -15,7 +15,7 @@ export default new Hono().post("/", middleware, async (c) => {
 		switch (result.error) {
 			case "ERR_INVALID_OR_EXPIRED_TOKEN": {
 				response = {
-					code: "ERR_INVALID_OR_EXPIRED_OTP",
+					code: "ERR_INVALID_OR_EXPIRED_TOKEN",
 				};
 				return c.json(response, StatusCodes.BAD_REQUEST);
 			}

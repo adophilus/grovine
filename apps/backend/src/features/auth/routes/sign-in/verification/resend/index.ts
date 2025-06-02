@@ -15,7 +15,7 @@ export default new Hono().post("/", middleware, async (c) => {
 		switch (result.error) {
 			case "ERR_TOKEN_NOT_EXPIRED": {
 				response = {
-					code: "",
+					code: "ERR_TOKEN_NOT_EXPIRED",
 				};
 				return c.json(response, StatusCodes.CONFLICT);
 			}
