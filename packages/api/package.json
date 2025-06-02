@@ -9,7 +9,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "bun ./scripts/typegen.ts",
+		"build": "bun ./scripts/typegen.ts && tsc",
 		"lint": "tsc"
 	},
 	"dependencies": {
