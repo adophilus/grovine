@@ -1,6 +1,6 @@
 import { Result } from "true-myth";
 import Repository from "../../../repository";
-import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY, type User } from "@/types";
+import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY } from "@/types";
 import { Mailer } from "@/features/mailer";
 import SignUpVerificationMail from "./mail/sign-up-verification";
 import { ulid } from "ulidx";
@@ -10,8 +10,6 @@ import type { Request, Response } from "./types";
 import { generateToken } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
-
-type Error = "ERR_UNEXPECTED" | "ERR_USER_NOT_FOUND";
 
 export default async (
 	payload: Payload,
@@ -26,7 +24,7 @@ export default async (
 	const user = existingUserResult.value;
 	if (!user)
 		return Result.err({
-			code: "USER_NOT_FOUND",
+			code: "ERR_USER_NOT_FOUND",
 		});
 
 	const tokenExpiryTime = getUnixTime(

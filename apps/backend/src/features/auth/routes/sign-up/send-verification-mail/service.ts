@@ -6,27 +6,36 @@ import SignUpVerificationMail from "./mail/sign-up-verification";
 import { ulid } from "ulidx";
 import { config } from "@/features/config";
 import { addMinutes, getUnixTime } from "date-fns";
-import type { Request } from "./types";
+import type { Request, Response } from "./types";
 import { generateToken } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
 
-type Error = "ERR_EMAIL_ALREADY_IN_USE" | "ERR_UNEXPECTED";
-
 export default async (
 	payload: Payload,
-): Promise<Result<User.Selectable, Error>> => {
+): Promise<Result<Response.Success, Response.Error>> => {
 	const existingUserResult = await Repository.findUserByEmail(payload.email);
 	if (existingUserResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const existingUser = existingUserResult.value;
-	if (existingUser) return Result.err("ERR_EMAIL_ALREADY_IN_USE");
+	if (existingUser)
+		return Result.err({
+			code: "ERR_EMAIL_ALREADY_IN_USE",
+		});
 
-	const userCreationResult = await Repository.createUser(payload);
+	const userCreationResult = await Repository.createUser({
+		...payload,
+		id: ulid(),
+	});
 
-	if (userCreationResult.isErr) return Result.err("ERR_UNEXPECTED");
+	if (userCreationResult.isErr)
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 
 	const user = userCreationResult.value;
 
@@ -45,7 +54,10 @@ export default async (
 		expires_at: tokenExpiryTime,
 	});
 
-	if (tokenCreationResult.isErr) return Result.err("ERR_UNEXPECTED");
+	if (tokenCreationResult.isErr)
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 
 	const token = tokenCreationResult.value;
 
@@ -55,5 +67,7 @@ export default async (
 		email: SignUpVerificationMail({ token }),
 	});
 
-	return Result.ok(user);
+	return Result.ok({
+		code: "VERIFICATION_EMAIL_SENT",
+	});
 };

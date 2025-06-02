@@ -208,7 +208,14 @@ namespace Api {
               };
             }
 
+            @error
+            model TokenNotExpiredError {
+              @statusCode _code: 400;
+              code: "ERR_TOKEN_NOT_EXPIRED";
+            }
+
             alias Error =
+              | TokenNotExpiredError
               | VerificationEmailAlreadySentError
               | UserAlreadyVerifiedError
               | NotFoundError<"USER">
@@ -223,7 +230,6 @@ namespace Api {
 
     @route("/sign-up")
     namespace SignUp {
-      @route("/")
       namespace SignUp {
         namespace Request {
           model Body {
@@ -311,13 +317,7 @@ namespace Api {
             }
 
             namespace Error {
-              @error
-              model TokenNotExpiredError {
-                @statusCode _code: 400;
-                code: "ERR_TOKEN_NOT_EXPIRED";
-              }
-
-              alias Error = TokenNotExpiredError | Api.Authentication.Verification.SendVerificationEmail.Response.Error.Error;
+              alias Error = Api.Authentication.Verification.SendVerificationEmail.Response.Error.Error;
             }
 
             alias Response = Success.Success | Error.Error;

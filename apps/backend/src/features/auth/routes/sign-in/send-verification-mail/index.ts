@@ -14,7 +14,7 @@ export default new Hono().post("/", middleware, async (c) => {
 
 	if (result.isErr) {
 		switch (result.error.code) {
-			case "USER_NOT_FOUND": {
+			case "ERR_USER_NOT_FOUND": {
 				response = result.error;
 				statusCode = StatusCodes.NOT_FOUND;
 				break;

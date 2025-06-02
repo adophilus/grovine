@@ -5,7 +5,7 @@ import type { Request, Response } from "./types";
 import { Mailer } from "@/features/mailer";
 import VerificationSuccessful from "./mail/verification-successful";
 import { compareAsc } from "date-fns";
-import { generateTokens, type Tokens } from "@/features/auth/utils/token";
+import { generateTokens } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
 
