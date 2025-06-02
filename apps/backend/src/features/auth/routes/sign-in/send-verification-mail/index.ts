@@ -5,32 +5,30 @@ import middleware from "./middleware";
 import type { Response } from "./types";
 
 export default new Hono().post("/", middleware, async (c) => {
+	let response: Response.Response;
+	let statusCode: StatusCodes;
+
 	const payload = c.req.valid("json");
 
 	const result = await service(payload);
 
-	let response: Response.Response;
-
 	if (result.isErr) {
-		switch (result.error) {
+		switch (result.error.code) {
 			case "ERR_USER_NOT_FOUND": {
-				response = {
-					code: "USER_NOT_FOUND"
-				}
-				return c.json(response, StatusCodes.NOT_FOUND);
+				response = result.error;
+				statusCode = StatusCodes.NOT_FOUND;
+				break;
 			}
 			default: {
-				response = {
-					code: "ERR_UNEXPECTED",
-				};
-				return c.json(response, StatusCodes.INTERNAL_SERVER_ERROR);
+				response = result.error;
+				statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+				break;
 			}
 		}
+	} else {
+		response = result.value;
+		statusCode = StatusCodes.OK;
 	}
 
-	response = {
-		code: "VERIFICATION_EMAIL_SENT",
-	};
-
-	return c.json(response);
+	return c.json(response, statusCode);
 });

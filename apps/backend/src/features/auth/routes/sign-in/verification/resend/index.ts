@@ -5,45 +5,45 @@ import middleware from "./middleware";
 import type { Response } from "./types";
 
 export default new Hono().post("/", middleware, async (c) => {
+	let response: Response.Response;
+	let statusCode: StatusCodes;
+
 	const payload = c.req.valid("json");
 
 	const result = await service(payload);
 
-	let response: Response.Response;
-
 	if (result.isErr) {
-		switch (result.error) {
+		switch (result.error.code) {
 			case "ERR_TOKEN_NOT_EXPIRED": {
-				response = {
-					code: "ERR_TOKEN_NOT_EXPIRED",
-				};
-				return c.json(response, StatusCodes.CONFLICT);
+				response = result.error;
+				statusCode = StatusCodes.CONFLICT;
+				break;
 			}
 			case "ERR_USER_ALREADY_VERIFIED": {
-				response = {};
-				return c.json(response, StatusCodes.BAD_REQUEST);
+				response = result.error;
+				statusCode = StatusCodes.BAD_REQUEST;
+				break;
 			}
 			case "ERR_USER_NOT_FOUND": {
-				response = {};
-				return c.json(response, StatusCodes.NOT_FOUND);
+				response = result.error;
+				statusCode = StatusCodes.NOT_FOUND;
+				break;
 			}
 			case "ERR_VERIFICATION_EMAIL_ALREADY_SENT": {
-				response = {};
-				return c.json(response, StatusCodes.BAD_REQUEST);
+				response = result.error;
+				statusCode = StatusCodes.BAD_REQUEST;
+				break;
 			}
-			case "ERR_UNEXPECTED": {
-				response = {
-					code: "ERR_UNEXPECTED",
-				};
-				return c.json(response, StatusCodes.INTERNAL_SERVER_ERROR);
+			default: {
+				response = result.error;
+				statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+				break;
 			}
 		}
+	} else {
+		response = result.value;
+		statusCode = StatusCodes.OK;
 	}
 
-	response = {
-		code: "VERIFICATION_EMAIL_SENT",
-		data: result.value,
-	};
-
-	return c.json(response);
+	return c.json(response, statusCode);
 });

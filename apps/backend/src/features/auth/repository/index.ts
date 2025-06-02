@@ -72,7 +72,7 @@ namespace Repository {
 				.updateTable("users")
 				.set(
 					Object.assign(payload, {
-						updated_at: Date.now(),
+						updated_at: new Date().toISOString(),
 					}),
 				)
 				.where("id", "=", id)

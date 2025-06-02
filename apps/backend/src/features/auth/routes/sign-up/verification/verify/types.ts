@@ -13,4 +13,7 @@ export namespace Response {
 
 	export type Response =
 		types.paths[Endpoint]["post"]["responses"][keyof types.paths[Endpoint]["post"]["responses"]]["content"]["application/json"];
+
+	export type Success = Extract<Response, { code: "AUTH_CREDENTIALS" }>;
+	export type Error = Exclude<Response, Success>;
 }
