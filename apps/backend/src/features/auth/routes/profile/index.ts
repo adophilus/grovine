@@ -1,15 +1,18 @@
-import type { z } from "zod";
-import { schema as apiSchema, type types } from "@grovine/api";
+import { Hono } from "hono";
+import type { Response } from "./types";
+import { StatusCodes } from "@/features/http";
 
-export namespace Request {
-  export const body = apiSchema.schemas.api_authentication_profile;
+export default new Hono().route("/", (c) => {
+	let response: Response.Response;
+	let statusCode: StatusCodes;
 
-  export type Body = z.infer<typeof body>;
-}
+	const user = c.req("user");
 
-export namespace Response {
-  type Endpoint = "/api/auth/profile";
+	response = {
+		code: "USER_PROFILE",
+		data: user,
+	};
+	statusCode = StatusCodes.OK;
 
-  export type Response =
-    types.paths[Endpoint]["get"]["responses"][keyof types.paths[Endpoint]["get"]["responses"]]["content"]["application/json"];
-}
+	return c.json(response, statusCode);
+});
