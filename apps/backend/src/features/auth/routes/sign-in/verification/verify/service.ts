@@ -1,7 +1,7 @@
 import { Result } from "true-myth";
 import Repository from "../../../../repository";
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY, type User } from "@/types";
-import type { Request } from "./types";
+import type { Request, Response } from "./types";
 import { Mailer } from "@/features/mailer";
 import VerificationSuccessful from "./mail/verification-successful";
 import { compareAsc } from "date-fns";
@@ -9,17 +9,21 @@ import { generateTokens, type Tokens } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
 
-type Error = "ERR_INVALID_OR_EXPIRED_TOKEN" | "ERR_UNEXPECTED";
-
-export default async (payload: Payload): Promise<Result<Tokens, Error>> => {
+export default async (
+	payload: Payload,
+): Promise<Result<Response.Success, Response.Error>> => {
 	const existingUserResult = await Repository.findUserByEmail(payload.email);
 	if (existingUserResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const existingUser = existingUserResult.value;
 	if (!existingUser) {
-		return Result.err("ERR_INVALID_OR_EXPIRED_TOKEN");
+		return Result.err({
+			code: "ERR_INVALID_OR_EXPIRED_TOKEN",
+		});
 	}
 
 	const existingTokenResult = await Repository.findTokenByUserIdAndPurpose({
@@ -28,7 +32,9 @@ export default async (payload: Payload): Promise<Result<Tokens, Error>> => {
 	});
 
 	if (existingTokenResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const existingToken = existingTokenResult.value;
@@ -38,7 +44,9 @@ export default async (payload: Payload): Promise<Result<Tokens, Error>> => {
 		existingToken.token !== payload.otp ||
 		compareAsc(Date.now(), existingToken.expires_at) === 1
 	) {
-		return Result.err("ERR_INVALID_OR_EXPIRED_TOKEN");
+		return Result.err({
+			code: "ERR_INVALID_OR_EXPIRED_TOKEN",
+		});
 	}
 
 	const userUpdateResult = await Repository.updateUserById(existingUser.id, {
@@ -46,7 +54,9 @@ export default async (payload: Payload): Promise<Result<Tokens, Error>> => {
 	});
 
 	if (userUpdateResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const user = userUpdateResult.value;
@@ -59,5 +69,8 @@ export default async (payload: Payload): Promise<Result<Tokens, Error>> => {
 
 	const tokens = await generateTokens(user);
 
-	return Result.ok(tokens);
+	return Result.ok({
+		code: "AUTH_CREDENTIALS",
+		data: tokens,
+	});
 };

@@ -10,8 +10,11 @@ export namespace Request {
 }
 
 export namespace Response {
-	type Endpoint = "/api/auth/sign-up/verification/resend";
+	type Endpoint = "/api/auth/sign-in/verification/resend";
 
 	export type Response =
 		types.paths[Endpoint]["post"]["responses"][keyof types.paths[Endpoint]["post"]["responses"]]["content"]["application/json"];
+
+	export type Success = Extract<Response, { code: "VERIFICATION_EMAIL_SENT" }>;
+	export type Error = Exclude<Response, Success>;
 }

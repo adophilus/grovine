@@ -6,7 +6,7 @@ import SignUpVerificationMail from "./mail/sign-up-verification";
 import { ulid } from "ulidx";
 import { config } from "@/features/config";
 import { addMinutes, getUnixTime } from "date-fns";
-import type { Request } from "./types";
+import type { Request, Response } from "./types";
 import { generateToken } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
@@ -15,14 +15,19 @@ type Error = "ERR_UNEXPECTED" | "ERR_USER_NOT_FOUND";
 
 export default async (
 	payload: Payload,
-): Promise<Result<User.Selectable, Error>> => {
+): Promise<Result<Response.Success, Response.Error>> => {
 	const existingUserResult = await Repository.findUserByEmail(payload.email);
 	if (existingUserResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const user = existingUserResult.value;
-	if (!user) return Result.err("ERR_USER_NOT_FOUND");
+	if (!user)
+		return Result.err({
+			code: "USER_NOT_FOUND",
+		});
 
 	const tokenExpiryTime = getUnixTime(
 		addMinutes(
@@ -39,7 +44,10 @@ export default async (
 		expires_at: tokenExpiryTime,
 	});
 
-	if (tokenCreationResult.isErr) return Result.err("ERR_UNEXPECTED");
+	if (tokenCreationResult.isErr)
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 
 	const token = tokenCreationResult.value;
 
@@ -49,5 +57,7 @@ export default async (
 		email: SignUpVerificationMail({ token }),
 	});
 
-	return Result.ok(user);
+	return Result.ok({
+		code: "VERIFICATION_EMAIL_SENT",
+	});
 };

@@ -113,7 +113,7 @@ namespace Api {
   @error
   model NotFoundError<T> {
     @statusCode _code: 404;
-    code: "${T}_NOT_FOUND";
+    code: "ERR_${T}_NOT_FOUND";
   }
 
   @error
@@ -307,7 +307,7 @@ namespace Api {
 
           namespace Response {
             namespace Success {
-              alias Success = Api.Authentication.Verification.SendVerificationEmail.Response.Success;
+              alias Success = Api.Authentication.Verification.SendVerificationEmail.Response.Success.Success;
             }
 
             namespace Error {

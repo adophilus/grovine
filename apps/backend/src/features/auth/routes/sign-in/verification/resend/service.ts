@@ -6,28 +6,26 @@ import VerificationMail from "./mail/verification";
 import { ulid } from "ulidx";
 import { config } from "@/features/config";
 import { addMinutes, compareAsc, getUnixTime } from "date-fns";
-import type { Request } from "./types";
+import type { Request, Response } from "./types";
 import { generateToken } from "@/features/auth/utils/token";
 
 export type Payload = Request.Body;
 
-type Error =
-	| "ERR_USER_ALREADY_VERIFIED"
-	| "ERR_USER_NOT_FOUND"
-	| "ERR_VERIFICATION_EMAIL_ALREADY_SENT"
-	| "ERR_TOKEN_NOT_EXPIRED"
-	| "ERR_UNEXPECTED";
-
 export default async (
 	payload: Payload,
-): Promise<Result<{ expires_at: number }, Error>> => {
+): Promise<Result<Response.Success, Response.Error>> => {
 	const existingUserResult = await Repository.findUserByEmail(payload.email);
 	if (existingUserResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const existingUser = existingUserResult.value;
-	if (!existingUser) return Result.err("ERR_USER_NOT_FOUND");
+	if (!existingUser)
+		return Result.err({
+			code: "ERR_USER_NOT_FOUND",
+		});
 
 	const user = existingUser;
 
@@ -43,7 +41,9 @@ export default async (
 		purpose: SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY,
 	});
 	if (existingTokenResult.isErr) {
-		return Result.err("ERR_UNEXPECTED");
+		return Result.err({
+			code: "ERR_UNEXPECTED",
+		});
 	}
 
 	const existingToken = existingTokenResult.value;
@@ -58,14 +58,19 @@ export default async (
 			expires_at: tokenExpiryTime,
 		});
 
-		if (tokenCreationResult.isErr) return Result.err("ERR_UNEXPECTED");
+		if (tokenCreationResult.isErr)
+			return Result.err({
+				code: "ERR_UNEXPECTED",
+			});
 
 		token = tokenCreationResult.value;
 	} else {
 		const hasTokenExpired =
 			compareAsc(Date.now(), existingToken.expires_at) === 1;
 		if (!hasTokenExpired) {
-			return Result.err("ERR_TOKEN_NOT_EXPIRED");
+			return Result.err({
+				code: "ERR_TOKEN_NOT_EXPIRED",
+			});
 		}
 
 		const updateTokenResult = await Repository.updateTokenById(
@@ -77,7 +82,9 @@ export default async (
 		);
 
 		if (updateTokenResult.isErr) {
-			return Result.err("ERR_UNEXPECTED");
+			return Result.err({
+				code: "ERR_UNEXPECTED",
+			});
 		}
 
 		token = updateTokenResult.value;
@@ -90,6 +97,6 @@ export default async (
 	});
 
 	return Result.ok({
-		expires_at: tokenExpiryTime,
+		code: "VERIFICATION_EMAIL_SENT",
 	});
 };
