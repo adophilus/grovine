@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "tsx watch ./scripts/dev.ts",
 		"build": "tsc && tsx ./scripts/build.ts",
+		"test": "vitest",
 		"deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
 		"db:migration": "tsx ./scripts/migrate.ts"
 	},
@@ -31,6 +32,7 @@
 		"@effect/cli": "^0.61.4",
 		"@effect/platform": "^0.82.4",
 		"@effect/platform-node": "^0.81.1",
+		"@faker-js/faker": "^9.8.0",
 		"@types/date-fns": "^2.6.3",
 		"@types/node": "^20.11.17",
 		"@types/nodemailer": "^6.4.17",
