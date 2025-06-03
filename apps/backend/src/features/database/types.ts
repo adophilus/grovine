@@ -18,7 +18,7 @@ type TokensTable = TimestampModel & {
 	id: string;
 	token: string;
 	purpose: string;
-	expires_at: number;
+	expires_at: string;
 	user_id: string;
 };
 

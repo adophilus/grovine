@@ -3,9 +3,10 @@
 	"name": "@grovine/backend",
 	"type": "module",
 	"scripts": {
+		"start": "tsx ./scripts/dev.ts",
 		"dev": "tsx watch ./scripts/dev.ts",
 		"build": "tsc && tsx ./scripts/build.ts",
-		"test": "vitest",
+		"test": "bun test ./tests/integration/*.ts",
 		"deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
 		"db:migration": "tsx ./scripts/migrate.ts"
 	},
@@ -42,7 +43,6 @@
 		"kysely-ctl": "^0.13.1",
 		"kysely-migration-cli": "^0.4.2",
 		"tsx": "^4.7.1",
-		"typescript": "^5.8.3",
-		"vitest": "^3.2.0"
+		"typescript": "^5.8.3"
 	}
 }

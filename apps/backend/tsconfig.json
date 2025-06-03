@@ -9,6 +9,7 @@
 		"strict": true,
 		"noEmit": true,
 		"verbatimModuleSyntax": true,
+		"esModuleInterop": true,
 		// "isolatedModules": true,
 		// "noUnusedLocals": true,
 		// "noUnusedParameters": true,
@@ -22,5 +23,5 @@
 			"@/*": ["./src/*"]
 		}
 	},
-	"include": ["scripts", "src", "tests"]
+	"include": ["scripts", "src", "tests", "vite.config.ts"]
 }

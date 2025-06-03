@@ -50,7 +50,7 @@ export default async (
 	}
 
 	const userUpdateResult = await Repository.updateUserById(existingUser.id, {
-		verified_at: Date.now(),
+		verified_at: new Date().toISOString()
 	});
 
 	if (userUpdateResult.isErr) {

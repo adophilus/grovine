@@ -7,7 +7,6 @@ using TypeSpec.Http;
 })
 namespace ApiDocs;
 
-@route("/api")
 @doc("API")
 namespace Api {
   @example("f47ac10b-58cc-4372-a567-0e02b2c3d479")
@@ -271,7 +270,7 @@ namespace Api {
           namespace Request {
             model Body {
               email: Email;
-              token: Otp;
+              otp: Otp;
             }
           }
 
@@ -411,226 +410,154 @@ namespace Api {
       @doc("Get user profile")
       op getProfile(): Response.Response;
     }
+  }
 
-    @tag("Onboarding")
-    @route("/onboarding")
-    namespace Onboarding {
-      @route("/preferences")
-      namespace Preferences {
-        namespace Request {
-          model Body {
-            foods: FoodType[];
-            regions: CuisineRegion[];
-          }
+  @tag("Onboarding")
+  @route("/onboarding")
+  namespace Onboarding {
+    @route("/preferences")
+    namespace Preferences {
+      namespace Request {
+        model Body {
+          foods: FoodType[];
+          regions: CuisineRegion[];
         }
-
-        namespace Response {
-          namespace Success {
-            model PreferencesSet {
-              code: "PREFERENCES_SET";
-            }
-
-            alias Success = PreferencesSet;
-          }
-
-          namespace Error {
-            @doc("One or more foods entered were not found")
-            model FoodNotFoundError {
-              @statusCode _code: 404;
-              code: "ERR_FOOD_NOT_FOUND";
-            }
-
-            @doc("One or more regions entered were not found")
-            model RegionNotFoundError {
-              @statusCode _code: 404;
-              code: "ERR_REGION_NOT_FOUND";
-            }
-
-            alias Error =
-              | FoodNotFoundError
-              | RegionNotFoundError
-              | BadRequestError
-              | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
-        }
-
-        @post
-        @doc("Set the user preferences during onboarding")
-        op setUserPreferences(@body body: Request.Body): Response.Response;
       }
+
+      namespace Response {
+        namespace Success {
+          model PreferencesSet {
+            code: "PREFERENCES_SET";
+          }
+
+          alias Success = PreferencesSet;
+        }
+
+        namespace Error {
+          @doc("One or more foods entered were not found")
+          model FoodNotFoundError {
+            @statusCode _code: 404;
+            code: "ERR_FOOD_NOT_FOUND";
+          }
+
+          @doc("One or more regions entered were not found")
+          model RegionNotFoundError {
+            @statusCode _code: 404;
+            code: "ERR_REGION_NOT_FOUND";
+          }
+
+          alias Error =
+            | FoodNotFoundError
+            | RegionNotFoundError
+            | BadRequestError
+            | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Set the user preferences during onboarding")
+      op setUserPreferences(@body body: Request.Body): Response.Response;
+    }
+  }
+
+  @tag("Food")
+  @route("/foods")
+  namespace Food {
+    model Food {
+      id: Id;
+      name: string;
+      description: string;
+      price: Price;
+      media: Media;
+      is_available: boolean;
+      created_at: DateTime;
+      updated_at: DateTime | null;
     }
 
-    @tag("Food")
-    @route("/foods")
-    namespace Food {
-      model Food {
-        id: Id;
-        name: string;
-        description: string;
-        price: Price;
-        media: Media;
-        is_available: boolean;
-        created_at: DateTime;
-        updated_at: DateTime | null;
+    namespace List {
+      namespace Request {
+        alias Query = Pagination.Query;
       }
 
-      namespace List {
-        namespace Request {
-          alias Query = Pagination.Query;
+      namespace Response {
+        namespace Success {
+          alias Success = Pagination.Paginated<Food>;
         }
 
-        namespace Response {
-          namespace Success {
-            alias Success = Pagination.Paginated<Food>;
-          }
-
-          namespace Error {
-            alias Error = UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+        namespace Error {
+          alias Error = UnexpectedError;
         }
 
-        @get
-        @doc("List foods")
-        op listFoods(...Request.Query): Response.Response;
+        alias Response = Success.Success | Error.Error;
       }
 
-      @route("/types")
-      namespace Types {
-        namespace Response {
-          namespace Success {
-            alias Success = FoodType[];
-          }
+      @get
+      @doc("List foods")
+      op listFoods(...Request.Query): Response.Response;
+    }
 
-          namespace Error {
-            alias Error = UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+    @route("/types")
+    namespace Types {
+      namespace Response {
+        namespace Success {
+          alias Success = FoodType[];
         }
 
-        @doc("Fetch all food types")
-        @get
-        op getFoodTypes(): Response.Response;
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
       }
 
-      namespace Create {
-        namespace Request {
-          model Body {
-            name: HttpPart<string>;
-            description: HttpPart<string>;
-            price: HttpPart<Price>;
-            image: HttpPart<ImageFile>;
-          }
-          model Headers {
-            @header
-            contentType: "multipart/form-data";
-          }
+      @doc("Fetch all food types")
+      @get
+      op getFoodTypes(): Response.Response;
+    }
+
+    namespace Create {
+      namespace Request {
+        model Body {
+          name: HttpPart<string>;
+          description: HttpPart<string>;
+          price: HttpPart<Price>;
+          image: HttpPart<ImageFile>;
         }
-
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 201;
-              code: "FOOD_CREATED";
-              data: Food;
-            }
-          }
-
-          namespace Error {
-            alias Error = BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
-        }
-
-        @post
-        @doc("Create a new food item")
-        op createFood(
-          ...Request.Headers,
-          @multipartBody body: Request.Body,
-        ): Response.Response;
-      }
-
-      @route("/{id}")
-      namespace FoodById {
-        namespace Get {
-          namespace Request {
-            model Path {
-              @path
-              id: Id;
-            }
-          }
-
-          namespace Response {
-            namespace Success {
-              model Success {
-                @statusCode _code: 200;
-                data: Food;
-              }
-            }
-
-            namespace Error {
-              alias Error = NotFoundError<"FOOD"> | UnexpectedError;
-            }
-
-            alias Response = Success.Success | Error.Error;
-          }
-
-          @get
-          @doc("Get a food item by ID")
-          op getFoodById(@path id: Request.Path): Response.Response;
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
         }
       }
 
-      namespace Update {
-        namespace Request {
-          model Path {
-            @path
-            id: Id;
-          }
-          model Body {
-            name?: HttpPart<string>;
-            description?: HttpPart<string>;
-            price?: HttpPart<Price>;
-            image?: HttpPart<ImageFile>;
-            is_available?: HttpPart<boolean>;
-          }
-          model Headers {
-            @header
-            contentType: "multipart/form-data";
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 201;
+            code: "FOOD_CREATED";
+            data: Food;
           }
         }
 
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 200;
-              code: "FOOD_UPDATED";
-              data: Food;
-            }
-          }
-
-          namespace Error {
-            alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
         }
 
-        @patch
-        @doc("Update a food item by ID")
-        op updateFoodById(
-          ...Request.Headers,
-          @path id: Request.Path,
-          @multipartBody body: Request.Body,
-        ): Response.Response;
+        alias Response = Success.Success | Error.Error;
       }
 
-      namespace Delete {
+      @post
+      @doc("Create a new food item")
+      op createFood(
+        ...Request.Headers,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace FoodById {
+      namespace Get {
         namespace Request {
           model Path {
             @path
@@ -642,7 +569,7 @@ namespace Api {
           namespace Success {
             model Success {
               @statusCode _code: 200;
-              code: "FOOD_DELETED";
+              data: Food;
             }
           }
 
@@ -653,174 +580,246 @@ namespace Api {
           alias Response = Success.Success | Error.Error;
         }
 
-        @delete
-        @doc("Delete a food item by ID")
-        op deleteFoodById(@path id: Request.Path): Response.Response;
+        @get
+        @doc("Get a food item by ID")
+        op getFoodById(@path id: Request.Path): Response.Response;
       }
     }
 
-    @tag("Cuisine")
-    @route("/cuisine")
-    namespace Cuisine {
-      @route("/regions")
-      namespace Region {
-        namespace Response {
-          namespace Success {
-            alias Success = Api.CuisineRegion[];
-          }
+    namespace Update {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
+        model Body {
+          name?: HttpPart<string>;
+          description?: HttpPart<string>;
+          price?: HttpPart<Price>;
+          image?: HttpPart<ImageFile>;
+          is_available?: HttpPart<boolean>;
+        }
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+      }
 
-          namespace Error {
-            alias Error = UnexpectedError;
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "FOOD_UPDATED";
+            data: Food;
           }
-
-          alias Response = Success.Success | Error.Error;
         }
 
-        @doc("Fetch all cuisine regions")
-        @get
-        op getRegions(): Response.Response;
+        namespace Error {
+          alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
       }
+
+      @patch
+      @doc("Update a food item by ID")
+      op updateFoodById(
+        ...Request.Headers,
+        @path id: Request.Path,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
     }
 
-    @tag("Advertisement")
-    @route("/ads")
-    namespace Advertisement {
-      model Advertisement {
-        id: Id;
-        media: Media;
-        expires_at: DateTime;
-        created_at: DateTime;
+    namespace Delete {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
       }
 
-      namespace Create {
-        namespace Request {
-          model Headers {
-            @header
-            contentType: "multipart/form-data";
-          }
-
-          model Body {
-            expires_at: HttpPart<DateTime>;
-            image: HttpPart<ImageFile>;
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "FOOD_DELETED";
           }
         }
 
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 201;
-              code: "ADVERTISEMENT_CREATED";
-            }
-          }
-
-          namespace Error {
-            alias Error = BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+        namespace Error {
+          alias Error = NotFoundError<"FOOD"> | UnexpectedError;
         }
 
-        @post
-        @doc("Create new advertisement")
-        op createAdvertisement(
-          ...Request.Headers,
-          @multipartBody body: Request.Body,
-        ): Response.Response;
+        alias Response = Success.Success | Error.Error;
       }
 
-      namespace List {
-        namespace Request {
-          alias Query = Pagination.Query;
+      @delete
+      @doc("Delete a food item by ID")
+      op deleteFoodById(@path id: Request.Path): Response.Response;
+    }
+  }
+
+  @tag("Cuisine")
+  @route("/cuisine")
+  namespace Cuisine {
+    @route("/regions")
+    namespace Region {
+      namespace Response {
+        namespace Success {
+          alias Success = Api.CuisineRegion[];
         }
 
-        namespace Response {
-          namespace Success {
-            alias Success = Pagination.Paginated<Advertisement>;
-          }
-
-          namespace Error {
-            alias Error = UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+        namespace Error {
+          alias Error = UnexpectedError;
         }
 
-        @get
-        @doc("List advertisements")
-        op listAdvertisements(...Request.Query): Response.Response;
+        alias Response = Success.Success | Error.Error;
       }
 
-      @route("/{id}")
-      namespace Update {
-        namespace Request {
-          model Headers {
-            @header
-            contentType: "multipart/form-data";
-          }
+      @doc("Fetch all cuisine regions")
+      @get
+      op getRegions(): Response.Response;
+    }
+  }
 
-          model Path {
-            @path
-            id: Id;
-          }
+  @tag("Advertisement")
+  @route("/ads")
+  namespace Advertisement {
+    model Advertisement {
+      id: Id;
+      media: Media;
+      expires_at: DateTime;
+      created_at: DateTime;
+    }
 
-          model Body {
-            expires_at?: HttpPart<DateTime>;
-            image?: HttpPart<ImageFile>;
-          }
+    namespace Create {
+      namespace Request {
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
         }
 
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 200;
-              code: "ADVERTISEMENT_UPDATED";
-            }
-          }
-
-          namespace Error {
-            alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+        model Body {
+          expires_at: HttpPart<DateTime>;
+          image: HttpPart<ImageFile>;
         }
-
-        @patch
-        @doc("Update an advertisement by id")
-        op updateAdvertisementById(
-          ...Request.Headers,
-          ...Request.Path,
-          @multipartBody body: Request.Body,
-        ): Response.Response;
       }
 
-      @route("/{id}")
-      namespace Delete {
-        namespace Request {
-          model Path {
-            @path
-            id: Id;
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 201;
+            code: "ADVERTISEMENT_CREATED";
           }
         }
 
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 200;
-              code: "ADVERTISEMENT_DELETED";
-            }
-          }
-
-          namespace Error {
-            alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
         }
 
-        @delete
-        @doc("Delete an advertisement by id")
-        op deleteAdvertisementById(...Request.Path): Response.Response;
+        alias Response = Success.Success | Error.Error;
       }
+
+      @post
+      @doc("Create new advertisement")
+      op createAdvertisement(
+        ...Request.Headers,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
+    }
+
+    namespace List {
+      namespace Request {
+        alias Query = Pagination.Query;
+      }
+
+      namespace Response {
+        namespace Success {
+          alias Success = Pagination.Paginated<Advertisement>;
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("List advertisements")
+      op listAdvertisements(...Request.Query): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace Update {
+      namespace Request {
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+
+        model Path {
+          @path
+          id: Id;
+        }
+
+        model Body {
+          expires_at?: HttpPart<DateTime>;
+          image?: HttpPart<ImageFile>;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "ADVERTISEMENT_UPDATED";
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @patch
+      @doc("Update an advertisement by id")
+      op updateAdvertisementById(
+        ...Request.Headers,
+        ...Request.Path,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace Delete {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "ADVERTISEMENT_DELETED";
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"ADVERTISEMENT"> | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @delete
+      @doc("Delete an advertisement by id")
+      op deleteAdvertisementById(...Request.Path): Response.Response;
     }
   }
 }

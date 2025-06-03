@@ -1,15 +1,20 @@
 import { config } from "@/index";
 import { createClient } from "@grovine/api";
-import { assert, describe, expect, test } from "vitest";
+import { describe, test } from "node:test";
+import assert from "node:assert";
 import { faker } from "@faker-js/faker";
+import { AuthRepository } from "@/features/auth";
+import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from "@/types";
 
 const client = createClient(config.server.url);
 
 describe("auth", () => {
+  const email = faker.internet.email();
+
   test("sign up", async () => {
-    const res = await client.POST("/api/auth/sign-up", {
+    const res = await client.POST("/auth/sign-up", {
       body: {
-        email: faker.internet.email(),
+        email,
         full_name: faker.person.fullName(),
         phone_number: faker.phone.number(),
       },
@@ -19,10 +24,27 @@ describe("auth", () => {
   });
 
   test("sign up verification", async () => {
-    const res = await client.POST("/api/auth/sign-up/verification", {
+    const findUserResult = await AuthRepository.findUserByEmail(email);
+
+    assert(findUserResult.isOk, "User should be created");
+    assert(findUserResult.value, "User should not be null");
+
+    const user = findUserResult.value;
+
+    const findTokenResult = await AuthRepository.findTokenByUserIdAndPurpose({
+      user_id: user.id,
+      purpose: SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY,
+    });
+
+    assert(findTokenResult.isOk, "Token should be created");
+    assert(findTokenResult.value, "Token should not be null");
+
+    const token = findTokenResult.value;
+
+    const res = await client.POST("/auth/sign-up/verification", {
       body: {
-        email: faker.internet.email(),
-        token: faker.string.numeric(6),
+        email,
+        otp: token.token,
       },
     });
 

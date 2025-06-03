@@ -27,12 +27,10 @@ export default async (
 			code: "ERR_USER_NOT_FOUND",
 		});
 
-	const tokenExpiryTime = getUnixTime(
-		addMinutes(
-			Date.now(),
-			config.environment.PRODUCTION || config.environment.STAGING ? 5 : 1,
-		),
-	);
+	const tokenExpiryTime = addMinutes(
+		Date.now(),
+		config.environment.PRODUCTION || config.environment.STAGING ? 5 : 1,
+	).toISOString();
 
 	const tokenCreationResult = await Repository.createToken({
 		id: ulid(),

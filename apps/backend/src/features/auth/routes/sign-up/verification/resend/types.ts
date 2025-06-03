@@ -10,7 +10,7 @@ export namespace Request {
 }
 
 export namespace Response {
-	type Endpoint = "/api/auth/sign-up/verification/resend";
+	type Endpoint = "/auth/sign-up/verification/resend";
 
 	export type Response =
 		types.paths[Endpoint]["post"]["responses"][keyof types.paths[Endpoint]["post"]["responses"]]["content"]["application/json"];

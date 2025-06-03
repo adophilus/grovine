@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { Response } from "./types";
 import { StatusCodes } from "@/features/http";
-import { AuthMiddleware } from "../..";
+import AuthMiddleware from "../../middleware";
 
 export default new Hono().get("/", AuthMiddleware.middleware, (c) => {
 	let response: Response.Response;
