@@ -11,7 +11,7 @@ type UsersTable = TimestampModel & {
 	email: string;
 	phone_number: string;
 	referral_code: string | null;
-	verified_at: ColumnType<number, never, number>;
+	verified_at: ColumnType<string, never, string>;
 };
 
 type TokensTable = TimestampModel & {

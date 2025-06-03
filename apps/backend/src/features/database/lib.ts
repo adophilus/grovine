@@ -1,4 +1,5 @@
 import { config } from "@/features/config";
+import { TablePrefixPlugin, IndexPrefixPlugin } from "kysely-plugin-prefix";
 import type { Database } from "./types.ts";
 import { Kysely, PostgresDialect } from "kysely";
 
@@ -16,4 +17,8 @@ const dialect = new PostgresDialect({
 
 export const db = new Kysely<Database>({
 	dialect,
+	plugins: [
+		new TablePrefixPlugin({ prefix: config.db.prefix ?? "" }),
+		new IndexPrefixPlugin({ prefix: config.db.prefix ?? "" }),
+	],
 });
