@@ -10,6 +10,7 @@ export namespace Mailer {
 
 	const transporter = nodemailer.createTransport({
 		url: config.mail.url,
+		headers: { "Content-Transfer-Encoding": "quoted-printable" },
 	});
 
 	export type Payload = {
