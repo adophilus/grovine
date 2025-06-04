@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "scripts": {
-    "dev": "nx run-many -t dev",
+    "dev": "nx affected -t dev",
     "build": "nx run-many -t build",
     "lint": "nx run-many -t lint"
   },
