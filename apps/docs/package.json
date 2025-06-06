@@ -10,7 +10,7 @@
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
     "preview": "vitepress preview docs",
-    "deploy": "vercel deploy"
+    "deploy": "vercel deploy --token $VERCEL_TOKEN"
   },
   "devDependencies": {
     "@grovine/docs-openapi": "workspace:^",
