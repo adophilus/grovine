@@ -37,7 +37,7 @@ jobs:
           DOCS_ENV_FILE="$(mktemp)"
           BACKEND_ENV_FILE="$(mktemp)"
 
-          VERCEL_ENVIRONMENT="staging"
+          VERCEL_ENVIRONMENT="preview"
 
           export VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}
           export VERCEL_TOKEN=${{ secrets.VERCEL_TOKEN }}
