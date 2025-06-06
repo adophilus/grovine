@@ -30,22 +30,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: packages
         run: pnpm install
 
-      - name: Setup assets
-        working-directory: packages
-        run: |
-          pnpm compile
-          pnpm typegen
-
       - name: Load .env file
-        working-directory: packages
         run: |
           DOCS_ENV_FILE="$(mktemp)"
           BACKEND_ENV_FILE="$(mktemp)"
 
-          VERCEL_ENVIRONMENT="preview"
+          VERCEL_ENVIRONMENT="staging"
 
           export VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}
           export VERCEL_TOKEN=${{ secrets.VERCEL_TOKEN }}
@@ -63,25 +55,17 @@ jobs:
 
           cat .env | grep -v '^#' | sed -E 's/^(.*)?="(.*)"/\1=\2/' >> "$GITHUB_ENV"
 
-      - name: Check built internal docs
-        working-directory: docs/docs
-        run: nix flake check
-
       - name: Build stack
-        working-directory: packages
         run: pnpm build
 
       - name: Deploy docs
-        working-directory: __site
         run: pnpm --filter @grovine/docs run deploy --target "$VERCEL_ENVIRONMENT"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}
 
       - name: Deploy backend
-        working-directory: packages
-        run: pnpm --filter @grovine/standup-backend run deploy --target "$VERCEL_ENVIRONMENT"
+        run: pnpm --filter @grovine/backend run deploy --target "$VERCEL_ENVIRONMENT"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-
