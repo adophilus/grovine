@@ -1,28 +1,36 @@
-import type { ColumnType } from "kysely";
+import type { ColumnType } from 'kysely'
 
 type TimestampModel = {
-	created_at: ColumnType<string, never, never>;
-	updated_at: ColumnType<string, never, string>;
-};
+  created_at: ColumnType<string, never, never>
+  updated_at: ColumnType<string, never, string>
+}
 
 type UsersTable = TimestampModel & {
-	id: string;
-	full_name: string;
-	email: string;
-	phone_number: string;
-	referral_code: string | null;
-	verified_at: ColumnType<string, never, string>;
-};
+  id: string
+  full_name: string
+  email: string
+  phone_number: string
+  referral_code: string | null
+  verified_at: string | null
+}
 
 type TokensTable = TimestampModel & {
-	id: string;
-	token: string;
-	purpose: string;
-	expires_at: string;
-	user_id: string;
-};
+  id: string
+  token: string
+  purpose: string
+  expires_at: string
+  user_id: string
+}
+
+type UserPreferencesTable = TimestampModel & {
+  id: string
+  foods: string[]
+  regions: string[]
+  user_id: string
+}
 
 export type Database = {
-	users: UsersTable;
-	tokens: TokensTable;
-};
+  users: UsersTable
+  tokens: TokensTable
+  user_preferences: UserPreferencesTable
+}

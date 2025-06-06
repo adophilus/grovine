@@ -1,5 +1,5 @@
-import type { Insertable, Selectable, Updateable } from "kysely";
-import type { Database } from "./features/database/types";
+import type { Insertable, Selectable, Updateable } from 'kysely'
+import type { Database } from './features/database/types'
 
 // type Extendables =
 // 	| Selectable<EcommerceProductsTable>
@@ -13,30 +13,37 @@ import type { Database } from "./features/database/types";
 // 			? Omit<T, "media"> & { media: Types.Media[] }
 // 			: Omit<T, "media"> & { media?: Types.Media[] };
 
-type ApiCompatibility<T> = T;
-type KSelectable<T> = Selectable<T>;
-type KInsertable<T> = Insertable<T>;
-type KUpdateable<T> = Updateable<T>;
+type ApiCompatibility<T> = T
+type KSelectable<T> = Selectable<T>
+type KInsertable<T> = Insertable<T>
+type KUpdateable<T> = Updateable<T>
 
 type GenerateTypes<T> = {
-	Selectable: ApiCompatibility<KSelectable<T>>;
-	Insertable: ApiCompatibility<KInsertable<T>>;
-	Updateable: ApiCompatibility<KUpdateable<T>>;
-};
+  Selectable: ApiCompatibility<KSelectable<T>>
+  Insertable: ApiCompatibility<KInsertable<T>>
+  Updateable: ApiCompatibility<KUpdateable<T>>
+}
 
 export namespace User {
-	type T = GenerateTypes<Database["users"]>;
-	export type Selectable = T["Selectable"];
-	export type Insertable = T["Insertable"];
-	export type Updateable = T["Updateable"];
+  type T = GenerateTypes<Database['users']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
 }
 
 export namespace Token {
-	type T = GenerateTypes<Database["tokens"]>;
-	export type Selectable = T["Selectable"];
-	export type Insertable = T["Insertable"];
-	export type Updateable = T["Updateable"];
+  type T = GenerateTypes<Database['tokens']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
 }
 
-export const SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY = "SIGN_UP_VERIFICATION";
-export const SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY = "SIGN_IN_VERIFICATION";
+export namespace UserPreference {
+  type T = GenerateTypes<Database['user_preferences']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export const SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_UP_VERIFICATION'
+export const SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_IN_VERIFICATION'
