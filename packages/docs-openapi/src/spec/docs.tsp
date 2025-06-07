@@ -31,7 +31,7 @@ namespace Api {
   scalar Token extends string;
 
   @example("Seafood")
-  scalar FoodType extends string;
+  scalar FoodCategory extends string;
 
   @example(4800.50)
   scalar Price extends numeric;
@@ -419,7 +419,7 @@ namespace Api {
     namespace Preferences {
       namespace Request {
         model Body {
-          foods: FoodType[];
+          foods: FoodCategory[];
           regions: CuisineRegion[];
         }
       }
@@ -481,7 +481,12 @@ namespace Api {
 
     namespace List {
       namespace Request {
-        alias Query = Pagination.Query;
+        model CategoriesQuery {
+          @query
+          categories?: FoodCategory[];
+        }
+
+        alias Query = Pagination.Query & CategoriesQuery;
       }
 
       namespace Response {
@@ -501,11 +506,11 @@ namespace Api {
       op listFoods(...Request.Query): Response.Response;
     }
 
-    @route("/types")
-    namespace Types {
+    @route("/categories")
+    namespace Category {
       namespace Response {
         namespace Success {
-          alias Success = FoodType[];
+          alias Success = FoodCategory[];
         }
 
         namespace Error {
@@ -659,6 +664,38 @@ namespace Api {
       @delete
       @doc("Delete a food item by ID")
       op deleteFoodById(@path id: Request.Path): Response.Response;
+    }
+
+    @route("/recipes")
+    namespace Recipe {
+      model Recipe {
+        id: Id;
+        name: string;
+        description: string;
+        ingredients: string[];
+        instructions: string;
+        media: Media;
+        created_at: DateTime;
+        updated_at: DateTime | null;
+      }
+
+      namespace List {
+        namespace Response {
+          namespace Success {
+            alias Success = Pagination.Paginated<Recipe>;
+          }
+
+          namespace Error {
+            alias Error = UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("List recipes")
+        op listRecipes(...Pagination.Query): Response.Response;
+      }
     }
   }
 
