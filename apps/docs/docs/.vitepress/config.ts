@@ -1,13 +1,15 @@
-import { defineConfig } from "vitepress";
+// console.log(process.env)
+import '../../src/env'
+import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Grovine",
-  description: "Documentation for Grovine",
+  title: 'Grovine',
+  description: 'Documentation for Grovine',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Home", link: "/" },
+      { text: 'Home', link: '/' }
       // { text: "Examples", link: "/markdown-examples" },
     ],
 
@@ -22,7 +24,7 @@ export default defineConfig({
     // ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/adophilus/grovine" },
-    ],
-  },
-});
+      { icon: 'github', link: 'https://github.com/adophilus/grovine' }
+    ]
+  }
+})
