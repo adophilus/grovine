@@ -434,20 +434,23 @@ namespace Api {
         }
 
         namespace Error {
-          @doc("One or more foods entered were not found")
-          model FoodNotFoundError {
-            @statusCode _code: 404;
-            code: "ERR_FOOD_NOT_FOUND";
-          }
-
+          @error
           @doc("One or more regions entered were not found")
           model RegionNotFoundError {
             @statusCode _code: 404;
             code: "ERR_REGION_NOT_FOUND";
           }
 
+          @error
+          model UserAlreadyOnboardedError {
+            @statusCode _code: 409;
+            code: "ERR_USER_ALREADY_ONBOARDED";
+          }
+
           alias Error =
-            | FoodNotFoundError
+            | UserAlreadyOnboardedError
+            | UserNotVerifiedError
+            | NotFoundError<"FOOD_TYPE">
             | RegionNotFoundError
             | BadRequestError
             | UnexpectedError;

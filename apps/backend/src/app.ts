@@ -1,20 +1,23 @@
-import { Hono } from "hono";
-import { authRouter } from "./features/auth";
-import { compress } from "hono/compress";
-import { cors } from "hono/cors";
-import { logger as honoLogger } from "hono/logger";
-import { globalLogger } from "./features/logger";
-import { StatusCodes } from "./features/http";
+import { Hono } from 'hono'
+import { authRouter } from './features/auth'
+import { onboardingRouter } from './features/onboarding'
+import { compress } from 'hono/compress'
+import { cors } from 'hono/cors'
+import { logger as honoLogger } from 'hono/logger'
+import { globalLogger } from './features/logger'
+import { StatusCodes } from './features/http'
 
-const apiRoutes = new Hono().route("/auth", authRouter);
+const apiRoutes = new Hono()
+  .route('/auth', authRouter)
+  .route('/onboarding', onboardingRouter)
 
-export const logger = globalLogger.getSubLogger({ name: "ServerLogger" });
+export const logger = globalLogger.getSubLogger({ name: 'ServerLogger' })
 
 export const app = new Hono()
-	.use(compress())
-	.use(cors())
-	.use(honoLogger())
-	.route("/", apiRoutes)
-	.notFound((c) => c.json({ error: "NOT_FOUND" }, StatusCodes.NOT_FOUND));
+  .use(compress())
+  .use(cors())
+  .use(honoLogger())
+  .route('/', apiRoutes)
+  .notFound((c) => c.json({ error: 'NOT_FOUND' }, StatusCodes.NOT_FOUND))
 
-export type App = typeof app;
+export type App = typeof app
