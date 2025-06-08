@@ -19,5 +19,9 @@ export const app = new Hono()
   .use(honoLogger())
   .route('/', apiRoutes)
   .notFound((c) => c.json({ error: 'NOT_FOUND' }, StatusCodes.NOT_FOUND))
+  .onError((err, c) => {
+    console.log('An unexpected error occurred:', err)
+    return c.json({ code: 'ERR_UNEXPECTED' }, StatusCodes.INTERNAL_SERVER_ERROR)
+  })
 
 export type App = typeof app
