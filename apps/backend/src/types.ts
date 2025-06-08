@@ -45,5 +45,12 @@ export namespace UserPreference {
   export type Updateable = T['Updateable']
 }
 
+export namespace Recipe {
+  type T = GenerateTypes<Database['recipes']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export const SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_UP_VERIFICATION'
 export const SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_IN_VERIFICATION'

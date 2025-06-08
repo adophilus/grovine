@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { authRouter } from './features/auth'
 import { onboardingRouter } from './features/onboarding'
+import { foodRouter } from './features/food'
 import { compress } from 'hono/compress'
 import { cors } from 'hono/cors'
 import { logger as honoLogger } from 'hono/logger'
@@ -10,6 +11,7 @@ import { StatusCodes } from './features/http'
 const apiRoutes = new Hono()
   .route('/auth', authRouter)
   .route('/onboarding', onboardingRouter)
+  .route('/foods', foodRouter)
 
 export const logger = globalLogger.getSubLogger({ name: 'ServerLogger' })
 
