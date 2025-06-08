@@ -39,7 +39,7 @@ export class StorageServiceImplementation
       const formData = new FormData()
 
       // formData.set('upload_preset', config.mediaServer.uploadPreset)
-      const timestamp = Date.now().toString()
+      const timestamp = new Date().toString()
       const signature = await hash(`timestamp=${timestamp}`)
 
       formData.set('signature', signature)
