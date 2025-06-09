@@ -33,7 +33,7 @@ export default async (
   }
 
   return Result.ok({
-    code: 'FOOD_UPDATED',
+    code: 'RECIPE_UPDATED',
     data: result.value
   })
 }
