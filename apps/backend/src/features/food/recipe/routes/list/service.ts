@@ -1,11 +1,27 @@
 import Repository from '../../repository'
-import type { Response } from './types'
+import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 
 export default async (
-  query: Record<string, string>
+  query: Request.Query
 ): Promise<Result<Response.Success, Response.Error>> => {
-  const recipes = await Repository.listRecipes(query)
+  const listRecipesResult = await Repository.listRecipes(query)
 
-  return Result.ok(recipes)
+  if (listRecipesResult.isErr) {
+    return Result.err({
+      code: 'ERR_UNEXPECTED'
+    })
+  }
+
+  const recipes = listRecipesResult.value
+
+  return Result.ok({
+    code: 'LIST',
+    data: recipes,
+    meta: {
+      page: query.page,
+      per_page: query.per_page,
+      total: recipes.length
+    }
+  })
 }

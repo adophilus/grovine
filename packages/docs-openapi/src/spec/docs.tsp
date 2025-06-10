@@ -81,6 +81,7 @@ namespace Api {
     }
 
     model Paginated<T> {
+      code: "LIST";
       data: T[];
       meta: Api.Pagination.Meta;
     }
