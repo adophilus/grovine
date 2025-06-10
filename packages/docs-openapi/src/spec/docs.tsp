@@ -89,12 +89,12 @@ namespace Api {
     model Query {
       @query
       @minValue(1)
-      page?: int64;
+      page?: integer;
 
       @query
       @minValue(10)
       @maxValue(100)
-      per_page?: int64;
+      per_page?: integer;
     }
   }
 
@@ -672,7 +672,7 @@ namespace Api {
       model Recipe {
         id: Id;
         name: string;
-        media: Media;
+        image: Media;
         video_url: string;
         price: numeric;
         created_at: DateTime;

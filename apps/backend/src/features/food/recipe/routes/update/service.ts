@@ -2,6 +2,7 @@ import Repository from '../../repository'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import { Storage } from '@/features/storage'
+import { serializeRecipe } from '../../utils'
 
 export default async (
   id: string,
@@ -26,15 +27,17 @@ export default async (
     }
   }
 
-  const result = await Repository.updateRecipeById(id, updatedPayload)
+  const updateRecipeResult = await Repository.updateRecipeById(id, updatedPayload)
 
-  if (result.isErr) {
+  if (updateRecipeResult.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })
   }
+  
+  const updatedRecipe = updateRecipeResult.value
 
   return Result.ok({
     code: 'RECIPE_UPDATED',
-    data: result.value
+    data: serializeRecipe(updatedRecipe)
   })
 }
 
