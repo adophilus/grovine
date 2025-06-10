@@ -24,18 +24,18 @@ namespace Repository {
 		}
 	}
 	//My changes start here
-	export type ListFoodsPayload = {
+	export type ListRecipesPayload = {
 		categories?: string[];
 		limit?: number;
 		offset?: number;
 	};
 
-	export const listFoods = async (
-		payload: ListFoodsPayload = {},
+	export const listRecipes = async (
+		payload: ListRecipesPayload = {},
 	): Promise<Result<User.Selectable[], Error>> => {
 		try {
 			const query = db
-				.selectFrom("foods")
+				.selectFrom("recipes")
 				.selectAll()
 
 			if (payload.categories) {
@@ -50,15 +50,15 @@ namespace Repository {
 				query.offset(payload.offset);
 			}
 
-			const foods = await query.execute();
-			return Result.ok(foods);
+			const recipes = await query.execute();
+			return Result.ok(recipes);
 		} catch (err) {
-			logger.error("failed to list foods:", err);
+			logger.error("failed to list recipes:", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	};
 
-	export type CreateFoodPayload = {
+	export type CreateRecipePayload = {
 		name: string;
 		category: string;
 		price: number;
@@ -66,42 +66,42 @@ namespace Repository {
 		image_url?: string;
 		is_available?: boolean; // Optional field, added just in case
 	}
-	export const createFood = async (
-		payload: CreateFoodPayload,
+	export const createRecipe = async (
+		payload: CreateRecipePayload,
 	): Promise<Result<any, Error>> => {
 		try {
-			const food = await db
-				.insertInto("foods")
+			const recipe = await db
+				.insertInto("recipes")
 				.values(payload)
 				.returningAll()
 				.executeTakeFirstOrThrow();
-			return Result.ok(food);
+			return Result.ok(recipe);
 		} catch (err) {
-			logger.error("failed to create food:", err);
+			logger.error("failed to create recipe:", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	};
 
-	export type FindFoodByIdPayload = {
+	export type FindRecipeByIdPayload = {
 		id: string;
 	}
-	export const findFoodById = async (
-		payload: FindFoodByIdPayload,
+	export const findRecipeById = async (
+		payload: FindRecipeByIdPayload,
 	): Promise<Result<User.Selectable | null, Error>> => {
 		try {
-			const food = await db
-				.selectFrom("foods")
+			const recipe = await db
+				.selectFrom("recipes")
 				.selectAll()
 				.where("id", "=", payload.id)
 				.executeTakeFirst();
-			return Result.ok(food ?? null);
+			return Result.ok(recipe ?? null);
 		} catch (err) {
-			logger.error("failed to find food by id:", payload.id, err);
+			logger.error("failed to find recipe by id:", payload.id, err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	};
 
-	export type UpdateFoodByIdPayload = {
+	export type UpdateRecipeByIdPayload = {
 		name?: string;
 		category?: string;
 		price?: number;
@@ -110,16 +110,16 @@ namespace Repository {
 		is_available?: boolean; // Optional field, still dont know sha
 	}
 
-	function cleanPayload(payload: UpdateFoodByIdPayload): Partial<UpdateFoodByIdPayload> {
+	function cleanPayload(payload: UpdateRecipeByIdPayload): Partial<UpdateRecipeByIdPayload> {
 		return Object.fromEntries(
 			Object.entries(payload).filter(([, value]) => value !== undefined)
 		)
 	}
 
-	export const updateFoodById = async (
+	export const updateRecipeById = async (
 		id: string,
-		payload: UpdateFoodByIdPayload
-	): Promise<Result<Food.Selectable, Error>> => {
+		payload: UpdateRecipeByIdPayload
+	): Promise<Result<Recipe.Selectable, Error>> => {
 		try {
 			const cleanedPayload = cleanPayload(payload)
 
@@ -127,8 +127,8 @@ namespace Repository {
 				return Result.err("NO_FIELDS_TO_UPDATE")
 			}
 
-			const food = await db
-				.updateTable("foods")
+			const recipe = await db
+				.updateTable("recipes")
 				.set({
 					...cleanedPayload,
 					updated_at: new Date().toISOString()
@@ -137,28 +137,28 @@ namespace Repository {
 				.returningAll()
 				.executeTakeFirstOrThrow()
 
-			return Result.ok(food)
+			return Result.ok(recipe)
 		} catch (err) {
-			logger.error("failed to update food by id:", id, err)
+			logger.error("failed to update recipe by id:", id, err)
 			return Result.err("ERR_UNEXPECTED")
 		}
 	}
 
 
-	export type DeleteFoodByIdPayload = {
+	export type DeleteRecipeByIdPayload = {
 		id: string;
 	};
-	export const deleteFoodById = async (
-		payload: DeleteFoodByIdPayload,
+	export const deleteRecipeById = async (
+		payload: DeleteRecipeByIdPayload,
 	): Promise<Result<void, Error>> => {
 		try {
 			await db
-				.deleteFrom("foods")
+				.deleteFrom("recipes")
 				.where("id", "=", payload.id)
 				.execute();
 			return Result.ok(undefined);
 		} catch (err) {
-			logger.error("failed to delete food by id:", payload.id, err);
+			logger.error("failed to delete recipe by id:", payload.id, err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	};

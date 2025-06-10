@@ -26,7 +26,7 @@ export default async (
     }
   }
 
-  const result = await Repository.updateFoodById(id, updatedPayload)
+  const result = await Repository.updateRecipeById(id, updatedPayload)
 
   if (result.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })

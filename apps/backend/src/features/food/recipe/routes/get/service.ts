@@ -5,7 +5,7 @@ import { Result } from 'true-myth'
 export default async (
   id: string
 ): Promise<Result<Response.Success, Response.Error>> => {
-  const result = await Repository.findFoodById({id})
+  const result = await Repository.findRecipeById({id})
 
   if (result.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })
