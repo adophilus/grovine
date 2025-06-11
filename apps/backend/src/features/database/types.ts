@@ -42,9 +42,16 @@ type RecipesTable = TimestampModel & {
   image: Media
 }
 
+type WalletsTable = TimestampModel & {
+  id: string
+  balance: string
+  user_id: string
+}
+
 export type Database = {
   users: UsersTable
   tokens: TokensTable
   user_preferences: UserPreferencesTable
   recipes: RecipesTable
+  wallets: WalletsTable
 }
