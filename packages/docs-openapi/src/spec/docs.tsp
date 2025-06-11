@@ -927,7 +927,7 @@ namespace Api {
             scheduled_at: DateTime;
           }
 
-          @discriminated
+          // @discriminated
           union Delivery {
             now: DeliveryNow,
             scheduled: DeliveryScheduled,
