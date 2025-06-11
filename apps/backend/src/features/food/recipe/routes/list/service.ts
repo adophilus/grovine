@@ -1,6 +1,8 @@
+import type { Recipe } from '@/types'
 import Repository from '../../repository'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
+import { serializeRecipe } from '../../utils'
 
 export default async (
   query: Request.Query
@@ -17,7 +19,7 @@ export default async (
 
   return Result.ok({
     code: 'LIST',
-    data: recipes,
+    data: recipes.map(serializeRecipe),
     meta: {
       page: query.page,
       per_page: query.per_page,
