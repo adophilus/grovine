@@ -3,6 +3,7 @@ import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import { Storage } from '@/features/storage'
 import { serializeRecipe } from '../../utils'
+import type { UploadedData } from '@/features/storage/types'
 
 export default async (
   id: string,
@@ -10,7 +11,7 @@ export default async (
 ): Promise<Result<Response.Success, Response.Error>> => {
   const { image, ..._payload } = payload
 
-  let updatedPayload = { ..._payload }
+  let updatedImage: UploadedData | undefined = undefined
 
   if (image) {
     const uploadImageResult = await Storage.service.upload(image)
@@ -20,14 +21,17 @@ export default async (
         code: 'ERR_UNEXPECTED'
       })
     }
-
-    updatedPayload = {
-      ...updatedPayload,
-      image: uploadImageResult.value
-    }
+    
+    updatedImage = uploadImageResult.value
   }
 
-  const updateRecipeResult = await Repository.updateRecipeById(id, updatedPayload)
+  const updatePayload = {
+    ..._payload,
+    image: updatedImage,
+    price: _payload.price?.toString()
+  }
+
+  const updateRecipeResult = await Repository.updateRecipeById(id, updatePayload)
 
   if (updateRecipeResult.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })
