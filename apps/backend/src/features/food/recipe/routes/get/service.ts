@@ -1,6 +1,7 @@
 import Repository from '../../repository'
 import type { Response } from './types'
 import { Result } from 'true-myth'
+import { serializeRecipe } from '../../utils'
 
 export default async (
   id: string
@@ -10,9 +11,13 @@ export default async (
   if (result.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })
   }
+  if (result.value === null) {
+    return Result.err({ code: 'ERR_RECIPE_NOT_FOUND' })
+  }
 
+  const recipe = result.value
   return Result.ok({
     code: 'RECIPE_FOUND',
-    data: result.value
+    data: serializeRecipe(recipe)
   })
 }
