@@ -1,0 +1,107 @@
+import { db } from '@/features/database'
+import type { Recipe } from '@/types'
+import { Result } from 'true-myth'
+import { logger } from './logger'
+import type { Pagination } from '@/features/pagination'
+
+namespace Repository {
+  export type Error = 'ERR_UNEXPECTED'
+
+  export type CreateRecipePayload = Recipe.Insertable
+
+  export const createRecipe = async (
+    payload: CreateRecipePayload
+  ): Promise<Result<Recipe.Selectable, Error>> => {
+    try {
+      const recipe = await db
+        .insertInto('recipes')
+        .values(payload)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+      return Result.ok(recipe)
+    } catch (err) {
+      logger.error('failed to create recipe:', err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  export type ListRecipesPayload = Pagination.Options
+
+  export const listRecipes = async (
+    payload: ListRecipesPayload
+  ): Promise<Result<Recipe.Selectable[], Error>> => {
+    try {
+      const recipes = await db
+        .selectFrom('recipes')
+        .selectAll()
+        .limit(payload.per_page)
+        .offset(payload.page)
+        .execute()
+
+      return Result.ok(recipes)
+    } catch (err) {
+      logger.error('failed to list recipes:', err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  export type FindRecipeByIdPayload = {
+    id: string
+  }
+  export const findRecipeById = async (
+    payload: FindRecipeByIdPayload
+  ): Promise<Result<Recipe.Selectable | null, Error>> => {
+    try {
+      const recipe = await db
+        .selectFrom('recipes')
+        .selectAll()
+        .where('id', '=', payload.id)
+        .executeTakeFirst()
+      return Result.ok(recipe ?? null)
+    } catch (err) {
+      logger.error('failed to find recipe by id:', payload.id, err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  export type UpdateRecipeByIdPayload = Recipe.Updateable
+
+  export const updateRecipeById = async (
+    id: string,
+    payload: UpdateRecipeByIdPayload
+  ): Promise<Result<Recipe.Selectable, Error>> => {
+    try {
+      const recipe = await db
+        .updateTable('recipes')
+        .set({
+          ...payload,
+          updated_at: new Date().toISOString()
+        })
+        .where('id', '=', id)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+
+      return Result.ok(recipe)
+    } catch (err) {
+      logger.error('failed to update recipe by id:', id, err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  export type DeleteRecipeByIdPayload = {
+    id: string
+  }
+  export const deleteRecipeById = async (
+    payload: DeleteRecipeByIdPayload
+  ): Promise<Result<void, Error>> => {
+    try {
+      await db.deleteFrom('recipes').where('id', '=', payload.id).execute()
+      return Result.ok(undefined)
+    } catch (err) {
+      logger.error('failed to delete recipe by id:', payload.id, err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+}
+
+export default Repository

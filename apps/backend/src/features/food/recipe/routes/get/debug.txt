@@ -1,0 +1,32 @@
+type A = {
+    name: string
+    age: number
+}
+
+type B = {
+    hobbies: string[]
+    name: string
+    age: number
+}
+
+A === B
+
+Media === { public_id: string; url: string } === { url: string; public_id: string }
+
+
+
+
+
+
+
+
+
+
+
+'Result<{ data: ({ updated_at: string; price: string; } | null); }, Error>' 
+'Result<{ data: { price: number; updated_at: string | null; }; }, Error>'.
+
+
+
+Type '{ created_at: string; updated_at: string; id: string; name: string; video_url: string; price: string; image: Media; } | null' 
+type '{ id: string; name: string; image: { public_id: string; url: string; }; video_url: string; price: number; created_at: string; updated_at: string | null; }'.

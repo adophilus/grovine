@@ -1,6 +1,5 @@
 import type { Insertable, Selectable, Updateable } from 'kysely'
 import type { Database } from './features/database/types'
-
 // type Extendables =
 // 	| Selectable<EcommerceProductsTable>
 // 	| Insertable<EcommerceProductsTable>
@@ -40,6 +39,20 @@ export namespace Token {
 
 export namespace UserPreference {
   type T = GenerateTypes<Database['user_preferences']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace Recipe {
+  type T = GenerateTypes<Database['recipes']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace Wallet {
+  type T = GenerateTypes<Database['wallets']>
   export type Selectable = T['Selectable']
   export type Insertable = T['Insertable']
   export type Updateable = T['Updateable']
