@@ -5,7 +5,7 @@ type TimestampModel = {
   updated_at: ColumnType<string, never, string>
 }
 
-type Media = {
+export type Media = {
   public_id: string
   url: string
 }
@@ -34,7 +34,7 @@ type UserPreferencesTable = TimestampModel & {
   user_id: string
 }
 
-type RecipesTable = TimestampModel & {
+type ItemsTable = TimestampModel & {
   id: string
   name: string
   video_url: string
@@ -48,10 +48,35 @@ type WalletsTable = TimestampModel & {
   user_id: string
 }
 
+type CartItemTable = TimestampModel & {
+  id: string
+  image: Media
+  quantity: number
+  price: string
+  cart_id: string
+}
+
+type CartsTable = TimestampModel & {
+  id: string
+  user_id: string
+}
+
+type FoodsTable = TimestampModel & {
+  id: string
+  name: string
+  description: string
+  price: string
+  image: Media
+  is_available: boolean
+}
+
 export type Database = {
   users: UsersTable
   tokens: TokensTable
   user_preferences: UserPreferencesTable
-  recipes: RecipesTable
+  items: ItemsTable
   wallets: WalletsTable
+  cart_items: CartItemTable
+  carts: CartsTable
+  foods: FoodsTable
 }

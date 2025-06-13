@@ -558,14 +558,14 @@ namespace Api {
 
       @post
       @doc("Create a new food item")
-      op createFood(
+      op createFoodItem(
         ...Request.Headers,
         @multipartBody body: Request.Body,
       ): Response.Response;
     }
 
     @route("/{id}")
-    namespace FoodById {
+    namespace ById {
       namespace Get {
         namespace Request {
           model Path {
@@ -583,7 +583,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = NotFoundError<"FOOD"> | UnexpectedError;
+            alias Error = NotFoundError<"ITEM"> | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
@@ -624,7 +624,7 @@ namespace Api {
         }
 
         namespace Error {
-          alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
+          alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -656,7 +656,7 @@ namespace Api {
         }
 
         namespace Error {
-          alias Error = NotFoundError<"FOOD"> | UnexpectedError;
+          alias Error = NotFoundError<"ITEM"> | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -667,9 +667,9 @@ namespace Api {
       op deleteFoodById(@path id: Request.Path): Response.Response;
     }
 
-    @route("/recipes")
-    namespace Recipe {
-      model Recipe {
+    @route("/items")
+    namespace Item {
+      model Item {
         id: Id;
         name: string;
         image: Media;
@@ -698,7 +698,7 @@ namespace Api {
           namespace Success {
             model Success {
               @statusCode _code: 201;
-              code: "RECIPE_CREATED";
+              code: "ITEM_CREATED";
             }
           }
 
@@ -710,8 +710,8 @@ namespace Api {
         }
 
         @post
-        @doc("Create a new recipe")
-        op createRecipe(
+        @doc("Create a new item")
+        op createItem(
           ...Request.Headers,
           @multipartBody body: Request.Body,
         ): Response.Response;
@@ -720,7 +720,7 @@ namespace Api {
       namespace List {
         namespace Response {
           namespace Success {
-            alias Success = Pagination.Paginated<Recipe>;
+            alias Success = Pagination.Paginated<Item>;
           }
 
           namespace Error {
@@ -731,8 +731,8 @@ namespace Api {
         }
 
         @get
-        @doc("List recipes")
-        op listRecipes(...Pagination.Query): Response.Response;
+        @doc("List items")
+        op listItems(...Pagination.Query): Response.Response;
       }
 
       @route("/{id}")
@@ -749,21 +749,21 @@ namespace Api {
             namespace Success {
               model Success {
                 @statusCode _code: 200;
-                code: "RECIPE_FOUND";
-                data: Recipe;
+                code: "ITEM_FOUND";
+                data: Item;
               }
             }
 
             namespace Error {
-              alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError;
             }
 
             alias Response = Success.Success | Error.Error;
           }
 
           @get
-          @doc("Get a recipe by ID")
-          op getRecipeById(...Request.Path): Response.Response;
+          @doc("Get an item by ID")
+          op getItemById(...Request.Path): Response.Response;
         }
 
         namespace Update {
@@ -788,21 +788,21 @@ namespace Api {
             namespace Success {
               model Success {
                 @statusCode _code: 200;
-                code: "RECIPE_UPDATED";
-                data: Recipe;
+                code: "ITEM_UPDATED";
+                data: Item;
               }
             }
 
             namespace Error {
-              alias Error = NotFoundError<"RECIPE"> | BadRequestError | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
             }
 
             alias Response = Success.Success | Error.Error;
           }
 
           @patch
-          @doc("Update a recipe by ID")
-          op updateRecipeById(
+          @doc("Update an item by ID")
+          op updateItemById(
             ...Request.Headers,
             ...Request.Path,
             @multipartBody body: Request.Body,
@@ -821,23 +821,23 @@ namespace Api {
             namespace Success {
               model Success {
                 @statusCode _code: 200;
-                code: "RECIPE_DELETED";
+                code: "ITEM_DELETED";
               }
             }
 
             namespace Error {
-              alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError;
             }
 
             alias Response = Success.Success | Error.Error;
           }
 
           @delete
-          @doc("Delete a recipe by ID")
-          op deleteRecipeById(...Request.Path): Response.Response;
+          @doc("Delete an item by ID")
+          op deleteItemById(...Request.Path): Response.Response;
         }
       }
-    } //Recipie endshere
+    } //Items ends here
 
     @route("/carts")
     namespace Cart {
@@ -882,7 +882,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
+            alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
@@ -896,7 +896,12 @@ namespace Api {
       namespace List {
         namespace Response {
           namespace Success {
-            alias Success = Cart;
+            model CartFound {
+              code: "CART_FOUND";
+              data: Cart;
+            }
+
+            alias Success = CartFound;
           }
 
           namespace Error {
@@ -911,6 +916,7 @@ namespace Api {
         op listCart(): Response.Response;
       }
 
+      @route("/checkout")
       namespace Checkout {
         namespace Request {
           model DeliveryBase {
@@ -950,7 +956,13 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = UnexpectedError;
+            @error
+            model EmptyCartError {
+              @statusCode _code: 400;
+              code: "ERR_CART_EMPTY";
+            }
+
+            alias Error = EmptyCartError | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
