@@ -1,4 +1,7 @@
 import { Hono } from 'hono'
-import { recipeRouter } from './recipe'
+import cartRouter from './cart/routes'
+import itemsRouter from './items/routes'
 
-export default new Hono().route('/recipes', recipeRouter)
+export default new Hono()
+  .route('/items', itemsRouter)
+  .route('/carts', cartRouter)

@@ -1,0 +1,28 @@
+import { logger } from '@/features/food/logger'
+import type { Request, Response } from './types'
+import Repository from '../../repository'
+import { Result } from 'true-myth'
+
+export default async function service(
+  payload: Request.Body,
+  user_id: string
+): Promise<Result<Response.Success, Response.Error>> {
+  const { id, quantity } = payload
+
+  const result = await Repository.addItemToCart(user_id, id, quantity)
+
+  if (result.isErr) {
+    switch (result.error) {
+      case 'ERR_FOOD_NOT_FOUND': {
+        logger.error('Food not found', { food_id: id })
+        return Result.err({ code: 'ERR_FOOD_NOT_FOUND' })
+      }
+      default: {
+        logger.error('Failed to add item to cart', { error: result.error })
+        return Result.err({ code: 'ERR_UNEXPECTED' })
+      }
+    }
+  }
+
+  return Result.ok({ code: 'ITEM_ADDED_TO_CART' })
+}
