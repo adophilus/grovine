@@ -558,14 +558,14 @@ namespace Api {
 
       @post
       @doc("Create a new food item")
-      op createFood(
+      op createFoodItem(
         ...Request.Headers,
         @multipartBody body: Request.Body,
       ): Response.Response;
     }
 
     @route("/{id}")
-    namespace FoodById {
+    namespace ById {
       namespace Get {
         namespace Request {
           model Path {
@@ -583,7 +583,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = NotFoundError<"FOOD"> | UnexpectedError;
+            alias Error = NotFoundError<"ITEM"> | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
@@ -624,7 +624,7 @@ namespace Api {
         }
 
         namespace Error {
-          alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
+          alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -656,7 +656,7 @@ namespace Api {
         }
 
         namespace Error {
-          alias Error = NotFoundError<"FOOD"> | UnexpectedError;
+          alias Error = NotFoundError<"ITEM"> | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -882,7 +882,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = NotFoundError<"FOOD"> | BadRequestError | UnexpectedError;
+            alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;

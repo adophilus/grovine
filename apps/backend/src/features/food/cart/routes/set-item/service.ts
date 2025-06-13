@@ -13,9 +13,9 @@ export default async function service(
 
   if (result.isErr) {
     switch (result.error) {
-      case 'ERR_FOOD_NOT_FOUND': {
-        logger.error('Food not found', { food_id: id })
-        return Result.err({ code: 'ERR_FOOD_NOT_FOUND' })
+      case 'ERR_ITEM_NOT_FOUND': {
+        logger.error('Item not found', { food_id: id })
+        return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
       }
       default: {
         logger.error('Failed to add item to cart', { error: result.error })

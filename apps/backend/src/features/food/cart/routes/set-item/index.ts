@@ -20,7 +20,7 @@ export default new Hono().put(
 
     if (result.isErr) {
       switch (result.error.code) {
-        case 'ERR_FOOD_NOT_FOUND': {
+        case 'ERR_ITEM_NOT_FOUND': {
           response = result.error
           statusCode = StatusCodes.NOT_FOUND
           break

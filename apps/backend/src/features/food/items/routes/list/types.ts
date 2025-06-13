@@ -8,7 +8,7 @@ export namespace Request {
 }
 
 export namespace Response {
-  type Endpoint = '/foods/recipes'
+  type Endpoint = '/foods/items'
 
   export type Response =
     types.paths[Endpoint]['get']['responses'][keyof types.paths[Endpoint]['get']['responses']]['content']['application/json']

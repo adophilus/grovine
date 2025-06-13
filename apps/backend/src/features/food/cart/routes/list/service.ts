@@ -13,7 +13,6 @@ export default async (
 
   const cart = result.value
 
-  // If no cart exists, return empty cart
   if (!cart) {
     return Result.ok({
       code: 'CART_FOUND',
@@ -29,6 +28,38 @@ export default async (
 
   return Result.ok({
     code: 'CART_FOUND',
-    data: cart
+    data: serializeCartWithGroupedItems(cart)
   })
+}
+
+type SerializedCartWithGroupedItems = Omit<
+  Repository.CartWithGroupedItems,
+  'items'
+> & {
+  items: (Omit<
+    Repository.CartWithGroupedItems['items'][number],
+    'total_price' | 'items'
+  > & {
+    total_price: number
+    items: (Omit<
+      Repository.CartWithGroupedItems['items'][number]['items'][number],
+      'price'
+    > & { price: number })[]
+  })[]
+}
+
+const serializeCartWithGroupedItems = (
+  cart: Repository.CartWithGroupedItems
+): SerializedCartWithGroupedItems => {
+  return {
+    ...cart,
+    items: cart.items.map((item) => ({
+      ...item,
+      total_price: Number(item.total_price),
+      items: item.items.map((item) => ({
+        ...item,
+        price: Number(item.price)
+      }))
+    }))
+  }
 }
