@@ -6,7 +6,7 @@ import { serializeItem } from '../../utils'
 export default async (
   id: string
 ): Promise<Result<Response.Success, Response.Error>> => {
-  const result = await Repository.findItemById({ id })
+  const result = await Repository.findItemById(id)
 
   if (result.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })

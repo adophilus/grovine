@@ -87,9 +87,13 @@ namespace Repository {
 
       if (!cart) {
         cart = await db
+          .with('_food_item', (qb) =>
+            qb.selectFrom('food_items').selectAll().where('id', '=', itemId)
+          )
           .insertInto('carts')
           .values({
             id: ulid(),
+            price: sql`_food_item.price`,
             user_id: userId
           })
           .returningAll()
@@ -97,7 +101,7 @@ namespace Repository {
       }
 
       // Get item details
-      const itemResult = await ItemsRepository.findItemById({ id: itemId })
+      const itemResult = await ItemsRepository.findItemById(itemId)
       if (itemResult.isErr) {
         return Result.err('ERR_UNEXPECTED')
       }

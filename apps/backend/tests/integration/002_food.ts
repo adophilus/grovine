@@ -3,6 +3,7 @@ import assert from 'node:assert'
 import { db } from '@/features/database'
 import { ulid } from 'ulidx'
 import { store, client } from '../setup'
+import { ItemRepository } from '@/features/food/items'
 
 describe('food items', () => {
   let itemId: string
@@ -58,7 +59,7 @@ describe('food items', () => {
     }
 
     const [item] = await db
-      .insertInto('items')
+      .insertInto('food_items')
       .values({
         id: ulid(),
         name: 'Test Item',
@@ -164,14 +165,13 @@ describe('food items', () => {
       'Response should have ITEM_DELETED code'
     )
 
-    // Verify item is deleted
-    const item = await db
-      .selectFrom('items')
-      .selectAll()
-      .where('id', '=', itemId)
-      .executeTakeFirst()
+    const findItemResult = await ItemRepository.findItemById(itemId)
 
-    assert(!item, 'Item should be deleted from database')
+    assert(findItemResult.isOk, 'Item should be deleted from database')
+    assert(
+      findItemResult.value === null,
+      'Item should be deleted from database'
+    )
   })
 
   test('delete non-existent item', async () => {

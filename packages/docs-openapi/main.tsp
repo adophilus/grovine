@@ -1,6 +1,6 @@
-import "@typespec/rest";
+import "@typespec/http";
 
-using TypeSpec.Http;
+using Http;
 
 @service(#{ title: "Grovine API Documentation" })
 namespace ApiDocs;
@@ -628,7 +628,7 @@ namespace Api {
         alias Response = Success.Success | Error.Error;
       }
 
-      @patch
+      @patch(#{ implicitOptionality: false })
       @doc("Update a food item by ID")
       op updateFoodById(
         ...Request.Headers,
@@ -798,7 +798,7 @@ namespace Api {
             alias Response = Success.Success | Error.Error;
           }
 
-          @patch
+          @patch(#{ implicitOptionality: false })
           @doc("Update an item by ID")
           op updateItemById(
             ...Request.Headers,
@@ -1196,7 +1196,7 @@ namespace Api {
           alias Response = Success.Success | Error.Error;
         }
 
-        @patch
+        @patch(#{ implicitOptionality: false })
         @doc("Update an advertisement by id")
         op updateAdvertisementById(
           ...Request.Headers,

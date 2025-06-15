@@ -1,21 +1,19 @@
 {
-	"$schema": "https://json.schemastore.org/package.json",
-	"name": "@grovine/docs-openapi",
-	"private": true,
-	"version": "0.0.0",
-	"type": "module",
-	"exports": {
-		"./openapi.yaml": "./build/openapi.yaml"
-	},
-	"scripts": {
-		"build": "tsp compile ./src --emit @typespec/openapi3",
-		"dev": "pnpm build --watch"
-	},
-	"devDependencies": {
-		"@typespec/compiler": "^0.65.3",
-		"@typespec/http": "^0.60.0",
-		"@typespec/json-schema": "^0.65.0",
-		"@typespec/openapi3": "^0.60.0",
-		"@typespec/rest": "^0.60.0"
-	}
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@grovine/docs-openapi",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./openapi.yaml": "./build/openapi.yaml"
+  },
+  "scripts": {
+    "build": "tsp compile .",
+    "dev": "pnpm build --watch"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "^1.1.0",
+    "@typespec/openapi3": "^1.1.0",
+    "@typespec/http": "^1.1.0"
+  }
 }

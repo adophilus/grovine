@@ -1,6 +1,6 @@
 import { db } from '@/features/database'
 import type { FoodItem } from '@/types'
-import { Result } from 'true-myth'
+import { Result, Unit } from 'true-myth'
 import { logger } from './logger'
 import type { Pagination } from '@/features/pagination'
 
@@ -44,26 +44,24 @@ namespace Repository {
     }
   }
 
-  export type FindItemByIdPayload = {
-    id: string
-  }
   export const findItemById = async (
-    payload: FindItemByIdPayload
+    id: string
   ): Promise<Result<FoodItem.Selectable | null, Error>> => {
     try {
       const item = await db
         .selectFrom('food_items')
         .selectAll()
-        .where('id', '=', payload.id)
+        .where('id', '=', id)
         .executeTakeFirst()
       return Result.ok(item ?? null)
     } catch (err) {
-      logger.error('failed to find item by id:', payload.id, err)
+      logger.error('failed to find item by id:', id, err)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
-  export type UpdateItemByIdPayload = Partial<FoodItem.Updateable>
+  export type UpdateItemByIdPayload = FoodItem.Updateable
+
   export const updateItemById = async (
     id: string,
     payload: UpdateItemByIdPayload
@@ -86,17 +84,14 @@ namespace Repository {
     }
   }
 
-  export type DeleteItemByIdPayload = {
-    id: string
-  }
   export const deleteItemById = async (
-    payload: DeleteItemByIdPayload
-  ): Promise<Result<void, Error>> => {
+    id: string
+  ): Promise<Result<Unit, Error>> => {
     try {
-      await db.deleteFrom('food_items').where('id', '=', payload.id).execute()
-      return Result.ok(undefined)
+      await db.deleteFrom('food_items').where('id', '=', id).execute()
+      return Result.ok()
     } catch (err) {
-      logger.error('failed to delete item by id:', payload.id, err)
+      logger.error('failed to delete item by id:', id, err)
       return Result.err('ERR_UNEXPECTED')
     }
   }
