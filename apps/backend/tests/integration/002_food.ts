@@ -6,6 +6,9 @@ import { store, client } from '../setup'
 import { ItemRepository } from '@/features/food/items'
 
 describe('food items', () => {
+  const { email } = store.state.user
+
+  console.log('email', email)
   let itemId: string
 
   test('create item', async () => {
