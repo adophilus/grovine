@@ -1,5 +1,5 @@
 import { db } from '@/features/database'
-import type { Item } from '@/types'
+import type { FoodItem } from '@/types'
 import { Result } from 'true-myth'
 import { logger } from './logger'
 import type { Pagination } from '@/features/pagination'
@@ -7,14 +7,14 @@ import type { Pagination } from '@/features/pagination'
 namespace Repository {
   export type Error = 'ERR_UNEXPECTED'
 
-  export type CreateItemPayload = Item.Insertable
+  export type CreateItemPayload = FoodItem.Insertable
 
   export const createItem = async (
     payload: CreateItemPayload
-  ): Promise<Result<Item.Selectable, Error>> => {
+  ): Promise<Result<FoodItem.Selectable, Error>> => {
     try {
       const item = await db
-        .insertInto('items')
+        .insertInto('food_items')
         .values(payload)
         .returningAll()
         .executeTakeFirstOrThrow()
@@ -28,10 +28,10 @@ namespace Repository {
   export type ListItemsPayload = Pagination.Options
   export const listItems = async (
     payload: ListItemsPayload
-  ): Promise<Result<Item.Selectable[], Error>> => {
+  ): Promise<Result<FoodItem.Selectable[], Error>> => {
     try {
       const items = await db
-        .selectFrom('items')
+        .selectFrom('food_items')
         .selectAll()
         .limit(payload.per_page)
         .offset(payload.page)
@@ -49,10 +49,10 @@ namespace Repository {
   }
   export const findItemById = async (
     payload: FindItemByIdPayload
-  ): Promise<Result<Item.Selectable | null, Error>> => {
+  ): Promise<Result<FoodItem.Selectable | null, Error>> => {
     try {
       const item = await db
-        .selectFrom('items')
+        .selectFrom('food_items')
         .selectAll()
         .where('id', '=', payload.id)
         .executeTakeFirst()
@@ -63,14 +63,14 @@ namespace Repository {
     }
   }
 
-  export type UpdateItemByIdPayload = Partial<Item.Updateable>
+  export type UpdateItemByIdPayload = Partial<FoodItem.Updateable>
   export const updateItemById = async (
     id: string,
     payload: UpdateItemByIdPayload
-  ): Promise<Result<Item.Selectable, Error>> => {
+  ): Promise<Result<FoodItem.Selectable, Error>> => {
     try {
       const item = await db
-        .updateTable('items')
+        .updateTable('food_items')
         .set({
           ...payload,
           updated_at: new Date().toISOString()
@@ -93,7 +93,7 @@ namespace Repository {
     payload: DeleteItemByIdPayload
   ): Promise<Result<void, Error>> => {
     try {
-      await db.deleteFrom('items').where('id', '=', payload.id).execute()
+      await db.deleteFrom('food_items').where('id', '=', payload.id).execute()
       return Result.ok(undefined)
     } catch (err) {
       logger.error('failed to delete item by id:', payload.id, err)

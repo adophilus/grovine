@@ -1,17 +1,14 @@
-import { config } from '@/index'
-import { createClient } from '@grovine/api'
 import { describe, test } from 'node:test'
 import assert from 'node:assert'
 import { faker } from '@faker-js/faker'
 import { AuthRepository } from '@/features/auth'
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-const client = createClient(config.server.url)
+import { store, sleep, client } from '../setup'
 
 describe('auth', () => {
-  const email = faker.internet.email()
+  const { email } = store.state.user
+
+  console.log('email', email)
 
   test('sign up', async () => {
     const res = await client.POST('/auth/sign-up', {

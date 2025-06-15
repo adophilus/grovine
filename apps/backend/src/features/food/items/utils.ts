@@ -1,6 +1,6 @@
-import type { Item } from '@/types'
+import type { FoodItem } from '@/types'
 
-export const serializeItem = (item: Item.Selectable) => {
+export const serializeItem = (item: FoodItem.Selectable) => {
   return {
     ...item,
     price: Number.parseFloat(item.price)

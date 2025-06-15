@@ -34,7 +34,7 @@ type UserPreferencesTable = TimestampModel & {
   user_id: string
 }
 
-type ItemsTable = TimestampModel & {
+type FoodItemsTable = TimestampModel & {
   id: string
   name: string
   video_url: string
@@ -103,7 +103,7 @@ export type Database = {
   users: UsersTable
   tokens: TokensTable
   user_preferences: UserPreferencesTable
-  items: ItemsTable
+  food_items: FoodItemsTable
   wallets: WalletsTable
   cart_items: CartItemTable
   carts: CartsTable

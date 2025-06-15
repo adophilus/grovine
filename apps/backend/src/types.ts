@@ -44,8 +44,8 @@ export namespace UserPreference {
   export type Updateable = T['Updateable']
 }
 
-export namespace Item {
-  type T = GenerateTypes<Database['items']>
+export namespace FoodItem {
+  type T = GenerateTypes<Database['food_items']>
   export type Selectable = T['Selectable']
   export type Insertable = T['Insertable']
   export type Updateable = T['Updateable']
