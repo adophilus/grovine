@@ -1,26 +1,26 @@
-import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-core'
+import { z } from 'zod'
 
 export const env = createEnv({
-	clientPrefix: "",
-	client: {},
-	server: {
-		NODE_ENV: z.enum(["production", "staging", "development", "test"]),
-		PORT: z.coerce.number().min(0).max(65535),
-		DATABASE_URL: z.string().url(),
-		DATABASE_PREFIX: z.string().optional(),
-		MEDIA_SERVER_URL: z.string().url(),
-		MAIL_URL: z.string().url(),
-		MAIL_SENDER_NAME: z.string(),
-		MAIL_SENDER_EMAIL: z.string().email(),
-		MAIL_SUPPORT_NAME: z.string(),
-		MAIL_SUPPORT_EMAIL: z.string().email(),
-		BASE_URL: z.string().url(),
-		AUTH_TOKEN_SECRET: z.string().min(32),
-	},
-	/**
-	 * Makes sure you explicitly access **all** environment variables
-	 * from `server` and `client` in your `runtimeEnv`.
-	 */
-	runtimeEnv: process.env,
-});
+  clientPrefix: '',
+  client: {},
+  server: {
+    NODE_ENV: z.enum(['production', 'staging', 'development', 'test']),
+    PORT: z.coerce.number().min(0).max(65535),
+    DATABASE_URL: z.string().url(),
+    DATABASE_PREFIX: z.string().optional(),
+    MEDIA_SERVER_URL: z.string().url(),
+    MAIL_URL: z.string().url(),
+    MAIL_SENDER_NAME: z.string(),
+    MAIL_SENDER_EMAIL: z.string().email(),
+    MAIL_SUPPORT_NAME: z.string(),
+    MAIL_SUPPORT_EMAIL: z.string().email(),
+    BASE_URL: z.string().url(),
+    AUTH_TOKEN_SECRET: z.string().min(32)
+  },
+  /**
+   * Makes sure you explicitly access **all** environment variables
+   * from `server` and `client` in your `runtimeEnv`.
+   */
+  runtimeEnv: process.env
+})

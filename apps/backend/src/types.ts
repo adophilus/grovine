@@ -72,5 +72,19 @@ export namespace CartItem {
   export type Updateable = T['Updateable']
 }
 
+export namespace Order {
+  type T = GenerateTypes<Database['orders']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace OrderItem {
+  type T = GenerateTypes<Database['order_items']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export const SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_UP_VERIFICATION'
 export const SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_IN_VERIFICATION'

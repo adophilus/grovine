@@ -2,9 +2,7 @@ import "@typespec/rest";
 
 using TypeSpec.Http;
 
-@service({
-  title: "Grovine API Documentation",
-})
+@service(#{ title: "Grovine API Documentation" })
 namespace ApiDocs;
 
 @doc("API")
@@ -924,16 +922,17 @@ namespace Api {
             note_for_rider?: string;
           }
 
+          @discriminator("type")
           model DeliveryNow extends DeliveryBase {
             type: "NOW";
           }
 
+          @discriminator("type")
           model DeliveryScheduled extends DeliveryBase {
             type: "SCHEDULED";
             scheduled_at: DateTime;
           }
 
-          // @discriminated
           union Delivery {
             now: DeliveryNow,
             scheduled: DeliveryScheduled,
@@ -942,7 +941,7 @@ namespace Api {
           model Body {
             delivery: Delivery;
             promo_code?: string;
-            payment_method: "WALLET" | "CARD" | "PAY_FOR_ME";
+            payment_method: "ONLINE" | "WALLET" | "PAY_FOR_ME";
           }
         }
 
@@ -950,6 +949,12 @@ namespace Api {
           namespace Success {
             model CheckoutSuccessful {
               code: "CHECKOUT_SUCCESSFUL";
+              data: {
+                order_id: Id;
+
+                @doc("The URL to the payment page if payment method is ONLINE")
+                url?: string;
+              };
             }
 
             alias Success = CheckoutSuccessful;
@@ -997,6 +1002,8 @@ namespace Api {
       id: Id;
       status: OrderStatus;
       items: OrderItem[];
+      payment_method: "ONLINE" | "WALLET" | "PAY_FOR_ME";
+      price: Price;
       user_id: Id;
       created_at: DateTime;
       updated_at: DateTime | null;

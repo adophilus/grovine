@@ -25,6 +25,7 @@
     "kysely": "^0.28.2",
     "kysely-plugin-prefix": "^1.2.2",
     "nodemailer": "^7.0.3",
+    "paystack-sdk": "^2.5.26",
     "pg": "^8.16.0",
     "react": "^19.1.0",
     "tslog": "^4.9.3"
