@@ -1,8 +1,5 @@
-import { createClient } from '@grovine/api'
-import { config } from '@/index'
-export { store } from './utils/store'
+import { initTestCache } from './utils'
 
-export const sleep = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms))
+await initTestCache()
 
-export const client = createClient(config.server.url)
+console.log('✅ Setup complete')

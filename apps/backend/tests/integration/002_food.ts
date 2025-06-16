@@ -1,26 +1,18 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert'
 import { ulid } from 'ulidx'
-import { client } from '../setup'
+import { client, store, bodySerializer, logger } from '../utils'
 import { ItemRepository } from '@/features/food/items'
-
-const bodySerializer = (body: any) => {
-  const fd = new FormData()
-  for (const name in body) {
-    fd.append(name, body[name])
-  }
-  return fd
-}
 
 describe('food items', () => {
   const imageBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII'
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
-
   let itemId: string
 
   test('create item', async () => {
+    logger.debug('store:', store.state)
     const res = await client.POST('/foods/items', {
       body: {
         name: 'Test Item',
