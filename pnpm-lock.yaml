@@ -188,9 +188,9 @@ importers:
 
   apps/media-server:
     dependencies:
-      '@beta-lyfe/media-server':
-        specifier: 'file:'
-        version: 'link:'
+      tslog:
+        specifier: ^4.9.3
+        version: 4.9.3
     devDependencies:
       '@types/node':
         specifier: ^22.13.13

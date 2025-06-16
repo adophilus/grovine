@@ -9,6 +9,16 @@ export default async (
   id: string,
   payload: Request.Body
 ): Promise<Result<Response.Success, Response.Error>> => {
+  const findItemResult = await Repository.findItemById(id)
+
+  if (findItemResult.isErr) {
+    return Result.err({ code: 'ERR_UNEXPECTED' })
+  }
+
+  if (!findItemResult.value) {
+    return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
+  }
+
   const { image, ..._payload } = payload
 
   let updatedImage: UploadedData | undefined = undefined

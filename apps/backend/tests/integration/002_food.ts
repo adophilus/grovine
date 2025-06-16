@@ -1,12 +1,18 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert'
-import { db } from '@/features/database'
 import { ulid } from 'ulidx'
-import { store, client } from '../setup'
+import { client } from '../setup'
 import { ItemRepository } from '@/features/food/items'
 
+const bodySerializer = (body: any) => {
+  const fd = new FormData()
+  for (const name in body) {
+    fd.append(name, body[name])
+  }
+  return fd
+}
+
 describe('food items', () => {
-  const { email } = store.state.user
   const imageBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII'
   const imageBuffer = Buffer.from(imageBase64, 'base64')
@@ -22,13 +28,7 @@ describe('food items', () => {
         price: 1000,
         image
       },
-      bodySerializer(body) {
-        const fd = new FormData()
-        for (const name in body) {
-          fd.append(name, body[name as unknown as keyof typeof body] as any)
-        }
-        return fd
-      }
+      bodySerializer
     })
 
     assert(
@@ -39,6 +39,8 @@ describe('food items', () => {
       res.data?.code === 'ITEM_CREATED',
       'Response should have ITEM_CREATED code'
     )
+
+    itemId = res.data.data.id
   })
 
   test('create item with invalid data', async () => {
@@ -49,13 +51,7 @@ describe('food items', () => {
         price: -100,
         image
       },
-      bodySerializer(body) {
-        const fd = new FormData()
-        for (const name in body) {
-          fd.append(name, body[name as unknown as keyof typeof body] as any)
-        }
-        return fd
-      }
+      bodySerializer
     })
 
     assert(res.error, 'Should return an error for invalid data')
@@ -65,27 +61,7 @@ describe('food items', () => {
     )
   })
 
-  test.skip('get item', async () => {
-    // Create a test item first
-    const image = {
-      public_id: 'test',
-      url: 'https://example.com/test.jpg'
-    }
-
-    const [item] = await db
-      .insertInto('food_items')
-      .values({
-        id: ulid(),
-        name: 'Test Item',
-        video_url: 'https://example.com/video.mp4',
-        price: '1000',
-        image
-      })
-      .returning('id')
-      .execute()
-
-    itemId = item.id
-
+  test('get item', async () => {
     const res = await client.GET('/foods/items/{id}', {
       params: {
         path: { id: itemId }
@@ -103,7 +79,7 @@ describe('food items', () => {
     assert(res.data?.data.id === itemId, 'Should return the correct item')
   })
 
-  test.skip('get non-existent item', async () => {
+  test('get non-existent item', async () => {
     const res = await client.GET('/foods/items/{id}', {
       params: {
         path: { id: ulid() }
@@ -117,18 +93,17 @@ describe('food items', () => {
     )
   })
 
-  test.skip('update item', async () => {
+  test('update item', async () => {
     const res = await client.PATCH('/foods/items/{id}', {
       params: {
         path: { id: itemId }
       },
       body: {
         name: 'Updated Item',
-        price: 2000
+        price: 2000,
+        image
       },
-      headers: {
-        'content-type': 'multipart/form-data'
-      }
+      bodySerializer
     })
 
     assert(
@@ -143,7 +118,7 @@ describe('food items', () => {
     assert(res.data?.data.price === 2000, 'Should update the price')
   })
 
-  test.skip('update non-existent item', async () => {
+  test('update non-existent item', async () => {
     const res = await client.PATCH('/foods/items/{id}', {
       params: {
         path: { id: ulid() }
@@ -151,9 +126,7 @@ describe('food items', () => {
       body: {
         name: 'Updated Item'
       },
-      headers: {
-        'content-type': 'multipart/form-data'
-      }
+      bodySerializer
     })
 
     assert(res.error, 'Should return an error for non-existent item')
@@ -163,7 +136,7 @@ describe('food items', () => {
     )
   })
 
-  test.skip('delete item', async () => {
+  test('delete item', async () => {
     const res = await client.DELETE('/foods/items/{id}', {
       params: {
         path: { id: itemId }
@@ -188,7 +161,7 @@ describe('food items', () => {
     )
   })
 
-  test.skip('delete non-existent item', async () => {
+  test('delete non-existent item', async () => {
     const res = await client.DELETE('/foods/items/{id}', {
       params: {
         path: { id: ulid() }

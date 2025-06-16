@@ -67,15 +67,15 @@ namespace Repository {
     payload: UpdateItemByIdPayload
   ): Promise<Result<FoodItem.Selectable, Error>> => {
     try {
-      const item = await db
+      const query = db
         .updateTable('food_items')
         .set({
           ...payload,
           updated_at: new Date().toISOString()
         })
         .where('id', '=', id)
-        .returningAll()
-        .executeTakeFirstOrThrow()
+
+      const item = await query.returningAll().executeTakeFirstOrThrow()
 
       return Result.ok(item)
     } catch (err) {

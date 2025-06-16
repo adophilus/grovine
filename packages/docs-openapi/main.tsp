@@ -60,41 +60,12 @@ namespace Api {
   @example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30")
   scalar Jwt extends string;
 
-  model Media {
-    @example("h93suhw7mzyujf9tbugy")
-    public_id: string;
+  @error
+  model ZodFlattenedError {
+    formErrors: string[];
 
-    @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
-    url: string;
-  }
-
-  namespace Pagination {
-    model Options {
-      page: int64;
-      per_page: int64;
-    }
-
-    model Meta {
-      ...Api.Pagination.Options;
-      total: int64;
-    }
-
-    model Paginated<T> {
-      code: "LIST";
-      data: T[];
-      meta: Api.Pagination.Meta;
-    }
-
-    model Query {
-      @query
-      @minValue(1)
-      page?: integer;
-
-      @query
-      @minValue(10)
-      @maxValue(100)
-      per_page?: integer;
-    }
+    @example(#{ name: #["Required"], age: #["Required"] })
+    fieldErrors: unknown;
   }
 
   @error
@@ -107,6 +78,7 @@ namespace Api {
   model BadRequestError {
     @statusCode _code: 400;
     code: "ERR_EXPECTED_DATA_NOT_RECEIVED";
+    data: ZodFlattenedError;
   }
 
   @error
@@ -698,6 +670,7 @@ namespace Api {
             model Success {
               @statusCode _code: 201;
               code: "ITEM_CREATED";
+              data: Item;
             }
           }
 
@@ -1235,5 +1208,42 @@ namespace Api {
         op deleteAdvertisementById(...Request.Path): Response.Response;
       }
     }
+  }
+}
+
+model Media {
+  @example("h93suhw7mzyujf9tbugy")
+  public_id: string;
+
+  @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
+  url: string;
+}
+
+namespace Pagination {
+  model Options {
+    page: int64;
+    per_page: int64;
+  }
+
+  model Meta {
+    ...Options;
+    total: int64;
+  }
+
+  model Paginated<T> {
+    code: "LIST";
+    data: T[];
+    meta: Meta;
+  }
+
+  model Query {
+    @query
+    @minValue(1)
+    page?: integer;
+
+    @query
+    @minValue(10)
+    @maxValue(100)
+    per_page?: integer;
   }
 }

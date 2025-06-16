@@ -3,6 +3,7 @@ import Repository from '../../repository'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import { Storage } from '@/features/storage'
+import { serializeItem } from '../../utils'
 
 export default async (
   payload: Request.Body
@@ -33,6 +34,7 @@ export default async (
   }
 
   return Result.ok({
-    code: 'ITEM_CREATED'
+    code: 'ITEM_CREATED',
+    data: serializeItem(createItemResult.value)
   })
 }
