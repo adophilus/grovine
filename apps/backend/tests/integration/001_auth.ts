@@ -8,8 +8,6 @@ import { store, sleep, client } from '../setup'
 describe('auth', () => {
   const { email } = store.state.user
 
-  console.log('email', email)
-
   test('sign up', async () => {
     const res = await client.POST('/auth/sign-up', {
       body: {

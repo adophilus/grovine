@@ -32,6 +32,7 @@ namespace Api {
   scalar FoodCategory extends string;
 
   @example(4800.50)
+  @minValue(0)
   scalar Price extends numeric;
 
   @example("Nigeria")

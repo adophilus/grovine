@@ -1,19 +1,6 @@
-import { faker } from '@faker-js/faker'
-import { Store } from '@tanstack/store'
-import { config } from '@/index'
 import { createClient } from '@grovine/api'
-
-export type TStore = {
-  user: {
-    email: string
-  }
-}
-
-export const store = new Store<TStore>({
-  user: {
-    email: faker.internet.email()
-  }
-})
+import { config } from '@/index'
+export { store } from './utils/store'
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))

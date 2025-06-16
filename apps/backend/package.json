@@ -6,7 +6,7 @@
     "start": "tsx ./scripts/dev.ts",
     "dev": "tsx watch ./scripts/dev.ts",
     "build": "tsc && tsx ./scripts/build.ts",
-    "test": "bun test --bail --timeout 20000 ./tests/integration/*.ts",
+    "test": "rm -f .test-cache.json && tsx --test --test-timeout 20000 ./tests/integration/*.ts",
     "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
     "db:migration": "tsx ./scripts/migrate.ts"
   },

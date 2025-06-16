@@ -52,13 +52,13 @@ export class StorageServiceImplementation
 
       formData.append('file', file)
 
-      const res = await fetch(
-        `${this.urlScheme.serverUrl}/v1_1/${this.urlScheme.cloudName}/image/upload`,
-        {
-          method: 'POST',
-          body: formData
-        }
-      )
+      const url = new URL(this.urlScheme.serverUrl)
+      url.pathname = `/v1_1/${this.urlScheme.cloudName}/image/upload`
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: formData
+      })
 
       if (res.status !== 200) return Result.err('UPLOAD_FAILED')
 

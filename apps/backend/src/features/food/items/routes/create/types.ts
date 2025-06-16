@@ -1,8 +1,12 @@
-import type { z } from 'zod'
+import { z } from 'zod'
 import { schema as apiSchema, type types } from '@grovine/api'
 
 export namespace Request {
-  export const body = apiSchema.schemas.Api_Food_Item_Create_Request_Body
+  export const body = apiSchema.schemas.Api_Food_Item_Create_Request_Body.omit({
+    price: true
+  }).extend({
+    price: z.coerce.number().gte(0)
+  })
   export type Body = z.infer<typeof body>
 }
 
