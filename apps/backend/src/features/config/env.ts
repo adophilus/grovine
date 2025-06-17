@@ -15,7 +15,7 @@ export const env = createEnv({
     MAIL_SENDER_EMAIL: z.string().email(),
     MAIL_SUPPORT_NAME: z.string(),
     MAIL_SUPPORT_EMAIL: z.string().email(),
-    BASE_URL: z.string().url(),
+    BACKEND_URL: z.string(),
     AUTH_TOKEN_SECRET: z.string().min(32)
   },
   /**

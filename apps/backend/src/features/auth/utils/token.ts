@@ -13,7 +13,7 @@ const alg = 'HS256'
 const secret = new TextEncoder().encode(config.auth.token.secret)
 
 export type TokenPayload = {
-  id: string
+  user_id: string
 }
 
 export type Tokens = {

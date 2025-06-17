@@ -1,9 +1,11 @@
-import { describe, test } from 'node:test'
+import { describe, test, before } from 'node:test'
 import assert from 'node:assert'
 import { ulid } from 'ulidx'
-import { client, bodySerializer, store, logger } from '../utils'
+import { client, bodySerializer, getStore, logger, useAuth } from '../utils'
 
-describe('cart', () => {
+describe('cart', async () => {
+  const store = await getStore()
+
   const imageBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII'
   const imageBuffer = Buffer.from(imageBase64, 'base64')
@@ -11,9 +13,12 @@ describe('cart', () => {
 
   let itemId: string
 
-  test.skip('setup: create item', async () => {
-    // logger.debug(store.state.auth)
+  before(() => {
+    assert(store.state.stage === '001', 'Should be in 001 stage')
+    useAuth(client, store.state.auth)
+  })
 
+  test('setup: create item', async () => {
     const res = await client.POST('/foods/items', {
       body: {
         name: 'Test Item',
@@ -34,9 +39,16 @@ describe('cart', () => {
     )
 
     itemId = res.data.data.id
+
+    await store.setStage('002', {
+      ...store.state,
+      item: {
+        id: itemId
+      }
+    })
   })
 
-  test.skip('set item in cart', async () => {
+  test('set item in cart', async () => {
     const res = await client.PUT('/foods/carts', {
       body: {
         id: itemId,

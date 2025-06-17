@@ -3,9 +3,11 @@ import assert from 'node:assert'
 import { faker } from '@faker-js/faker'
 import { AuthRepository } from '@/features/auth'
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import { store, sleep, client } from '../utils'
+import { getStore, sleep, client, logger, type TStore } from '../utils'
 
-describe('auth', () => {
+describe('auth', async () => {
+  const store = await getStore()
+
   const email = faker.internet.email()
 
   test('sign up', async () => {
@@ -94,7 +96,8 @@ describe('auth', () => {
       `Sign in verification should not return an error: ${res.error?.code}`
     )
 
-    store.state.setStage('001', {
+    await store.setStage('001', {
+      ...store.state,
       user: {
         email
       },
@@ -103,7 +106,7 @@ describe('auth', () => {
   })
 
   test('sign in verification resend', async () => {
-    await sleep(10000)
+    await sleep(2000)
 
     const res = await client.POST('/auth/sign-in/verification/resend', {
       body: {

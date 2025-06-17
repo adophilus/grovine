@@ -12,12 +12,13 @@ fi
 
 # Run tests with realtime output
 echo "Running tests..."
-tsx --test --test-timeout 20000 ./tests/integration/*.ts
+tsx --test --test-concurrency 1 ./tests/integration/*.ts
+# vitest run
 test_code=$?
 
 # Run teardown
 echo "Running teardown..."
-tsx ./tests/teardown.ts
+rm -rf node_modules/.vite-temp && tsx ./tests/teardown.ts
 teardown_code=$?
 
 # If teardown fails, log it but don't override test result

@@ -4,6 +4,7 @@ import { StatusCodes } from '../http'
 import type { types } from '@grovine/api'
 import Repository from './repository'
 import { verifyToken } from './utils/token'
+import { logger } from './logger'
 
 export type Response =
   | types.components['schemas']['Api.UnauthorizedError']
@@ -42,9 +43,9 @@ namespace Middleware {
       return c.json(response, StatusCodes.UNAUTHORIZED)
     }
 
-    const findUserResult = await Repository.findUserById({
-      id: tokenVerificationResult.value.id
-    })
+    const findUserResult = await Repository.findUserById(
+      tokenVerificationResult.value.user_id
+    )
 
     if (findUserResult.isErr) {
       response = {

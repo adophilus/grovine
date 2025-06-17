@@ -1,8 +1,6 @@
-import { Store } from '@tanstack/store'
 import { z } from 'zod'
-import { logger } from './logger'
 import assert from 'node:assert'
-import { getStore, setStore } from './test-cache'
+import { getTestCache, setTestCache } from './test-cache'
 
 const storeStage000 = z.object({
   stage: z.literal('000')
@@ -39,17 +37,7 @@ export const storeSchema = z.discriminatedUnion('stage', [
 ])
 
 export type TStoreState = z.infer<typeof storeSchema>
-export type TStoreActions = {
-  setStage: <
-    Stage extends TStoreStage['stage'],
-    State extends Omit<Extract<TStoreStage, { stage: Stage }>, 'stage'>
-  >(
-    stage: Stage,
-    state: State
-  ) => void
-}
-
-export type TStore = TStoreState & TStoreActions
+export type TStore = Awaited<ReturnType<typeof getStore>>
 
 function precursorStage<Stage extends TStoreStage['stage']>(
   stage: Stage
@@ -74,44 +62,33 @@ function precursorStage(stage: unknown): unknown {
   }
 }
 
-const actions = {
-  setStage: <
-    Stage extends TStoreStage['stage'],
-    State extends Omit<Extract<TStoreStage, { stage: Stage }>, 'stage'>
-  >(
-    stage: Stage,
-    state: State
-  ) => {
-    store.setState((_state) => {
-      assert(_state.stage === precursorStage(stage), 'Invalid stage transition')
+export const getStore = async () => {
+  const cachedState = await getTestCache()
 
-      return {
-        ..._state,
+  const store = {
+    state: cachedState ?? {
+      stage: '000'
+    },
+    async setStage<
+      Stage extends TStoreStage['stage'],
+      State extends Omit<Extract<TStoreStage, { stage: Stage }>, 'stage'>
+    >(stage: Stage, state: State) {
+      assert(
+        this.state.stage === precursorStage(stage),
+        'Invalid stage transition'
+      )
+
+      const newState = {
+        ...this.state,
         ...state,
         stage
       }
-    })
+
+      storeSchema.parse(newState)
+      this.state = newState
+      await setTestCache(newState)
+    }
   }
+
+  return store
 }
-
-let storeData: TStoreState = {
-  stage: '000'
-}
-
-const cachedStore = await getStore()
-
-if (cachedStore) {
-  const validatedData = storeSchema.parse(cachedStore)
-  logger.debug('Cache found and validated', validatedData)
-
-  storeData = cachedStore
-}
-export const store = new Store<TStore>({
-  ...storeData,
-  ...actions
-})
-
-store.subscribe((state) => {
-  storeSchema.parse(state.currentVal)
-  setStore(state.currentVal)
-})
