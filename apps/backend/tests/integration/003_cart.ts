@@ -12,6 +12,7 @@ describe('cart', async () => {
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
 
   let itemId: string
+  // just a simple change
 
   before(() => {
     assert(store.state.stage === '001', 'Should be in 001 stage')
