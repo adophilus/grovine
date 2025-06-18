@@ -981,10 +981,10 @@ namespace Api {
     model Wallet {
       id: Id;
       user_id: Id;
-      balance: Price;
+      balance: string;
       created_at: DateTime;
       updated_at: DateTime | null;
-    }
+    } 
 
     @route("/{id}")
     namespace Get {
@@ -999,7 +999,8 @@ namespace Api {
         namespace Success {
           model Success {
             @statusCode _code: 200;
-            data: Wallet;
+            code: "WALLET_FOUND";
+            wallet: Wallet | null;
           }
         }
 

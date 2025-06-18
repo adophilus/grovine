@@ -52,8 +52,7 @@ namespace Repository {
                 .updateTable("wallets")
                 .set({ balance: sql`balance - ${amount}` })
                 .where("user_id", "=", user_id)
-                .where("balance", ">=", sql`${amount}`)// I can't tell why this isn't working
-                .where("balance", ">", 0)
+                .where("balance", ">=", amount.toString())
                 .returningAll()
                 .executeTakeFirstOrThrow();
             return Result.ok(wallet);

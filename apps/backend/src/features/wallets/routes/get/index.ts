@@ -2,10 +2,11 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import service from './service' // I think this error should gowhe the service is implemented
 import { StatusCodes } from '@/features/http'
+import { AuthMiddleware } from '@/features/auth'
 
-export default new Hono().get('/:id', async (c) =>{
-    const id = c.req.param('id')
-    const result = await service(id)
+export default new Hono().get('/', AuthMiddleware.middleware, async (c) =>{
+    const user = c.get('user')
+    const result = await service(user)
 
     let response: Response.Response
     let statusCode: StatusCodes
