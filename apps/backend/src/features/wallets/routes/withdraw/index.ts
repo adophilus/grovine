@@ -4,7 +4,7 @@ import type { Response } from './types'
 /*import service from './service'
 import { StatusCodes } from '@/features/http'
 
-export default new Hono().post('/', middleware, async (c) => {
+export default new Hono().post('/', middleware, async (c) => { 
   const payload = c.req.valid('form')
 
   const result = await service(payload)
