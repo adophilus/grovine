@@ -35,7 +35,7 @@ export default async (
       ? 5 * 60
       : config.environment.DEVELOPMENT
         ? 60
-        : 10
+        : 1
   ).toISOString()
 
   const existingTokenResult = await Repository.findTokenByUserIdAndPurpose({

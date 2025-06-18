@@ -34,7 +34,7 @@ type UserPreferencesTable = TimestampModel & {
   user_id: string
 }
 
-type ItemsTable = TimestampModel & {
+type FoodItemsTable = TimestampModel & {
   id: string
   name: string
   video_url: string
@@ -58,6 +58,7 @@ type CartItemTable = TimestampModel & {
 
 type CartsTable = TimestampModel & {
   id: string
+  price: string
   user_id: string
 }
 
@@ -70,13 +71,43 @@ type FoodsTable = TimestampModel & {
   is_available: boolean
 }
 
+type OrderItemTable = TimestampModel & {
+  id: string
+  image: Media
+  quantity: number
+  price: string
+  order_id: string
+}
+
+type OrderTable = TimestampModel & {
+  id: string
+  status:
+    | 'AWAITING_PAYMENT'
+    | 'PREPARING'
+    | 'IN_TRANSIT'
+    | 'DELIVERED'
+    | 'CANCELLED'
+  price: string
+  user_id: string
+} & (
+    | {
+        payment_method: 'ONLINE'
+        payment_url: string
+      }
+    | {
+        payment_method: 'WALLET' | 'PAY_FOR_ME'
+      }
+  )
+
 export type Database = {
   users: UsersTable
   tokens: TokensTable
   user_preferences: UserPreferencesTable
-  items: ItemsTable
+  food_items: FoodItemsTable
   wallets: WalletsTable
   cart_items: CartItemTable
   carts: CartsTable
   foods: FoodsTable
+  order_items: OrderItemTable
+  orders: OrderTable
 }

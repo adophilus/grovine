@@ -1,16 +1,13 @@
-import { config } from '@/index'
-import { createClient } from '@grovine/api'
 import { describe, test } from 'node:test'
 import assert from 'node:assert'
 import { faker } from '@faker-js/faker'
 import { AuthRepository } from '@/features/auth'
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
+import { getStore, sleep, client, logger, type TStore } from '../utils'
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+describe('auth', async () => {
+  const store = await getStore()
 
-const client = createClient(config.server.url)
-
-describe('auth', () => {
   const email = faker.internet.email()
 
   test('sign up', async () => {
@@ -98,10 +95,18 @@ describe('auth', () => {
       !res.error,
       `Sign in verification should not return an error: ${res.error?.code}`
     )
+
+    await store.setStage('001', {
+      ...store.state,
+      user: {
+        email
+      },
+      auth: res.data.data
+    })
   })
 
   test('sign in verification resend', async () => {
-    await sleep(10000)
+    await sleep(2000)
 
     const res = await client.POST('/auth/sign-in/verification/resend', {
       body: {

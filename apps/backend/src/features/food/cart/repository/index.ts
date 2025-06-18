@@ -1,9 +1,10 @@
 import { db } from '@/features/database'
-import type { Cart, CartItem } from '@/types'
+import type { Cart, CartItem, Order } from '@/types'
 import { Result, type Unit } from 'true-myth'
 import { logger } from './logger'
 import { ulid } from 'ulidx'
 import ItemsRepository from '@/features/food/items/repository'
+import { sql } from 'kysely'
 
 namespace Repository {
   export type Error = 'ERR_UNEXPECTED'
@@ -86,9 +87,13 @@ namespace Repository {
 
       if (!cart) {
         cart = await db
+          .with('_food_item', (qb) =>
+            qb.selectFrom('food_items').selectAll().where('id', '=', itemId)
+          )
           .insertInto('carts')
           .values({
             id: ulid(),
+            price: sql`_food_item.price`,
             user_id: userId
           })
           .returningAll()
@@ -96,7 +101,7 @@ namespace Repository {
       }
 
       // Get item details
-      const itemResult = await ItemsRepository.findItemById({ id: itemId })
+      const itemResult = await ItemsRepository.findItemById(itemId)
       if (itemResult.isErr) {
         return Result.err('ERR_UNEXPECTED')
       }
@@ -121,6 +126,60 @@ namespace Repository {
       return Result.ok()
     } catch (err) {
       logger.error('failed to add item to cart:', err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  export type CreateOrderFromCartPayload = Order.Insertable & {
+    cart_id: string
+  }
+
+  export const createOrderFromCart = async (
+    payload: CreateOrderFromCartPayload
+  ): Promise<Result<Order.Selectable, Error>> => {
+    try {
+      const order = await db
+        .insertInto('orders')
+        .values(payload)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+
+      await db
+        .with('_cart_items', (qb) =>
+          qb
+            .selectFrom('cart_items')
+            .selectAll()
+            .where('cart_id', '=', payload.cart_id)
+        )
+        .insertInto('order_items')
+        .expression((qb) =>
+          qb
+            .selectFrom('_cart_items')
+            .select([
+              '_cart_items.id',
+              '_cart_items.image',
+              '_cart_items.quantity',
+              '_cart_items.price',
+              qb.val(order.id).as('order_id')
+            ])
+        )
+        .execute()
+
+      return Result.ok(order)
+    } catch (err) {
+      logger.error('failed to create order from cart:', err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  export const clearCartById = async (
+    id: string
+  ): Promise<Result<Unit, Error>> => {
+    try {
+      await db.deleteFrom('cart_items').where('cart_id', '=', id).execute()
+      return Result.ok()
+    } catch (err) {
+      logger.error('failed to clear cart:', err)
       return Result.err('ERR_UNEXPECTED')
     }
   }

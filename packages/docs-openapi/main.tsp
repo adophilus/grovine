@@ -1,10 +1,8 @@
-import "@typespec/rest";
+import "@typespec/http";
 
-using TypeSpec.Http;
+using Http;
 
-@service({
-  title: "Grovine API Documentation",
-})
+@service(#{ title: "Grovine API Documentation" })
 namespace ApiDocs;
 
 @doc("API")
@@ -34,6 +32,7 @@ namespace Api {
   scalar FoodCategory extends string;
 
   @example(4800.50)
+  @minValue(0)
   scalar Price extends numeric;
 
   @example("Nigeria")
@@ -61,41 +60,12 @@ namespace Api {
   @example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30")
   scalar Jwt extends string;
 
-  model Media {
-    @example("h93suhw7mzyujf9tbugy")
-    public_id: string;
+  @error
+  model ZodFlattenedError {
+    formErrors: string[];
 
-    @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
-    url: string;
-  }
-
-  namespace Pagination {
-    model Options {
-      page: int64;
-      per_page: int64;
-    }
-
-    model Meta {
-      ...Api.Pagination.Options;
-      total: int64;
-    }
-
-    model Paginated<T> {
-      code: "LIST";
-      data: T[];
-      meta: Api.Pagination.Meta;
-    }
-
-    model Query {
-      @query
-      @minValue(1)
-      page?: integer;
-
-      @query
-      @minValue(10)
-      @maxValue(100)
-      per_page?: integer;
-    }
+    @example(#{ name: #["Required"], age: #["Required"] })
+    fieldErrors: unknown;
   }
 
   @error
@@ -108,6 +78,7 @@ namespace Api {
   model BadRequestError {
     @statusCode _code: 400;
     code: "ERR_EXPECTED_DATA_NOT_RECEIVED";
+    data: ZodFlattenedError;
   }
 
   @error
@@ -630,7 +601,7 @@ namespace Api {
         alias Response = Success.Success | Error.Error;
       }
 
-      @patch
+      @patch(#{ implicitOptionality: false })
       @doc("Update a food item by ID")
       op updateFoodById(
         ...Request.Headers,
@@ -699,6 +670,7 @@ namespace Api {
             model Success {
               @statusCode _code: 201;
               code: "ITEM_CREATED";
+              data: Item;
             }
           }
 
@@ -800,7 +772,7 @@ namespace Api {
             alias Response = Success.Success | Error.Error;
           }
 
-          @patch
+          @patch(#{ implicitOptionality: false })
           @doc("Update an item by ID")
           op updateItemById(
             ...Request.Headers,
@@ -924,16 +896,17 @@ namespace Api {
             note_for_rider?: string;
           }
 
+          @discriminator("type")
           model DeliveryNow extends DeliveryBase {
             type: "NOW";
           }
 
+          @discriminator("type")
           model DeliveryScheduled extends DeliveryBase {
             type: "SCHEDULED";
             scheduled_at: DateTime;
           }
 
-          // @discriminated
           union Delivery {
             now: DeliveryNow,
             scheduled: DeliveryScheduled,
@@ -942,7 +915,7 @@ namespace Api {
           model Body {
             delivery: Delivery;
             promo_code?: string;
-            payment_method: "WALLET" | "CARD" | "PAY_FOR_ME";
+            payment_method: "ONLINE" | "WALLET" | "PAY_FOR_ME";
           }
         }
 
@@ -950,6 +923,12 @@ namespace Api {
           namespace Success {
             model CheckoutSuccessful {
               code: "CHECKOUT_SUCCESSFUL";
+              data: {
+                order_id: Id;
+
+                @doc("The URL to the payment page if payment method is ONLINE")
+                url?: string;
+              };
             }
 
             alias Success = CheckoutSuccessful;
@@ -997,6 +976,8 @@ namespace Api {
       id: Id;
       status: OrderStatus;
       items: OrderItem[];
+      payment_method: "ONLINE" | "WALLET" | "PAY_FOR_ME";
+      price: Price;
       user_id: Id;
       created_at: DateTime;
       updated_at: DateTime | null;
@@ -1189,7 +1170,7 @@ namespace Api {
           alias Response = Success.Success | Error.Error;
         }
 
-        @patch
+        @patch(#{ implicitOptionality: false })
         @doc("Update an advertisement by id")
         op updateAdvertisementById(
           ...Request.Headers,
@@ -1227,5 +1208,42 @@ namespace Api {
         op deleteAdvertisementById(...Request.Path): Response.Response;
       }
     }
+  }
+}
+
+model Media {
+  @example("h93suhw7mzyujf9tbugy")
+  public_id: string;
+
+  @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
+  url: string;
+}
+
+namespace Pagination {
+  model Options {
+    page: int64;
+    per_page: int64;
+  }
+
+  model Meta {
+    ...Options;
+    total: int64;
+  }
+
+  model Paginated<T> {
+    code: "LIST";
+    data: T[];
+    meta: Meta;
+  }
+
+  model Query {
+    @query
+    @minValue(1)
+    page?: integer;
+
+    @query
+    @minValue(10)
+    @maxValue(100)
+    per_page?: integer;
   }
 }

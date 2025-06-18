@@ -6,8 +6,8 @@ import update from './update'
 import del from './delete'
 
 export default new Hono()
-  .route('/items', create)
-  .route('/items', list)
-  .route('/items', get)
-  .route('/items', update)
-  .route('/items', del)
+  .route('/', create)
+  .route('/', list)
+  .route('/', get)
+  .route('/', update)
+  .route('/', del)
