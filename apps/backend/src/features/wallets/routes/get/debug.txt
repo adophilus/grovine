@@ -1,0 +1,18 @@
+Types of property 'wallet' are incompatible.
+{   
+    created_at: string; 
+    updated_at: string; 
+    id: string; 
+    balance: string; 
+    user_id: string; 
+    } | null' 
+    
+is not assignable to type 
+
+{ 
+    id: string; 
+    user_id: string; 
+    balance: number; 
+    created_at: string; 
+    updated_at: string | null; }'.
+{ id: string; user_id: string; balance: number; created_at: string; updated_at: string | null; }'
