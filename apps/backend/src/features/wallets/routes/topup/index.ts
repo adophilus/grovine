@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import middleware from './middleware';
-import service from './service';
+/*import service from './service';
 import { StatusCodes } from '@/features/http';
 
 export default new Hono().patch('/:id', middleware, async (c) => {
@@ -18,4 +18,4 @@ export default new Hono().patch('/:id', middleware, async (c) => {
   }
 
   return c.json(result.value, StatusCodes.OK);
-});
+});*/
