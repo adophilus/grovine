@@ -78,7 +78,6 @@ namespace Repository {
     quantity: number
   ): Promise<Result<Unit, 'ERR_UNEXPECTED' | 'ERR_ITEM_NOT_FOUND'>> => {
     try {
-      // Get or create cart
       let cart = await db
         .selectFrom('carts')
         .selectAll()
@@ -91,16 +90,15 @@ namespace Repository {
             qb.selectFrom('food_items').selectAll().where('id', '=', itemId)
           )
           .insertInto('carts')
-          .values({
+          .values((qb) => ({
             id: ulid(),
-            price: sql`_food_item.price`,
+            price: qb.selectFrom('_food_item').select('price'),
             user_id: userId
-          })
+          }))
           .returningAll()
           .executeTakeFirstOrThrow()
       }
 
-      // Get item details
       const itemResult = await ItemsRepository.findItemById(itemId)
       if (itemResult.isErr) {
         return Result.err('ERR_UNEXPECTED')
@@ -111,7 +109,6 @@ namespace Repository {
         return Result.err('ERR_ITEM_NOT_FOUND')
       }
 
-      // Add item to cart
       await db
         .insertInto('cart_items')
         .values({

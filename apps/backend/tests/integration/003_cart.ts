@@ -67,7 +67,7 @@ describe('cart', async () => {
     )
   })
 
-  test.skip('set non-existent item in cart', async () => {
+  test('set non-existent item in cart', async () => {
     const res = await client.PUT('/foods/carts', {
       body: {
         id: ulid(),
@@ -82,7 +82,7 @@ describe('cart', async () => {
     )
   })
 
-  test.skip('set item in cart with invalid quantity', async () => {
+  test('set item in cart with invalid quantity', async () => {
     const res = await client.PUT('/foods/carts', {
       body: {
         id: itemId,
@@ -97,12 +97,12 @@ describe('cart', async () => {
     )
   })
 
-  test.skip('list cart', async () => {
+  test('get cart', async () => {
     const res = await client.GET('/foods/carts')
 
     assert(
       !res.error,
-      `List cart should not return an error: ${res.error?.code}`
+      `Get cart should not return an error: ${res.error?.code}`
     )
     assert(
       res.data?.code === 'CART_FOUND',
@@ -110,8 +110,10 @@ describe('cart', async () => {
     )
     assert(Array.isArray(res.data?.data.items), 'Cart should have items array')
     assert(res.data?.data.items.length > 0, 'Cart should have items')
+    logger.debug(itemId)
+    logger.debug(res.data.data.items)
     assert(
-      res.data?.data.items[0].items[0].id === itemId,
+      res.data.data.items[0].items[0].id === itemId,
       'Cart should contain the added item'
     )
   })

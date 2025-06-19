@@ -840,6 +840,8 @@ namespace Api {
         namespace Request {
           model Body {
             id: Id;
+
+            @minValue(0)
             quantity: integer;
           }
         }
@@ -865,7 +867,7 @@ namespace Api {
         op setItemInCart(@body body: Request.Body): Response.Response;
       }
 
-      namespace List {
+      namespace Get {
         namespace Response {
           namespace Success {
             model CartFound {
@@ -884,8 +886,8 @@ namespace Api {
         }
 
         @get
-        @doc("List the user's cart")
-        op listCart(): Response.Response;
+        @doc("Get the user's cart")
+        op getCart(): Response.Response;
       }
 
       @route("/checkout")
