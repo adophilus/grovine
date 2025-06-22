@@ -1,4 +1,4 @@
-import type { Item } from '@/types'
+import type { FoodItem } from '@/types'
 import Repository from '../../repository'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'

@@ -13,7 +13,7 @@ export default new Hono().post(
     const user = c.get('user')
     const body = c.req.valid('json')
 
-    const result = await service(body, user.id)
+    const result = await service(body, user)
 
     let response: Response.Response
     let statusCode: StatusCodes

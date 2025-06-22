@@ -1,5 +1,5 @@
 import { serve } from '@hono/node-server'
-import { app, config } from './src'
+import { app, config, logger } from './src'
 
 if (!config.server.port) throw new Error('port not set in MEDIA_SERVER_URL')
 
@@ -9,6 +9,6 @@ serve(
     port: Number.parseInt(config.server.port)
   },
   (info) => {
-    console.log(`App running http://${info.address}:${info.port}`)
+    logger.info(`App running http://${info.address}:${info.port}`)
   }
 )

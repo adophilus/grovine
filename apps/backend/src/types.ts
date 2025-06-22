@@ -44,8 +44,8 @@ export namespace UserPreference {
   export type Updateable = T['Updateable']
 }
 
-export namespace Item {
-  type T = GenerateTypes<Database['items']>
+export namespace FoodItem {
+  type T = GenerateTypes<Database['food_items']>
   export type Selectable = T['Selectable']
   export type Insertable = T['Insertable']
   export type Updateable = T['Updateable']
@@ -67,6 +67,20 @@ export namespace Cart {
 
 export namespace CartItem {
   type T = GenerateTypes<Database['cart_items']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace Order {
+  type T = GenerateTypes<Database['orders']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace OrderItem {
+  type T = GenerateTypes<Database['order_items']>
   export type Selectable = T['Selectable']
   export type Insertable = T['Insertable']
   export type Updateable = T['Updateable']
