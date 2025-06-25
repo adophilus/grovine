@@ -7,6 +7,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('image', 'jsonb', (col) => col.notNull())
     .addColumn('quantity', 'integer', (col) => col.notNull())
     .addColumn('price', 'numeric', (col) => col.notNull())
+    .addColumn('food_item_id', 'varchar', (col) => col.notNull())
     .addColumn('cart_id', 'varchar', (col) => col.notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`NOW()`).notNull()

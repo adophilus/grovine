@@ -9,7 +9,11 @@ export default async function service(
 ): Promise<Result<Response.Success, Response.Error>> {
   const { id, quantity } = payload
 
-  const result = await Repository.addItemToCart(user_id, id, quantity)
+  const result = await Repository.addItemToCart({
+    userId: user_id,
+    itemId: id,
+    quantity
+  })
 
   if (result.isErr) {
     switch (result.error) {

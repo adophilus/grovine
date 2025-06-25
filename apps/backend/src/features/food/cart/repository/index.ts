@@ -72,34 +72,41 @@ namespace Repository {
     }
   }
 
-  export const addItemToCart = async (
-    userId: string,
-    itemId: string,
+  export type AddItemToCartPayload = {
+    userId: string
+    itemId: string
     quantity: number
+  }
+
+  export const addItemToCart = async (
+    payload: AddItemToCartPayload
   ): Promise<Result<Unit, 'ERR_UNEXPECTED' | 'ERR_ITEM_NOT_FOUND'>> => {
     try {
       let cart = await db
         .selectFrom('carts')
         .selectAll()
-        .where('user_id', '=', userId)
+        .where('user_id', '=', payload.userId)
         .executeTakeFirst()
 
       if (!cart) {
         cart = await db
           .with('_food_item', (qb) =>
-            qb.selectFrom('food_items').selectAll().where('id', '=', itemId)
+            qb
+              .selectFrom('food_items')
+              .selectAll()
+              .where('id', '=', payload.itemId)
           )
           .insertInto('carts')
           .values((qb) => ({
             id: ulid(),
             price: qb.selectFrom('_food_item').select('price'),
-            user_id: userId
+            user_id: payload.userId
           }))
           .returningAll()
           .executeTakeFirstOrThrow()
       }
 
-      const itemResult = await ItemsRepository.findItemById(itemId)
+      const itemResult = await ItemsRepository.findItemById(payload.itemId)
       if (itemResult.isErr) {
         return Result.err('ERR_UNEXPECTED')
       }
@@ -114,8 +121,9 @@ namespace Repository {
         .values({
           id: ulid(),
           cart_id: cart.id,
+          food_item_id: payload.itemId,
           image: item.image,
-          quantity,
+          quantity: payload.quantity,
           price: item.price
         })
         .execute()

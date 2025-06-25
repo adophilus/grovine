@@ -638,6 +638,7 @@ namespace Api {
       op deleteFoodById(@path id: Request.Path): Response.Response;
     }
 
+    @tag("Food Item")
     @route("/items")
     namespace Item {
       model Item {
@@ -809,8 +810,9 @@ namespace Api {
           op deleteItemById(...Request.Path): Response.Response;
         }
       }
-    } //Items ends here
+    }
 
+    @tag("Food Cart")
     @route("/carts")
     namespace Cart {
       model CartItem {
@@ -818,6 +820,8 @@ namespace Api {
         image: Media;
         quantity: integer;
         price: Price;
+        food_item_id: Id;
+        cart_id: Id;
         created_at: DateTime;
         updated_at: DateTime | null;
       }
