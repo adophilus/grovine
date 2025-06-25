@@ -1,24 +1,19 @@
 import { Paystack } from 'paystack-sdk'
 import { Result } from 'true-myth'
 import logger from './logger'
+import type { CreatePaymentInvoicePayload } from './types'
 
 namespace PaymentService {
   type Error = 'ERR_UNEXPECTED'
 
   const paystack = new Paystack('sk_test_1234567890')
 
-  export type CreatePaymentInvoicePayload = {
-    amount: number
-    email: string
-    reference: string
-  }
-
   export const createPaymentInvoice = async (
     payload: CreatePaymentInvoicePayload
   ): Promise<Result<{ url: string }, Error>> => {
     const response = await paystack.transaction.initialize({
-      amount: payload.amount.toString(),
-      email: payload.email
+      ...payload,
+      amount: payload.amount.toString()
     })
 
     if (!response.data) {

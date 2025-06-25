@@ -969,7 +969,7 @@ namespace Api {
       balance: string;
       created_at: DateTime;
       updated_at: DateTime | null;
-    } 
+    }
 
     @route("/{id}")
     namespace Get {
@@ -1005,7 +1005,7 @@ namespace Api {
     namespace Topup {
       namespace Request {
         model Body {
-          id: Id;
+          @minValue(100)
           amount: Price;
         }
       }
@@ -1014,8 +1014,10 @@ namespace Api {
         namespace Success {
           model Success {
             @statusCode _code: 200;
-            code: "WALLET_TOPUP_SUCCESSFUL";
-            data: Wallet;
+            code: "WALLET_TOPUP_REQUEST_SUCCESSFUL";
+            data: {
+              url: string;
+            };
           }
         }
 
@@ -1055,7 +1057,11 @@ namespace Api {
             @statusCode _code: 400;
             code: "ERR_INSUFFICIENT_FUNDS";
           }
-          alias Error = NotFoundError<"WALLET"> | InsufficientFundsError | BadRequestError | UnexpectedError;
+          alias Error =
+            | NotFoundError<"WALLET">
+            | InsufficientFundsError
+            | BadRequestError
+            | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -1066,7 +1072,7 @@ namespace Api {
       op withdrawFromWallet(@body body: Request.Body): Response.Response;
     }
   }
-  
+
   namespace Order {
     alias OrderStatusSimple = "ONGOING" | "COMPLETED" | "CANCELLED";
     alias OrderStatus =

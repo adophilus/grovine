@@ -1,21 +1,23 @@
-import { Hono } from 'hono';
-import middleware from './middleware';
-import service from './service';
-import { StatusCodes } from '@/features/http';
+import { Hono } from 'hono'
+import middleware from './middleware'
+import service from './service'
+import { StatusCodes } from '@/features/http'
+import { AuthMiddleware } from '@/features/auth'
 
-export default new Hono().patch('/:id', middleware, async (c) => {
-  const id = c.req.param('id');
-  const { amount } = await c.req.json();
+export default new Hono().post(
+  '/',
+  AuthMiddleware.middleware,
+  middleware,
+  async (c) => {
+    const payload = c.req.valid('json')
+    const user = c.get('user')
 
-  if (!amount || amount <= 0) {
-    return c.json({ code: 'ERR_INVALID_AMOUNT', message: 'Amount must be greater than 0' }, StatusCodes.BAD_REQUEST);
+    const result = await service(payload, user)
+
+    if (result.isErr) {
+      return c.json(result.error, StatusCodes.BAD_REQUEST)
+    }
+
+    return c.json(result.value, StatusCodes.OK)
   }
-
-  const result = await service(id, amount); 
-
-  if (result.isErr) {
-    return c.json(result.error, StatusCodes.BAD_REQUEST);
-  }
-
-  return c.json(result.value, StatusCodes.OK);
-});
+)
