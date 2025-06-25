@@ -638,6 +638,7 @@ namespace Api {
       op deleteFoodById(@path id: Request.Path): Response.Response;
     }
 
+    @tag("Food Item")
     @route("/items")
     namespace Item {
       model Item {
@@ -809,8 +810,9 @@ namespace Api {
           op deleteItemById(...Request.Path): Response.Response;
         }
       }
-    } //Items ends here
+    }
 
+    @tag("Food Cart")
     @route("/carts")
     namespace Cart {
       model CartItem {
@@ -818,6 +820,8 @@ namespace Api {
         image: Media;
         quantity: integer;
         price: Price;
+        food_item_id: Id;
+        cart_id: Id;
         created_at: DateTime;
         updated_at: DateTime | null;
       }
@@ -840,6 +844,8 @@ namespace Api {
         namespace Request {
           model Body {
             id: Id;
+
+            @minValue(0)
             quantity: integer;
           }
         }
@@ -865,7 +871,7 @@ namespace Api {
         op setItemInCart(@body body: Request.Body): Response.Response;
       }
 
-      namespace List {
+      namespace Get {
         namespace Response {
           namespace Success {
             model CartFound {
@@ -884,8 +890,8 @@ namespace Api {
         }
 
         @get
-        @doc("List the user's cart")
-        op listCart(): Response.Response;
+        @doc("Get the user's cart")
+        op getCart(): Response.Response;
       }
 
       @route("/checkout")

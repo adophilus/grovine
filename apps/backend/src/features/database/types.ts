@@ -48,11 +48,12 @@ type WalletsTable = TimestampModel & {
   user_id: string
 }
 
-type CartItemTable = TimestampModel & {
+type CartItemsTable = TimestampModel & {
   id: string
   image: Media
   quantity: number
   price: string
+  food_item_id: string
   cart_id: string
 }
 
@@ -105,7 +106,7 @@ export type Database = {
   user_preferences: UserPreferencesTable
   food_items: FoodItemsTable
   wallets: WalletsTable
-  cart_items: CartItemTable
+  cart_items: CartItemsTable
   carts: CartsTable
   foods: FoodsTable
   order_items: OrderItemTable
