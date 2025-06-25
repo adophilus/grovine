@@ -990,7 +990,7 @@ namespace Api {
         }
 
         namespace Error {
-          alias Error = NotFoundError<"WALLET"> | UnexpectedError;
+          alias Error = UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -1022,7 +1022,7 @@ namespace Api {
         }
 
         namespace Error {
-          alias Error = NotFoundError<"WALLET"> | BadRequestError | UnexpectedError;
+          alias Error = BadRequestError | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
@@ -1037,7 +1037,6 @@ namespace Api {
     namespace Withdraw {
       namespace Request {
         model Body {
-          id: Id;
           amount: Price;
         }
       }
@@ -1046,8 +1045,7 @@ namespace Api {
         namespace Success {
           model Success {
             @statusCode _code: 200;
-            code: "WALLET_WITHDRAWAL_SUCCESSFUL";
-            data: Wallet;
+            code: "WALLET_WITHDRAWAL_REQUEST_SUCCESSFUL";
           }
         }
 
@@ -1057,11 +1055,7 @@ namespace Api {
             @statusCode _code: 400;
             code: "ERR_INSUFFICIENT_FUNDS";
           }
-          alias Error =
-            | NotFoundError<"WALLET">
-            | InsufficientFundsError
-            | BadRequestError
-            | UnexpectedError;
+          alias Error = InsufficientFundsError | BadRequestError | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;

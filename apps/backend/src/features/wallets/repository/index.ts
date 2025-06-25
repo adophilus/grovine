@@ -7,6 +7,23 @@ namespace Repository {
   export type Error = 'ERR_UNEXPECTED'
 
   export type CreateWalletPayload = Wallet.Insertable
+
+  export const createWallet = async (
+    payload: CreateWalletPayload
+  ): Promise<Result<Wallet.Selectable, Error>> => {
+    try {
+      const wallet = await db
+        .insertInto('wallets')
+        .values(payload)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+      return Result.ok(wallet)
+    } catch (err) {
+      console.error('failed to create wallet', err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
   export type FindWalletByIdPayload = { user_id: string }
 
   export const findWalletById = async (
@@ -57,7 +74,7 @@ namespace Repository {
         .executeTakeFirstOrThrow()
       return Result.ok(wallet)
     } catch (err) {
-      console.error('failed to top up wallet:', err)
+      console.error('failed to update wallet balance by id:', id, err)
       return Result.err('ERR_UNEXPECTED')
     }
   }

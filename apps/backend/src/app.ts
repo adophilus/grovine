@@ -7,11 +7,15 @@ import { cors } from 'hono/cors'
 import { logger as honoLogger } from 'hono/logger'
 import { globalLogger } from './features/logger'
 import { StatusCodes } from './features/http'
+import { walletRouter } from './features/wallets'
+import { paymentRouter } from './features/payment'
 
 const apiRoutes = new Hono()
   .route('/auth', authRouter)
   .route('/onboarding', onboardingRouter)
   .route('/foods', foodRouter)
+  .route('/wallets', walletRouter)
+  .route('/payment', paymentRouter)
 
 export const logger = globalLogger.getSubLogger({ name: 'ServerLogger' })
 

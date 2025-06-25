@@ -4,7 +4,6 @@ import { schema as apiSchema, type types } from '@grovine/api'
 export namespace Request {
   export const body = apiSchema.schemas.Api_Wallet_Topup_Request_Body
   export type Body = z.infer<typeof body>
-  export type Path = { id: string }
 }
 
 export namespace Response {
