@@ -12,7 +12,6 @@ describe('cart', async () => {
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
 
   let itemId: string
-  // just a simple change
 
   before(() => {
     assert(store.state.stage === '001', 'Should be in 001 stage')
@@ -67,7 +66,7 @@ describe('cart', async () => {
     )
   })
 
-  test.skip('set non-existent item in cart', async () => {
+  test('set non-existent item in cart', async () => {
     const res = await client.PUT('/foods/carts', {
       body: {
         id: ulid(),
@@ -77,12 +76,12 @@ describe('cart', async () => {
 
     assert(res.error, 'Should return an error for non-existent item')
     assert(
-      res.error?.code === 'ERR_ITEM_NOT_FOUND',
+      res.error.code === 'ERR_ITEM_NOT_FOUND',
       'Should return not found error'
     )
   })
 
-  test.skip('set item in cart with invalid quantity', async () => {
+  test('set item in cart with invalid quantity', async () => {
     const res = await client.PUT('/foods/carts', {
       body: {
         id: itemId,
@@ -92,31 +91,31 @@ describe('cart', async () => {
 
     assert(res.error, 'Should return an error for invalid quantity')
     assert(
-      res.error?.code === 'ERR_EXPECTED_DATA_NOT_RECEIVED',
+      res.error.code === 'ERR_EXPECTED_DATA_NOT_RECEIVED',
       'Should return validation error'
     )
   })
 
-  test.skip('list cart', async () => {
+  test('get cart', async () => {
     const res = await client.GET('/foods/carts')
 
     assert(
       !res.error,
-      `List cart should not return an error: ${res.error?.code}`
+      `Get cart should not return an error: ${res.error?.code}`
     )
     assert(
-      res.data?.code === 'CART_FOUND',
+      res.data.code === 'CART_FOUND',
       'Response should have CART_FOUND code'
     )
-    assert(Array.isArray(res.data?.data.items), 'Cart should have items array')
-    assert(res.data?.data.items.length > 0, 'Cart should have items')
+    assert(Array.isArray(res.data.data.items), 'Cart should have items array')
+    assert(res.data.data.items.length > 0, 'Cart should have items')
     assert(
-      res.data?.data.items[0].items[0].id === itemId,
+      res.data.data.items[0].items[0].food_item_id === itemId,
       'Cart should contain the added item'
     )
   })
 
-  test.skip('checkout cart', async () => {
+  test('checkout cart', async () => {
     const res = await client.POST('/foods/carts/checkout', {
       body: {
         delivery: {
@@ -133,18 +132,17 @@ describe('cart', async () => {
       `Checkout cart should not return an error: ${res.error?.code}`
     )
     assert(
-      res.data?.code === 'CHECKOUT_SUCCESSFUL',
+      res.data.code === 'CHECKOUT_SUCCESSFUL',
       'Response should have CHECKOUT_SUCCESSFUL code'
     )
-    assert(res.data?.data.order_id, 'Response should have order_id')
+    assert(res.data.data.order_id, 'Response should have order_id')
     assert(
-      res.data?.data.url,
+      res.data.data.url,
       'Response should have payment URL for ONLINE payment'
     )
   })
 
-  test.skip('checkout cart with scheduled delivery', async () => {
-    // First add another item to cart
+  test('checkout cart with scheduled delivery', async () => {
     await client.PUT('/foods/carts', {
       body: {
         id: itemId,
@@ -159,7 +157,7 @@ describe('cart', async () => {
           address: '123 Test Street',
           scheduled_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Tomorrow
         },
-        payment_method: 'WALLET'
+        payment_method: 'ONLINE'
       }
     })
 
@@ -171,15 +169,14 @@ describe('cart', async () => {
       res.data?.code === 'CHECKOUT_SUCCESSFUL',
       'Response should have CHECKOUT_SUCCESSFUL code'
     )
-    assert(res.data?.data.order_id, 'Response should have order_id')
+    assert(res.data.data.order_id, 'Response should have order_id')
     assert(
-      !res.data?.data.url,
-      'Response should not have payment URL for WALLET payment'
+      res.data.data.url,
+      'Response should have payment URL for ONLINE payment'
     )
   })
 
-  test.skip('checkout empty cart', async () => {
-    // First clear the cart by checking out
+  test('checkout empty cart', async () => {
     await client.POST('/foods/carts/checkout', {
       body: {
         delivery: {
@@ -207,8 +204,7 @@ describe('cart', async () => {
     )
   })
 
-  // Cleanup: delete the test item
-  test.skip('cleanup: delete item', async () => {
+  test('cleanup: delete item', async () => {
     const res = await client.DELETE('/foods/items/{id}', {
       params: {
         path: { id: itemId }

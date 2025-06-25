@@ -16,7 +16,8 @@ export const env = createEnv({
     MAIL_SUPPORT_NAME: z.string(),
     MAIL_SUPPORT_EMAIL: z.string().email(),
     BACKEND_URL: z.string(),
-    AUTH_TOKEN_SECRET: z.string().min(32)
+    AUTH_TOKEN_SECRET: z.string().min(32),
+    PAYSTACK_SECRET_KEY: z.string()
   },
   /**
    * Makes sure you explicitly access **all** environment variables
