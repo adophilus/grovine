@@ -21,5 +21,5 @@ export default async (
     return Result.err({ code: 'ERR_UNEXPECTED' })
   }
 
-  return Result.ok({ code: 'ADVERTISEMENT_DELETED' })
+  return Result.ok({ code: 'ADVERTISEMENT_DELETED' }) 
 }
