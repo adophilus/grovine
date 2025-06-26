@@ -971,15 +971,7 @@ namespace Api {
       updated_at: DateTime | null;
     }
 
-    @route("/{id}")
     namespace Get {
-      namespace Request {
-        model Path {
-          @path
-          id: Id;
-        }
-      }
-
       namespace Response {
         namespace Success {
           model Success {
@@ -997,8 +989,8 @@ namespace Api {
       }
 
       @get
-      @doc("Get a user's wallet by ID")
-      op getWalletById(@path id: Request.Path): Response.Response;
+      @doc("Get the active wallet")
+      op getActiveWallet(): Response.Response;
     }
 
     @route("/topup")

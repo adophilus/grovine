@@ -7,12 +7,12 @@ import { readFileSync } from 'node:fs'
 serve(
   {
     fetch: app.fetch,
-    port: config.server.port,
-    createServer,
-    serverOptions: {
-      key: readFileSync('.secrets/key.pem'),
-      cert: readFileSync('.secrets/cert.pem')
-    }
+    port: config.server.port
+    // createServer,
+    // serverOptions: {
+    //   key: readFileSync('.secrets/key.pem'),
+    //   cert: readFileSync('.secrets/cert.pem')
+    // }
   },
   (info) => {
     logger.info(`Server is running on https://${info.address}:${info.port}`)
