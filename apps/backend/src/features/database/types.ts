@@ -72,7 +72,7 @@ type FoodsTable = TimestampModel & {
   is_available: boolean
 }
 
-type OrderItemTable = TimestampModel & {
+type OrderItemsTable = TimestampModel & {
   id: string
   image: Media
   quantity: number
@@ -80,7 +80,7 @@ type OrderItemTable = TimestampModel & {
   order_id: string
 }
 
-type OrderTable = TimestampModel & {
+type OrdersTable = TimestampModel & {
   id: string
   status:
     | 'AWAITING_PAYMENT'
@@ -109,6 +109,6 @@ export type Database = {
   cart_items: CartItemsTable
   carts: CartsTable
   foods: FoodsTable
-  order_items: OrderItemTable
-  orders: OrderTable
+  order_items: OrderItemsTable
+  orders: OrdersTable
 }

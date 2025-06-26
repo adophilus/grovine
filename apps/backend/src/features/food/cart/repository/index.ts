@@ -135,11 +135,10 @@ namespace Repository {
     }
   }
 
-  export type CreateOrderFromCartPayload = Order.Insertable & {
-    cart_id: string
-  }
+  export type CreateOrderFromCartPayload = Order.Insertable
 
   export const createOrderFromCart = async (
+    cartId: string,
     payload: CreateOrderFromCartPayload
   ): Promise<Result<Order.Selectable, Error>> => {
     try {
@@ -151,10 +150,7 @@ namespace Repository {
 
       await db
         .with('_cart_items', (qb) =>
-          qb
-            .selectFrom('cart_items')
-            .selectAll()
-            .where('cart_id', '=', payload.cart_id)
+          qb.selectFrom('cart_items').selectAll().where('cart_id', '=', cartId)
         )
         .insertInto('order_items')
         .expression((qb) =>

@@ -2,6 +2,7 @@ import { db } from '@/features/database'
 import type { Wallet } from '@/types'
 import { Result } from 'true-myth'
 import { sql } from 'kysely'
+import { logger } from './logger'
 
 namespace Repository {
   export type Error = 'ERR_UNEXPECTED'
@@ -19,7 +20,7 @@ namespace Repository {
         .executeTakeFirstOrThrow()
       return Result.ok(wallet)
     } catch (err) {
-      console.error('failed to create wallet', err)
+      logger.error('failed to create wallet', err)
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -37,7 +38,7 @@ namespace Repository {
         .executeTakeFirst()
       return Result.ok(wallet ?? null)
     } catch (err) {
-      console.error('failed to find wallet by user id:', err)
+      logger.error('failed to find wallet by user id:', err)
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -53,7 +54,7 @@ namespace Repository {
         .executeTakeFirst()
       return Result.ok(wallet ?? null)
     } catch (err) {
-      console.error('failed to find wallet by user id:', err)
+      logger.error('failed to find wallet by user id:', err)
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -66,15 +67,19 @@ namespace Repository {
     try {
       const wallet = await db
         .updateTable('wallets')
-        .set({
-          balance: sql`balance ${operation === 'CREDIT' ? '+' : '-'} ${amount}`
-        })
+        .set((eb) => ({
+          balance: eb(
+            'balance',
+            operation === 'CREDIT' ? '+' : '-',
+            amount.toString()
+          )
+        }))
         .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
       return Result.ok(wallet)
     } catch (err) {
-      console.error('failed to update wallet balance by id:', id, err)
+      logger.error('failed to update wallet balance by id:', id, err)
       return Result.err('ERR_UNEXPECTED')
     }
   }

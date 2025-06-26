@@ -43,12 +43,11 @@ export default async function service(
     throw new Error('Unimplemented')
   }
 
-  const orderCreationResult = await Repository.createOrderFromCart({
+  const orderCreationResult = await Repository.createOrderFromCart(cart.id, {
     id: orderId,
     status: 'AWAITING_PAYMENT',
     payment_method: payload.payment_method,
     price: cart.price,
-    cart_id: cart.id,
     user_id: user.id
   })
 
