@@ -65,6 +65,13 @@ export namespace Cart {
   export type Updateable = T['Updateable']
 }
 
+export namespace Adverts {
+  type T = GenerateTypes<Database['adverts']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export namespace CartItem {
   type T = GenerateTypes<Database['cart_items']>
   export type Selectable = T['Selectable']
