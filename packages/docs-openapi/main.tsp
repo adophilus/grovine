@@ -960,6 +960,105 @@ namespace Api {
     }
   }
 
+  @tag("Wallet")
+  @route("/wallets")
+  namespace Wallet {
+    model Wallet {
+      id: Id;
+      user_id: Id;
+      balance: string;
+      created_at: DateTime;
+      updated_at: DateTime | null;
+    }
+
+    namespace Get {
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "WALLET_FOUND";
+            wallet: Wallet | null;
+          }
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("Get the active wallet")
+      op getActiveWallet(): Response.Response;
+    }
+
+    @route("/topup")
+    namespace Topup {
+      namespace Request {
+        model Body {
+          @minValue(100)
+          amount: Price;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "WALLET_TOPUP_REQUEST_SUCCESSFUL";
+            data: {
+              url: string;
+            };
+          }
+        }
+
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Top up a user's wallet")
+      op topupWallet(@body body: Request.Body): Response.Response;
+    }
+
+    @route("/withdraw")
+    namespace Withdraw {
+      namespace Request {
+        model Body {
+          amount: Price;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "WALLET_WITHDRAWAL_REQUEST_SUCCESSFUL";
+          }
+        }
+
+        namespace Error {
+          @error
+          model InsufficientFundsError {
+            @statusCode _code: 400;
+            code: "ERR_INSUFFICIENT_FUNDS";
+          }
+          alias Error = InsufficientFundsError | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Withdraw from a user's wallet")
+      op withdrawFromWallet(@body body: Request.Body): Response.Response;
+    }
+  }
+
   namespace Order {
     alias OrderStatusSimple = "ONGOING" | "COMPLETED" | "CANCELLED";
     alias OrderStatus =

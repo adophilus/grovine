@@ -1,5 +1,5 @@
 import { Kysely, sql, SqliteDialect } from 'kysely'
-import { LibsqlDialect } from '@libsql/kysely-libsql'
+import SQLite from 'better-sqlite3'
 import path from 'node:path'
 import type { TStoreState } from './store'
 
@@ -12,8 +12,8 @@ interface TestCache {
 }
 
 export const testCache = new Kysely<TestCache>({
-  dialect: new LibsqlDialect({
-    url: 'libsql://localhost:8080?tls=0'
+  dialect: new SqliteDialect({
+    database: new SQLite(CACHE_DB_PATH)
   })
 })
 

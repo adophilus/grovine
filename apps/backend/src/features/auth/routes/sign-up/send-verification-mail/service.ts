@@ -8,6 +8,7 @@ import { config } from '@/features/config'
 import { addSeconds } from 'date-fns'
 import type { Request, Response } from './types'
 import { generateToken } from '@/features/auth/utils/token'
+import { WalletRepository } from '@/features/wallets'
 
 export type Payload = Request.Body
 
@@ -38,6 +39,18 @@ export default async (
     })
 
   const user = userCreationResult.value
+
+  const walletCreationResult = await WalletRepository.createWallet({
+    id: ulid(),
+    balance: '0',
+    user_id: user.id
+  })
+
+  if (walletCreationResult.isErr) {
+    return Result.err({
+      code: 'ERR_UNEXPECTED'
+    })
+  }
 
   const tokenExpiryTime = addSeconds(
     new Date(),

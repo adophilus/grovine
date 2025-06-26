@@ -18,7 +18,11 @@ const storeStage001 = z.object({
 })
 
 const storeStage002 = z.object({
-  stage: z.literal('002'),
+  stage: z.literal('002')
+})
+
+const storeStage003 = z.object({
+  stage: z.literal('003'),
   item: z.object({
     id: z.string()
   })
@@ -27,13 +31,19 @@ const storeStage002 = z.object({
 type TStoreStage000 = z.infer<typeof storeStage000>
 type TStoreStage001 = z.infer<typeof storeStage001>
 type TStoreStage002 = z.infer<typeof storeStage002>
+type TStoreStage003 = z.infer<typeof storeStage003>
 
-type TStoreStage = TStoreStage000 | TStoreStage001 | TStoreStage002
+type TStoreStage =
+  | TStoreStage000
+  | TStoreStage001
+  | TStoreStage002
+  | TStoreStage003
 
 export const storeSchema = z.discriminatedUnion('stage', [
   storeStage000,
   storeStage001.extend(storeStage000.omit({ stage: true }).shape),
-  storeStage002.extend(storeStage001.omit({ stage: true }).shape)
+  storeStage002.extend(storeStage001.omit({ stage: true }).shape),
+  storeStage003.extend(storeStage002.omit({ stage: true }).shape)
 ])
 
 export type TStoreState = z.infer<typeof storeSchema>
@@ -47,7 +57,9 @@ function precursorStage<Stage extends TStoreStage['stage']>(
     ? '000'
     : Stage extends '002'
       ? '001'
-      : never
+      : Stage extends '003'
+        ? '002'
+        : never
 
 function precursorStage(stage: unknown): unknown {
   switch (stage) {
@@ -57,6 +69,8 @@ function precursorStage(stage: unknown): unknown {
       return '000'
     case '002':
       return '001'
+    case '003':
+      return '002'
     default:
       throw new Error(`Invalid stage: ${stage}`)
   }
@@ -91,4 +105,16 @@ export const getStore = async () => {
   }
 
   return store
+}
+
+export const getStoreAtStage = async <Stage extends TStoreStage['stage']>(
+  stage: Stage
+): Promise<
+  Omit<TStore, 'state'> & { state: Extract<TStoreStage, { stage: Stage }> }
+> => {
+  const store = await getStore()
+
+  assert(store.state.stage === stage)
+
+  return store as any
 }
