@@ -1,4 +1,5 @@
-import type { DateTime } from 'effect'
+import type { Numeric } from '@effect/platform/OpenApiJsonSchema'
+import type { Date } from 'effect/Schema'
 import type { ColumnType } from 'kysely'
 
 type TimestampModel = {
@@ -85,6 +86,15 @@ type OrderItemTable = TimestampModel & {
   quantity: number
   price: string
   order_id: string
+}
+
+type AdvertsTable = TimestampModel &{
+  id: string,
+  amount: Numeric
+  type: "credit"|"debit"
+  purpose: "order" | "purpose"
+  updated_at: Date
+  created_at: Date
 }
 
 type OrderTable = TimestampModel & {
