@@ -1313,6 +1313,67 @@ namespace Api {
         op deleteAdvertisementById(...Request.Path): Response.Response;
       }
     }
+
+    @tag("Transaction")
+    @route("/transactions")
+    namespace Transaction {
+      model Transaction {
+        id: Id;
+        type: "credit" | "debit";
+        amount: numeric;
+        purpose: "topup" | "order";
+        status: "successful" | "failed";
+        created_at: DateTime;
+      }
+
+      namespace List {
+        namespace Request {
+          alias Query = Pagination.Query;
+        }
+
+        namespace Response {
+          namespace Success {
+            alias Success = Pagination.Paginated<Transaction>;
+          }
+
+          namespace Error {
+            alias Error = UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("List all transactions")
+        op listTransactions(...Request.Query): Response.Response;
+      }
+
+      @route("/{id}")
+      namespace Get {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success is Transaction;
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"TRANSACTION"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("Get a transaction by ID")
+        op getTransactionById(...Request.Path): Response.Response;
+      }
+    }
   }
 }
 
