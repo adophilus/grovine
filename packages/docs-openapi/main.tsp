@@ -1,3 +1,4 @@
+
 import "@typespec/http";
 
 using Http;
@@ -1317,6 +1318,7 @@ namespace Api {
     @tag("Transaction")
     @route("/transactions")
     namespace Transaction {
+    
       model Transaction {
         id: Id;
         type: "credit" | "debit";
@@ -1327,7 +1329,14 @@ namespace Api {
         updated_at: DateTime;
       }
 
-      
+      model NotFoundTransactionError {
+        code: "ERR_TRANSACTION_NOT_FOUND";
+      }
+
+      model UnexpectedError {
+        code: "ERR_UNEXPECTED";
+      }
+
       namespace List {
         namespace Request {
           alias Query = Pagination.Query;
@@ -1350,7 +1359,6 @@ namespace Api {
         op listTransactions(...Request.Query): Response.Response;
       }
 
-      
       @route("/{id}")
       namespace Get {
         namespace Request {
@@ -1369,7 +1377,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = NotFoundError<"TRANSACTION"> | UnexpectedError;
+            alias Error = NotFoundTransactionError | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
