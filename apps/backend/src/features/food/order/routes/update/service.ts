@@ -2,25 +2,23 @@ import type { Request, Response } from './types'
 import Repository from '../../repository'
 import { Result } from 'true-myth'
 
-export default async function service(
-  payload: Request.Body,
-  user_id: string
-): Promise<Result<Response.Success, Response.Error>> {
-  const { id, quantity } = payload
+type Payload = Request.Body & Request.Path
 
-  const result = await Repository.addItemToCart({
-    userId: user_id,
-    itemId: id,
-    quantity
-  })
+export default async function service(
+  payload: Payload
+): Promise<Result<Response.Success, Response.Error>> {
+  const result = await Repository.updateOrderStatusById(
+    payload.id,
+    payload.status
+  )
 
   if (result.isErr) {
     return Result.err({ code: 'ERR_UNEXPECTED' })
   }
 
   if (!result.value) {
-    return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
+    return Result.err({ code: 'ERR_ORDER_NOT_FOUND' })
   }
 
-  return Result.ok({ code: 'ITEM_ADDED_TO_CART' })
+  return Result.ok({ code: 'ORDER_STATUS_UPDATED' })
 }

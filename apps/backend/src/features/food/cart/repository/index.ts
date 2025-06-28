@@ -80,7 +80,9 @@ namespace Repository {
 
   export const addItemToCart = async (
     payload: AddItemToCartPayload
-  ): Promise<Result<Unit, 'ERR_UNEXPECTED' | 'ERR_ITEM_NOT_FOUND'>> => {
+  ): Promise<
+    Result<Cart.Selectable, 'ERR_UNEXPECTED' | 'ERR_ITEM_NOT_FOUND'>
+  > => {
     try {
       let cart = await db
         .selectFrom('carts')
@@ -128,7 +130,7 @@ namespace Repository {
         })
         .execute()
 
-      return Result.ok()
+      return Result.ok(cart)
     } catch (err) {
       logger.error('failed to add item to cart:', err)
       return Result.err('ERR_UNEXPECTED')

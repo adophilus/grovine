@@ -535,109 +535,6 @@ namespace Api {
       ): Response.Response;
     }
 
-    @route("/{id}")
-    namespace ById {
-      namespace Get {
-        namespace Request {
-          model Path {
-            @path
-            id: Id;
-          }
-        }
-
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 200;
-              data: Food;
-            }
-          }
-
-          namespace Error {
-            alias Error = NotFoundError<"ITEM"> | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
-        }
-
-        @get
-        @doc("Get a food item by ID")
-        op getFoodById(@path id: Request.Path): Response.Response;
-      }
-    }
-
-    namespace Update {
-      namespace Request {
-        model Path {
-          @path
-          id: Id;
-        }
-        model Body {
-          name?: HttpPart<string>;
-          description?: HttpPart<string>;
-          price?: HttpPart<Price>;
-          image?: HttpPart<ImageFile>;
-          is_available?: HttpPart<boolean>;
-        }
-        model Headers {
-          @header
-          contentType: "multipart/form-data";
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "FOOD_UPDATED";
-            data: Food;
-          }
-        }
-
-        namespace Error {
-          alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
-      }
-
-      @patch(#{ implicitOptionality: false })
-      @doc("Update a food item by ID")
-      op updateFoodById(
-        ...Request.Headers,
-        @path id: Request.Path,
-        @multipartBody body: Request.Body,
-      ): Response.Response;
-    }
-
-    namespace Delete {
-      namespace Request {
-        model Path {
-          @path
-          id: Id;
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "FOOD_DELETED";
-          }
-        }
-
-        namespace Error {
-          alias Error = NotFoundError<"ITEM"> | UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
-      }
-
-      @delete
-      @doc("Delete a food item by ID")
-      op deleteFoodById(@path id: Request.Path): Response.Response;
-    }
-
     @tag("Food Item")
     @route("/items")
     namespace Item {
@@ -958,195 +855,127 @@ namespace Api {
         op checkoutCart(@body body: Request.Body): Response.Response;
       }
     }
-  }
 
-  @tag("Wallet")
-  @route("/wallets")
-  namespace Wallet {
-    model Wallet {
-      id: Id;
-      user_id: Id;
-      balance: string;
-      created_at: DateTime;
-      updated_at: DateTime | null;
-    }
+    @route("/orders")
+    @tag("Food Order")
+    namespace Order {
+      alias OrderStatusSimple = "ONGOING" | "COMPLETED" | "CANCELLED";
+      alias OrderStatus =
+        | "AWAITING_PAYMENT"
+        | "PREPARING"
+        | "IN_TRANSIT"
+        | "DELIVERED"
+        | "CANCELLED";
 
-    namespace Get {
-      namespace Response {
-        namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "WALLET_FOUND";
-            wallet: Wallet | null;
-          }
-        }
-
-        namespace Error {
-          alias Error = UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
+      model OrderItem {
+        id: Id;
+        image: Media;
+        quantity: integer;
+        price: Price;
+        created_at: DateTime;
+        updated_at: DateTime | null;
       }
 
-      @get
-      @doc("Get the active wallet")
-      op getActiveWallet(): Response.Response;
-    }
-
-    @route("/topup")
-    namespace Topup {
-      namespace Request {
-        model Body {
-          @minValue(100)
-          amount: Price;
-        }
+      model Order {
+        id: Id;
+        status: OrderStatus;
+        items: OrderItem[];
+        payment_method: "ONLINE" | "WALLET" | "PAY_FOR_ME";
+        price: Price;
+        user_id: Id;
+        created_at: DateTime;
+        updated_at: DateTime | null;
       }
 
-      namespace Response {
-        namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "WALLET_TOPUP_REQUEST_SUCCESSFUL";
-            data: {
-              url: string;
-            };
-          }
-        }
-
-        namespace Error {
-          alias Error = BadRequestError | UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
-      }
-
-      @post
-      @doc("Top up a user's wallet")
-      op topupWallet(@body body: Request.Body): Response.Response;
-    }
-
-    @route("/withdraw")
-    namespace Withdraw {
-      namespace Request {
-        model Body {
-          amount: Price;
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "WALLET_WITHDRAWAL_REQUEST_SUCCESSFUL";
-          }
-        }
-
-        namespace Error {
-          @error
-          model InsufficientFundsError {
-            @statusCode _code: 400;
-            code: "ERR_INSUFFICIENT_FUNDS";
-          }
-          alias Error = InsufficientFundsError | BadRequestError | UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
-      }
-
-      @post
-      @doc("Withdraw from a user's wallet")
-      op withdrawFromWallet(@body body: Request.Body): Response.Response;
-    }
-  }
-
-  namespace Order {
-    alias OrderStatusSimple = "ONGOING" | "COMPLETED" | "CANCELLED";
-    alias OrderStatus =
-      | "AWAITING_PAYMENT"
-      | "PREPARING"
-      | "IN_TRANSIT"
-      | "DELIVERED"
-      | "CANCELLED";
-
-    model OrderItem {
-      id: Id;
-      image: Media;
-      quantity: integer;
-      price: Price;
-      created_at: DateTime;
-      updated_at: DateTime | null;
-    }
-
-    model Order {
-      id: Id;
-      status: OrderStatus;
-      items: OrderItem[];
-      payment_method: "ONLINE" | "WALLET" | "PAY_FOR_ME";
-      price: Price;
-      user_id: Id;
-      created_at: DateTime;
-      updated_at: DateTime | null;
-    }
-
-    namespace List {
-      namespace Request {
-        model Query extends Pagination.Query {
-          @query
-          status: OrderStatusSimple;
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          alias Success = Pagination.Paginated<Order>;
-        }
-
-        namespace Error {
-          alias Error = UnexpectedError;
-        }
-
-        alias Response = Success.Success | Error.Error;
-      }
-
-      @get
-      @doc("List orders")
-      op listOrders(...Request.Query): Response.Response;
-    }
-
-    @route("/{id}")
-    namespace ById {
-      namespace UpdateStatus {
+      namespace List {
         namespace Request {
-          model Path {
-            @path
-            id: Id;
-          }
-
-          model Body {
-            status: OrderStatus;
+          model Query extends Pagination.Query {
+            @query
+            status: OrderStatusSimple;
           }
         }
 
         namespace Response {
           namespace Success {
-            model Success {
-              code: "ORDER_STATUS_UPDATED";
-            }
+            alias Success = Pagination.Paginated<Order>;
           }
 
           namespace Error {
-            alias Error = NotFoundError<"ORDER"> | BadRequestError | UnexpectedError;
+            alias Error = UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
         }
 
-        @put
-        @doc("Update the status of an order")
-        op updateOrderStatus(
-          ...Request.Path,
-          @body body: Request.Body,
-        ): Response.Response;
+        @get
+        @doc("List orders")
+        op listOrders(...Request.Query): Response.Response;
+      }
+
+      @route("/{id}")
+      namespace ById {
+        namespace UpdateStatus {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
+            }
+
+            model Body {
+              status: OrderStatus;
+            }
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                code: "ORDER_STATUS_UPDATED";
+              }
+            }
+
+            namespace Error {
+              alias Error = NotFoundError<"ORDER"> | BadRequestError | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @put
+          @doc("Update the status of an order")
+          op updateOrderStatus(
+            ...Request.Path,
+            @body body: Request.Body,
+          ): Response.Response;
+        }
+
+        namespace Get {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
+            }
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 200;
+                code: "ORDER_FOUND";
+                data: Order;
+              }
+            }
+
+            namespace Error {
+              alias Error = NotFoundError<"ORDER"> | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @get
+          @doc("Get an order by ID")
+          op getOrderById(@path id: Request.Path): Response.Response;
+        }
       }
     }
 
@@ -1312,6 +1141,105 @@ namespace Api {
         @doc("Delete an advertisement by id")
         op deleteAdvertisementById(...Request.Path): Response.Response;
       }
+    }
+  }
+
+  @tag("Wallet")
+  @route("/wallets")
+  namespace Wallet {
+    model Wallet {
+      id: Id;
+      user_id: Id;
+      balance: string;
+      created_at: DateTime;
+      updated_at: DateTime | null;
+    }
+
+    namespace Get {
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "WALLET_FOUND";
+            wallet: Wallet | null;
+          }
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("Get the active wallet")
+      op getActiveWallet(): Response.Response;
+    }
+
+    @route("/topup")
+    namespace Topup {
+      namespace Request {
+        model Body {
+          @minValue(100)
+          amount: Price;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "WALLET_TOPUP_REQUEST_SUCCESSFUL";
+            data: {
+              url: string;
+            };
+          }
+        }
+
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Top up a user's wallet")
+      op topupWallet(@body body: Request.Body): Response.Response;
+    }
+
+    @route("/withdraw")
+    namespace Withdraw {
+      namespace Request {
+        model Body {
+          amount: Price;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "WALLET_WITHDRAWAL_REQUEST_SUCCESSFUL";
+          }
+        }
+
+        namespace Error {
+          @error
+          model InsufficientFundsError {
+            @statusCode _code: 400;
+            code: "ERR_INSUFFICIENT_FUNDS";
+          }
+          alias Error = InsufficientFundsError | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Withdraw from a user's wallet")
+      op withdrawFromWallet(@body body: Request.Body): Response.Response;
     }
   }
 }
