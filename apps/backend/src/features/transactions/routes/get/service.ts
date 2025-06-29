@@ -19,5 +19,5 @@ export default async (
   return Result.ok({
     code: "TRANSACTION_FOUND",
     data: transaction
-  })
+  }as Response.Success)
 }

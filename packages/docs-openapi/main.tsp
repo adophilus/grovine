@@ -3,7 +3,7 @@ import "@typespec/http";
 
 using Http;
 
-@service //(#{ title: "Grovine API Documentation" })
+@service (#{ title: "Grovine API Documentation" })
 namespace ApiDocs;
 
 @doc("API")
@@ -602,7 +602,7 @@ namespace Api {
         alias Response = Success.Success | Error.Error;
       }
 
-      @patch //(#{ implicitOptionality: false })
+      @patch (#{ implicitOptionality: false })
       @doc("Update a food item by ID")
       op updateFoodById(
         ...Request.Headers,
@@ -774,7 +774,7 @@ namespace Api {
             alias Response = Success.Success | Error.Error;
           }
 
-          @patch //(#{ implicitOptionality: false })
+          @patch (#{ implicitOptionality: false })
           @doc("Update an item by ID")
           op updateItemById(
             ...Request.Headers,
@@ -1276,8 +1276,8 @@ namespace Api {
           alias Response = Success.Success | Error.Error;
         }
 
-        @patch //(#{ implicitOptionality: false })
-        //@doc("Update an advertisement by id")
+        @patch (#{ implicitOptionality: false })
+        @doc("Update an advertisement by id")
         op updateAdvertisementById(
           ...Request.Headers,
           ...Request.Path,

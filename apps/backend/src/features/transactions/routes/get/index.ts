@@ -11,17 +11,23 @@ export default new Hono().get('/:id', async (c) => {
   let statusCode: StatusCodes
 
   if (result.isErr) {
-    switch (result.error.code) {
-      case 'ERR_TRANSACTION_NOT_FOUND': {
-        response = result.error
-        statusCode = StatusCodes.NOT_FOUND
-        break
+    
+    if ('code' in result.error) {
+      switch ((result.error as { code: string }).code) {
+        case 'ERR_TRANSACTION_NOT_FOUND': {
+          response = result.error
+          statusCode = StatusCodes.NOT_FOUND
+          break
+        }
+        default: {
+          response = result.error
+          statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+          break
+        }
       }
-      default: {
-        response = result.error
-        statusCode = StatusCodes.INTERNAL_SERVER_ERROR
-        break
-      }
+    } else {
+      response = result.error
+      statusCode = StatusCodes.INTERNAL_SERVER_ERROR
     }
   } else {
     response = result.value
