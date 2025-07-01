@@ -17,7 +17,7 @@ export default async(
     }
     const uploadedImage = uploadImageResult.value
     const createAdvertresult = await Repository.CreateAdvert({
-        ...payload,
+        ..._payload,
         media: uploadedImage,
         id: ulid()
     })
