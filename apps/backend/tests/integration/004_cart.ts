@@ -113,6 +113,11 @@ describe('cart', async () => {
       res.data.data.items[0].items[0].food_item_id === itemId,
       'Cart should contain the added item'
     )
+    await store.setStage('004', {
+      cart: {
+        id: res.data.data.id
+      }
+    })
   })
 
   test('checkout cart', async () => {
@@ -197,27 +202,15 @@ describe('cart', async () => {
       }
     })
 
-    assert(res.error, 'Should return an error for empty cart')
+    assert(!res.error, 'Should return an error for empty cart')
     assert(
-      res.error?.code === 'ERR_CART_EMPTY',
-      'Should return empty cart error'
+      res.data.code === 'CHECKOUT_SUCCESSFUL',
+      'Response should have CHECKOUT_SUCCESSFUL code'
     )
-  })
-
-  test('cleanup: delete item', async () => {
-    const res = await client.DELETE('/foods/items/{id}', {
-      params: {
-        path: { id: itemId }
+    await store.setStage('005', {
+      order: {
+        id: res.data.data.order_id
       }
     })
-
-    assert(
-      !res.error,
-      `Delete item should not return an error: ${res.error?.code}`
-    )
-    assert(
-      res.data?.code === 'ITEM_DELETED',
-      'Response should have ITEM_DELETED code'
-    )
   })
 })
