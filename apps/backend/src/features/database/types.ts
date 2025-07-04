@@ -1,3 +1,5 @@
+import type { Numeric } from '@effect/platform/OpenApiJsonSchema'
+import type { Date } from 'effect/Schema'
 import type { ColumnType } from 'kysely'
 
 type TimestampModel = {
@@ -71,6 +73,12 @@ type FoodsTable = TimestampModel & {
   image: Media
   is_available: boolean
 }
+type AdvertsTable = TimestampModel & {
+  id: string
+  media: Media
+  expires_at: string;
+  created_at: string
+}
 
 type OrderItemTable = TimestampModel & {
   id: string
@@ -79,6 +87,7 @@ type OrderItemTable = TimestampModel & {
   price: string
   order_id: string
 }
+
 
 type OrderTable = TimestampModel & {
   id: string
@@ -111,4 +120,5 @@ export type Database = {
   foods: FoodsTable
   order_items: OrderItemTable
   orders: OrderTable
+  adverts: AdvertsTable
 }
