@@ -88,14 +88,6 @@ type OrderItemTable = TimestampModel & {
   order_id: string
 }
 
-type TransactionsTable = TimestampModel &{
-  id: string,
-  amount: Numeric
-  type: "credit"|"debit"
-  purpose: "order" | "topup"
-  updated_at: Date
-  created_at: Date
-}
 
 type OrderTable = TimestampModel & {
   id: string
@@ -129,5 +121,4 @@ export type Database = {
   order_items: OrderItemTable
   orders: OrderTable
   adverts: AdvertsTable
-  transactions:TransactionsTable
 }

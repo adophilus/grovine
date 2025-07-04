@@ -1,7 +1,6 @@
 import { db } from '@/features/database'
 import type { Adverts } from '@/types'
 import { Result, Unit } from 'true-myth'
-import { sql } from 'kysely'
 import type { Pagination } from '@/features/pagination'
 
 namespace Repository {
