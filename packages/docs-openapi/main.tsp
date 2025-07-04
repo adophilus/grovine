@@ -1,8 +1,9 @@
+
 import "@typespec/http";
 
 using Http;
 
-@service(#{ title: "Grovine API Documentation" })
+@service (#{ title: "Grovine API Documentation" })
 namespace ApiDocs;
 
 @doc("API")
@@ -601,7 +602,7 @@ namespace Api {
         alias Response = Success.Success | Error.Error;
       }
 
-      @patch(#{ implicitOptionality: false })
+      @patch (#{ implicitOptionality: false })
       @doc("Update a food item by ID")
       op updateFoodById(
         ...Request.Headers,
@@ -773,7 +774,7 @@ namespace Api {
             alias Response = Success.Success | Error.Error;
           }
 
-          @patch(#{ implicitOptionality: false })
+          @patch (#{ implicitOptionality: false })
           @doc("Update an item by ID")
           op updateItemById(
             ...Request.Headers,
@@ -1275,7 +1276,7 @@ namespace Api {
           alias Response = Success.Success | Error.Error;
         }
 
-        @patch(#{ implicitOptionality: false })
+        @patch (#{ implicitOptionality: false })
         @doc("Update an advertisement by id")
         op updateAdvertisementById(
           ...Request.Headers,
@@ -1311,6 +1312,80 @@ namespace Api {
         @delete
         @doc("Delete an advertisement by id")
         op deleteAdvertisementById(...Request.Path): Response.Response;
+      }
+    }
+
+    @tag("Transaction")
+    @route("/transactions")
+    namespace Transaction {
+    
+      model Transaction {
+        id: Id;
+        type: "credit" | "debit";
+        amount: Price;
+        purpose: "topup" | "order";
+        status: "successful" | "failed";
+        created_at: DateTime;
+        updated_at: DateTime;
+      }
+
+      model NotFoundTransactionError {
+        code: "ERR_TRANSACTION_NOT_FOUND";
+      }
+
+      model UnexpectedError {
+        code: "ERR_UNEXPECTED";
+      }
+
+      namespace List {
+        namespace Request {
+          alias Query = Pagination.Query;
+        }
+
+        namespace Response {
+          namespace Success {
+            alias Success = Pagination.Paginated<Transaction>;
+          }
+
+          namespace Error {
+            alias Error = UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("List all transactions")
+        op listTransactions(...Request.Query): Response.Response;
+      }
+
+      @route("/{id}")
+      namespace Get {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              code: "TRANSACTION_FOUND";
+              data: Transaction;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundTransactionError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("Get a transaction by ID")
+        op getTransactionById(...Request.Path): Response.Response;
       }
     }
   }
