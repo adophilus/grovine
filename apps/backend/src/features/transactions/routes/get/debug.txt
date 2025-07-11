@@ -1,5 +1,0 @@
-Type 'Result<
-{ code: string; data: { id: string; type: "credit" | "debit"; amount: Numeric; purpose: "topup" | "order"; created_at: string; updated_at: string; }; }, Error>' is not assignable to type 'Result<never, Error>'.
-  Type 'Ok<{ code: string; data: { id: string; type: "credit" | "debit"; amount: Numeric; purpose: "topup" | "order"; created_at: string; updated_at: string; }; }, Error>' is not assignable to type 'Result<never, Error>'.
-    Type 'Ok<{ code: string; data: { id: string; type: "credit" | "debit"; amount: Numeric; purpose: "topup" | "order"; created_at: string; updated_at: string; }; }, Error>' is not assignable to type 'Ok<never, Error>'.
-      Type '{ code: string; data: { id: string; type: "credit" | "debit"; amount: Numeric; purpose: "topup" | "order"; created_at: string; updated_at: string; }; }' is not assignable to type 'never'.ts(2322)
