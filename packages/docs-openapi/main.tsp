@@ -1367,7 +1367,10 @@ namespace Api {
 
         namespace Response {
           namespace Success {
-            model Success is Transaction;
+            model Success {
+              code: "TRANSACTION_FOUND";
+              data: Transaction;
+            }
           }
 
           namespace Error {
