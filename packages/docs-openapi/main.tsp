@@ -1319,11 +1319,19 @@ namespace Api {
     namespace Transaction {
       model Transaction {
         id: Id;
-        type: "credit" | "debit";
-        amount: numeric;
-        purpose: "topup" | "order";
-        status: "successful" | "failed";
+        type: "CREDIT" | "DEBIT";
+        amount: Price;
+        purpose: "TOPUP" | "ORDER";
         created_at: DateTime;
+        updated_at: DateTime;
+      }
+
+      model NotFoundTransactionError {
+        code: "ERR_TRANSACTION_NOT_FOUND";
+      }
+
+      model UnexpectedError {
+        code: "ERR_UNEXPECTED";
       }
 
       namespace List {
