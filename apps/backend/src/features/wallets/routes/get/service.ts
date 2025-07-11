@@ -6,9 +6,9 @@ import type { User } from '@/types'
 export default async (
   actor: User.Selectable
 ): Promise<Result<Response.Success, Response.Error>> => {
-  const topupResult = await Repository.findWalletByUserId(actor.id)
+  const findWalletResult = await Repository.findWalletByUserId(actor.id)
 
-  if (topupResult.isErr) {
+  if (findWalletResult.isErr) {
     return Result.err({
       code: 'ERR_UNEXPECTED'
     })
@@ -16,6 +16,6 @@ export default async (
 
   return Result.ok({
     code: 'WALLET_FOUND',
-    wallet: topupResult.value
+    wallet: findWalletResult.value
   })
 }
