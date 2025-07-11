@@ -1374,7 +1374,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = NotFoundTransactionError | UnexpectedError;
+            alias Error = NotFoundError<"TRANSACTION"> | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;

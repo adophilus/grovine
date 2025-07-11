@@ -72,6 +72,12 @@ type FoodsTable = TimestampModel & {
 	image: Media;
 	is_available: boolean;
 };
+type AdvertsTable = TimestampModel & {
+	id: string;
+	media: Media;
+	expires_at: string;
+	created_at: string;
+};
 
 type OrderItemTable = TimestampModel & {
 	id: string;
@@ -122,4 +128,5 @@ export type Database = {
 	order_items: OrderItemTable;
 	orders: OrderTable;
 	transactions: TransactionsTable;
+	adverts: AdvertsTable;
 };
