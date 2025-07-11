@@ -45,8 +45,6 @@ export default async (
     return Result.err({ code: 'ERR_UNEXPECTED' })
   }
 
-  const updatedAdvert = updateAdvertResult.value
-
   return Result.ok({
     code: 'ADVERTISEMENT_UPDATED',
   })
