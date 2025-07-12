@@ -1,24 +1,25 @@
+import middleware from "./middleware";
 import { Hono } from "hono";
 import type { Response } from "./types";
-import service from "./service";
 import { StatusCodes } from "@/features/http";
-import AuthMiddleware from "@/features/auth/middleware";
+import service from "./service";
 
-export default new Hono().get("/", AuthMiddleware.middleware, async (c) => {
+export default new Hono().post("/", middleware, async (c) => {
 	let response: Response.Response;
 	let statusCode: StatusCodes;
 
-	const user = c.get("user");
+	const payload = c.req.valid("form");
 
-	const result = await service(user);
+	const result = await service(payload);
 
 	if (result.isErr) {
 		response = result.error;
 		statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
 	} else {
 		response = result.value;
-		statusCode = StatusCodes.OK;
+		statusCode = StatusCodes.CREATED;
 	}
 
 	return c.json(response, statusCode);
 });
+

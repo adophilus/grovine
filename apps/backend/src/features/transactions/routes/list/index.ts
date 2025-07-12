@@ -1,16 +1,15 @@
 import { Hono } from "hono";
-import type { Response } from "./types";
 import service from "./service";
+import type { Response } from "./types";
 import { StatusCodes } from "@/features/http";
-import AuthMiddleware from "@/features/auth/middleware";
+import middleware from "./middleware";
 
-export default new Hono().get("/", AuthMiddleware.middleware, async (c) => {
+export default new Hono().get("/", middleware, async (c) => {
 	let response: Response.Response;
 	let statusCode: StatusCodes;
 
-	const user = c.get("user");
-
-	const result = await service(user);
+	const payload = c.req.valid("query");
+	const result = await service(payload);
 
 	if (result.isErr) {
 		response = result.error;

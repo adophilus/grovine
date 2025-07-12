@@ -1142,6 +1142,78 @@ namespace Api {
         op deleteAdvertisementById(...Request.Path): Response.Response;
       }
     }
+
+    @tag("Transaction")
+    @route("/transactions")
+    namespace Transaction {
+      model Transaction {
+        id: Id;
+        type: "CREDIT" | "DEBIT";
+        amount: Price;
+        purpose: "TOPUP" | "ORDER";
+        created_at: DateTime;
+        updated_at: DateTime;
+      }
+
+      model NotFoundTransactionError {
+        code: "ERR_TRANSACTION_NOT_FOUND";
+      }
+
+      model UnexpectedError {
+        code: "ERR_UNEXPECTED";
+      }
+
+      namespace List {
+        namespace Request {
+          alias Query = Pagination.Query;
+        }
+
+        namespace Response {
+          namespace Success {
+            alias Success = Pagination.Paginated<Transaction>;
+          }
+
+          namespace Error {
+            alias Error = UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("List all transactions")
+        op listTransactions(...Request.Query): Response.Response;
+      }
+
+      @route("/{id}")
+      namespace Get {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              code: "TRANSACTION_FOUND";
+              data: Transaction;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"TRANSACTION"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("Get a transaction by ID")
+        op getTransactionById(...Request.Path): Response.Response;
+      }
+    }
   }
 
   @tag("Wallet")
