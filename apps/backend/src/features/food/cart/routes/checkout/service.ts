@@ -1,4 +1,3 @@
-import { logger } from '@/features/food/logger'
 import type { Request, Response } from './types'
 import Repository from '../../repository'
 import { Result } from 'true-myth'
@@ -19,7 +18,6 @@ export default async function service(
   const cart = cartResult.value
 
   if (!cart || cart.items.length === 0) {
-    logger.error('Cart is empty:', user.id)
     return Result.err({ code: 'ERR_CART_EMPTY' })
   }
 

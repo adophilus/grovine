@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if argument is provided
 if [[ $# -ne 1 ]]; then
@@ -24,7 +24,7 @@ if [[ ! "$1" =~ ^[a-zA-Z0-9]+$ ]]; then
 fi
 
 env=$1
-node_env
+node_env=
 
 case $env in
   prod)
@@ -50,4 +50,3 @@ echo "NODE_ENV=\"$node_env\"" > .env
 echo "VITE_NODE_ENV=\"\$NODE_ENV\"" >> .env
 
 echo "Switched to $node_env environment"
-echo "Please reload your shell or run 'direnv allow' to apply changes"

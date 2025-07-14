@@ -68,7 +68,10 @@ namespace Repository {
 			const wallet = await db
 				.updateTable("wallets")
 				.set({
-					balance: sql`balance ${operation === "CREDIT" ? "+" : "-"} ${amount}`,
+					balance:
+						operation === "CREDIT"
+							? sql`balance + ${amount}`
+							: sql`balance - ${amount}`,
 				})
 				.where("id", "=", id)
 				.returningAll()

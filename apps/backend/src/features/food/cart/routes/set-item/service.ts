@@ -1,26 +1,26 @@
-import type { Request, Response } from './types'
-import Repository from '../../repository'
-import { Result } from 'true-myth'
+import type { Request, Response } from "./types";
+import Repository from "../../repository";
+import { Result } from "true-myth";
 
 export default async function service(
-  payload: Request.Body,
-  user_id: string
+	payload: Request.Body,
+	user_id: string,
 ): Promise<Result<Response.Success, Response.Error>> {
-  const { id, quantity } = payload
+	const { id, quantity } = payload;
 
-  const result = await Repository.addItemToCart({
-    userId: user_id,
-    itemId: id,
-    quantity
-  })
+	const addItemToCartResult = await Repository.addItemToCart({
+		userId: user_id,
+		itemId: id,
+		quantity,
+	});
 
-  if (result.isErr) {
-    return Result.err({ code: 'ERR_UNEXPECTED' })
-  }
+	if (addItemToCartResult.isErr) {
+		if (addItemToCartResult.error === "ERR_ITEM_NOT_FOUND") {
+			return Result.err({ code: "ERR_ITEM_NOT_FOUND" });
+		}
 
-  if (!result.value) {
-    return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
-  }
+		return Result.err({ code: "ERR_UNEXPECTED" });
+	}
 
-  return Result.ok({ code: 'ITEM_ADDED_TO_CART' })
+	return Result.ok({ code: "ITEM_ADDED_TO_CART" });
 }
