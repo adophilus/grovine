@@ -1,5 +1,5 @@
 import type { Insertable, Selectable, Updateable } from "kysely";
-import type { KyselyDatabaseTables } from "./features/database";
+import type { KyselyDatabaseTables } from "./features/database/kysely";
 
 // type Extendables =
 // 	| Selectable<EcommerceProductsTable>

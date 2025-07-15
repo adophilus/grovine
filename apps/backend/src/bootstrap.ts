@@ -1,5 +1,5 @@
 import { Container } from "@n8n/di";
-import { createKyselyClient, KyselyClient } from "./features/database";
+import { createKyselyClient, KyselyClient } from "./features/database/kysely";
 import { AdvertRepository } from "./features/advert/repository";
 import { AdvertKyselyRepository } from "./features/advert/repository/kysely";
 import { globalLogger } from "./features/logger";
