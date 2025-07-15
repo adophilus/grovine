@@ -1,3 +1,3 @@
-import { type ILogObj, Logger } from "tslog";
+import Logger from "./interface";
 
-export const logger = new Logger<ILogObj>({ name: "App", type: "pretty" });
+export const createLogger = () => new Logger({ name: "App", type: "pretty" });

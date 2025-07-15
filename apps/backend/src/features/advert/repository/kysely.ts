@@ -1,12 +1,15 @@
 import type { Adverts } from "@/types";
 import { Result, Unit } from "true-myth";
 import type { Pagination } from "@/features/pagination";
-import { logger } from "./logger";
 import { AdvertRepository, type AdvertRepositoryError } from "./interface";
 import type { KyselyClient } from "@/features/database/kysely/interface";
+import type { Logger } from "@/features/logger";
 
 export class AdvertKyselyRepository implements AdvertRepository {
-	constructor(private client: KyselyClient) {}
+	constructor(
+		private client: KyselyClient,
+		private logger: Logger,
+	) {}
 
 	async create(
 		payload: Adverts.Insertable,
@@ -19,7 +22,7 @@ export class AdvertKyselyRepository implements AdvertRepository {
 				.executeTakeFirstOrThrow();
 			return Result.ok(advert);
 		} catch (err) {
-			logger.error("failed to create advert", err);
+			this.logger.error("failed to create advert", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	}
@@ -35,7 +38,7 @@ export class AdvertKyselyRepository implements AdvertRepository {
 				.executeTakeFirst();
 			return Result.ok(advert ?? null);
 		} catch (err) {
-			logger.error("failed to get advert by id", err);
+			this.logger.error("failed to get advert by id", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	}
@@ -56,7 +59,7 @@ export class AdvertKyselyRepository implements AdvertRepository {
 				.executeTakeFirstOrThrow();
 			return Result.ok(advert);
 		} catch (err) {
-			logger.error("failde to update advert by id:", id, err);
+			this.logger.error("failde to update advert by id:", id, err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	}
@@ -66,7 +69,7 @@ export class AdvertKyselyRepository implements AdvertRepository {
 			await this.client.deleteFrom("adverts").where("id", "=", id).execute();
 			return Result.ok();
 		} catch (err) {
-			logger.error("failed to delete the specified advert: ", id, err);
+			this.logger.error("failed to delete the specified advert: ", id, err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	}
@@ -83,7 +86,7 @@ export class AdvertKyselyRepository implements AdvertRepository {
 				.execute();
 			return Result.ok(adverts);
 		} catch (err) {
-			logger.error("failed to list adverts:", err);
+			this.logger.error("failed to list adverts:", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
 	}

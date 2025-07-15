@@ -1,1 +1,4 @@
-export { logger as globalLogger } from "./lib";
+import Logger from "./interface";
+
+export { createLogger } from "./lib";
+export { Logger };
