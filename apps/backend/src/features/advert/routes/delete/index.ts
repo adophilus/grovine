@@ -1,13 +1,17 @@
 import { Hono } from "hono";
-import service from "./service";
 import type { Response } from "./types";
 import { StatusCodes } from "@/features/http";
+import { Container } from "@n8n/di";
+import DeleteAdvertUseCase from "./use-case";
 
 export default new Hono().delete("/:id", async (c) => {
-	const id = c.req.param("id");
-	const result = await service(id);
 	let response: Response.Response;
 	let statusCode: StatusCodes;
+
+	const id = c.req.param("id");
+
+	const useCase = Container.get(DeleteAdvertUseCase);
+	const result = await useCase.execute(id);
 
 	if (result.isErr) {
 		switch (result.error.code) {
@@ -26,5 +30,6 @@ export default new Hono().delete("/:id", async (c) => {
 		response = result.value;
 		statusCode = StatusCodes.OK;
 	}
+
 	return c.json(response, statusCode);
 });

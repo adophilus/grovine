@@ -14,4 +14,3 @@ export namespace Response {
 	export type Success = Extract<Response, { code: "ADVERTISEMENT_CREATED" }>;
 	export type Error = Exclude<Response, Success>;
 }
-

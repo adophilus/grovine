@@ -2,7 +2,8 @@ import middleware from "./middleware";
 import { Hono } from "hono";
 import type { Response } from "./types";
 import { StatusCodes } from "@/features/http";
-import service from "./service";
+import { Container } from "@n8n/di";
+import CreateAdvertUseCase from "./use-case";
 
 export default new Hono().post("/", middleware, async (c) => {
 	let response: Response.Response;
@@ -10,7 +11,9 @@ export default new Hono().post("/", middleware, async (c) => {
 
 	const payload = c.req.valid("form");
 
-	const result = await service(payload);
+	const useCase = Container.get(CreateAdvertUseCase);
+
+	const result = await useCase.execute(payload);
 
 	if (result.isErr) {
 		response = result.error;
@@ -22,4 +25,3 @@ export default new Hono().post("/", middleware, async (c) => {
 
 	return c.json(response, statusCode);
 });
-

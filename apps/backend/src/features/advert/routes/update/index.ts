@@ -1,8 +1,9 @@
 import { Hono } from "hono";
 import middleware from "./middleware";
 import type { Response } from "./types";
-import service from "./service";
 import { StatusCodes } from "@/features/http";
+import { Container } from "@n8n/di";
+import UpdateAdvertUseCase from "./use-case";
 
 export default new Hono().patch("/:id", middleware, async (c) => {
 	let response: Response.Response;
@@ -11,7 +12,8 @@ export default new Hono().patch("/:id", middleware, async (c) => {
 	const id = c.req.param("id");
 	const payload = c.req.valid("form");
 
-	const result = await service(id, payload);
+	const useCase = Container.get(UpdateAdvertUseCase);
+	const result = await useCase.execute(id, payload);
 
 	if (result.isErr) {
 		switch (result.error.code) {

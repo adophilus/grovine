@@ -1,4 +1,3 @@
-import type { Numeric } from "@effect/platform/OpenApiJsonSchema";
 import type { ColumnType } from "kysely";
 
 type TimestampModel = {
@@ -116,7 +115,7 @@ type OrderTable = TimestampModel & {
 		  }
 	);
 
-export type Database = {
+export type KyselyDatabaseTables = {
 	users: UsersTable;
 	tokens: TokensTable;
 	user_preferences: UserPreferencesTable;

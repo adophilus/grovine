@@ -1,15 +1,18 @@
 import { Hono } from "hono";
-import service from "./service";
 import type { Response } from "./types";
 import { StatusCodes } from "@/features/http";
 import middleware from "./middleware";
+import { Container } from "@n8n/di";
+import ListAdvertUseCase from "./use-case";
 
 export default new Hono().get("/", middleware, async (c) => {
 	let response: Response.Response;
 	let statusCode: StatusCodes;
 
 	const payload = c.req.valid("query");
-	const result = await service(payload);
+
+	const useCase = Container.get(ListAdvertUseCase);
+	const result = await useCase.execute(payload);
 
 	if (result.isErr) {
 		response = result.error;
