@@ -24,4 +24,3 @@ export abstract class AdvertRepository {
 
 	abstract deleteById(id: string): Promise<Result<Unit, AdvertRepositoryError>>;
 }
-

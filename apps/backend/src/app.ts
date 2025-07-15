@@ -11,28 +11,30 @@ import { StatusCodes } from "./features/http";
 // import { walletRouter } from "./features/wallets";
 // import { paymentRouter } from "./features/payment";
 
-const apiRoutes = new Hono()
-	// .route("/auth", authRouter)
-	.route("/ads", advertRouter);
-// .route("/onboarding", onboardingRouter)
-// .route("/foods", foodRouter)
-// .route("/wallets", walletRouter)
-// .route("/payment", paymentRouter);
+export const createApp = () => {
+	const apiRoutes = new Hono()
+		// .route("/auth", authRouter)
+		.route("/ads", advertRouter);
+	// .route("/onboarding", onboardingRouter)
+	// .route("/foods", foodRouter)
+	// .route("/wallets", walletRouter)
+	// .route("/payment", paymentRouter);
 
-export const logger = globalLogger.getSubLogger({ name: "ServerLogger" });
+	const logger = globalLogger.getSubLogger({ name: "ServerLogger" });
 
-export const app = new Hono()
-	.use(compress())
-	.use(cors())
-	.use(honoLogger())
-	.route("/", apiRoutes)
-	.notFound((c) => c.json({ error: "NOT_FOUND" }, StatusCodes.NOT_FOUND))
-	.onError((err, c) => {
-		logger.error("An unexpected error occurred:", err);
-		return c.json(
-			{ code: "ERR_UNEXPECTED" },
-			StatusCodes.INTERNAL_SERVER_ERROR,
-		);
-	});
+	return new Hono()
+		.use(compress())
+		.use(cors())
+		.use(honoLogger())
+		.route("/", apiRoutes)
+		.notFound((c) => c.json({ error: "NOT_FOUND" }, StatusCodes.NOT_FOUND))
+		.onError((err, c) => {
+			logger.error("An unexpected error occurred:", err);
+			return c.json(
+				{ code: "ERR_UNEXPECTED" },
+				StatusCodes.INTERNAL_SERVER_ERROR,
+			);
+		});
+};
 
-export type App = typeof app;
+export type App = ReturnType<typeof createApp>;

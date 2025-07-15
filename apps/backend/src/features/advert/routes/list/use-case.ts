@@ -1,11 +1,9 @@
-import { Service } from "@n8n/di";
-import type { AdvertRepository } from "../../repository";
+import { AdvertRepository } from "../../repository";
 import type { Request, Response } from "./types";
 import { Result } from "true-myth";
 
-@Service()
 class ListAdvertUseCase {
-	constructor(private advertRepository: AdvertRepository) {}
+	constructor(public advertRepository: AdvertRepository) {}
 
 	async execute(
 		query: Request.Query,

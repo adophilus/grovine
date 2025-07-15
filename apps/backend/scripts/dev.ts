@@ -1,13 +1,22 @@
-import { serve } from '@hono/node-server'
-import { config } from '@grovine/backend'
-import { app, appLogger as logger } from '@grovine/backend'
+import "reflect-metadata";
+
+import { serve } from "@hono/node-server";
+import {
+	bootstrap,
+	createApp,
+	config,
+	appLogger as logger,
+} from "@grovine/backend";
+
+bootstrap();
+const app = createApp();
 
 serve(
-  {
-    fetch: app.fetch,
-    port: config.server.port
-  },
-  (info) => {
-    logger.info(`Server is running on https://${info.address}:${info.port}`)
-  }
-)
+	{
+		fetch: app.fetch,
+		port: config.server.port,
+	},
+	(info) => {
+		logger.info(`Server is running on https://${info.address}:${info.port}`);
+	},
+);

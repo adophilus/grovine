@@ -88,4 +88,3 @@ export class AdvertKyselyRepository implements AdvertRepository {
 		}
 	}
 }
-
