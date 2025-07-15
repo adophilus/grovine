@@ -31,7 +31,8 @@
     "pg": "^8.16.0",
     "react": "^19.1.0",
     "reflect-metadata": "^0.2.2",
-    "tslog": "^4.9.3"
+    "tslog": "^4.9.3",
+    "tsyringe": "^4.10.0"
   },
   "devDependencies": {
     "@effect/cli": "^0.61.8",

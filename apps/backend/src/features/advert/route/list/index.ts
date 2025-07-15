@@ -5,7 +5,7 @@ import middleware from "./middleware";
 import { Container } from "@n8n/di";
 import ListAdvertUseCase from "./use-case";
 
-export default new Hono().get("/", middleware, async (c) => {
+export const ListAdvertRoute = new Hono().get("/", middleware, async (c) => {
 	let response: Response.Response;
 	let statusCode: StatusCodes;
 

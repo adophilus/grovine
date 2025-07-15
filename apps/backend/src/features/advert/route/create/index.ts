@@ -5,7 +5,7 @@ import { StatusCodes } from "@/features/http";
 import { Container } from "@n8n/di";
 import CreateAdvertUseCase from "./use-case";
 
-export default new Hono().post("/", middleware, async (c) => {
+export const CreateAdvertRoute = new Hono().post("/", middleware, async (c) => {
 	let response: Response.Response;
 	let statusCode: StatusCodes;
 

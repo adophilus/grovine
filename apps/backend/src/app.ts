@@ -2,7 +2,7 @@ import { Hono } from "hono";
 // import { authRouter } from "./features/auth";
 // import { onboardingRouter } from "./features/onboarding";
 // import { foodRouter } from "./features/food";
-import { advertRouter } from "./features/advert";
+import advertRouter from "./features/advert/route";
 import { compress } from "hono/compress";
 import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
