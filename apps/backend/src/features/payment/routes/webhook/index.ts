@@ -16,6 +16,6 @@ export default new Hono().post(
       return c.json({ code: 'NOT_FOUND' }, StatusCodes.NOT_FOUND)
     }
 
-    return c.status(StatusCodes.OK)
+    return c.json({ code: 'SUCCESSFUL' }, StatusCodes.OK)
   }
 )

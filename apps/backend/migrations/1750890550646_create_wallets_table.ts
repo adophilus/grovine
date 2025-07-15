@@ -10,7 +10,6 @@ export async function up(db: Kysely<unknown>): Promise<void> {
       col.defaultTo(sql`NOW()`).notNull()
     )
     .addColumn('updated_at', 'timestamptz')
-    .addForeignKeyConstraint('carts_user_id_fkey', ['user_id'], 'users', ['id'])
     .execute()
 }
 

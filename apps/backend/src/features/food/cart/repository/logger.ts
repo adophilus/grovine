@@ -1,5 +1,5 @@
-import { logger as foodLogger } from '../../logger'
+import { logger as foodCartLogger } from '../logger'
 
-export const logger = foodLogger.getSubLogger({
-  name: 'CartRepositoryLogger'
+export const logger = foodCartLogger.getSubLogger({
+  name: 'FoodCartRepositoryLogger'
 })

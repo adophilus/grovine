@@ -13,9 +13,6 @@ export async function up(db: Kysely<unknown>): Promise<void> {
       col.defaultTo(sql`NOW()`).notNull()
     )
     .addColumn('updated_at', 'timestamptz')
-    .addForeignKeyConstraint('cart_items_cart_id_fkey', ['cart_id'], 'carts', [
-      'id'
-    ])
     .execute()
 }
 

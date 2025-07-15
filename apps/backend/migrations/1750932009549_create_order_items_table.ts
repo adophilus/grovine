@@ -2,10 +2,12 @@ import { sql, type Kysely } from 'kysely'
 
 export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
-    .createTable('carts')
+    .createTable('order_items')
     .addColumn('id', 'varchar', (col) => col.primaryKey().notNull())
+    .addColumn('image', 'jsonb', (col) => col.notNull())
+    .addColumn('quantity', 'integer', (col) => col.notNull())
     .addColumn('price', 'numeric', (col) => col.notNull())
-    .addColumn('user_id', 'varchar', (col) => col.notNull())
+    .addColumn('order_id', 'varchar', (col) => col.notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`NOW()`).notNull()
     )
@@ -14,5 +16,5 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 }
 
 export async function down(db: Kysely<unknown>): Promise<void> {
-  await db.schema.dropTable('carts').execute()
+  await db.schema.dropTable('order_items').execute()
 }
