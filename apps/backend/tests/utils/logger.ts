@@ -1,5 +1,3 @@
-import { globalLogger } from '@/features/logger'
+import { Logger } from "@/features/logger";
 
-export const logger = globalLogger.getSubLogger({
-  name: 'Test'
-})
+export const logger = new Logger({ name: "Test" });
