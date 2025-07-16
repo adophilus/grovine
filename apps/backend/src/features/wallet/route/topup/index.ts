@@ -1,11 +1,12 @@
 import { Hono } from "hono";
 import middleware from "./middleware";
-import service from "./service";
 import { StatusCodes } from "@/features/http";
-import { AuthMiddleware } from "@/features/auth";
+import AuthMiddleware from "@/features/auth/middleware";
 import type { Response } from "./types";
+import { Container } from "@n8n/di";
+import TopupWalletUseCase from "./use-case";
 
-export default new Hono().post(
+const TopupWalletRoute = new Hono().post(
 	"/",
 	AuthMiddleware.middleware,
 	middleware,
@@ -16,7 +17,8 @@ export default new Hono().post(
 		const payload = c.req.valid("json");
 		const user = c.get("user");
 
-		const result = await service(payload, user);
+		const useCase = Container.get(TopupWalletUseCase);
+		const result = await useCase.execute(payload, user);
 
 		if (result.isErr) {
 			response = result.error;
@@ -29,3 +31,5 @@ export default new Hono().post(
 		return c.json(response, statusCode);
 	},
 );
+
+export default TopupWalletRoute;

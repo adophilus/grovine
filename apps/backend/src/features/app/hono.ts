@@ -7,10 +7,11 @@ import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
 import { Logger } from "@/features/logger";
 import { StatusCodes } from "@/features/http";
-import AuthRouter from "@/features/auth/routes";
+import AuthRouter from "@/features/auth/route";
 import type App from "./interface";
+import WalletRouter from "@/features/wallet/route";
 // import { walletRouter } from "./features/wallets";
-// import { paymentRouter } from "./features/payment";
+import PaymentRouter from "@/features/payment/route";
 
 class HonoApp implements App {
 	constructor(private logger: Logger) {}
@@ -18,11 +19,11 @@ class HonoApp implements App {
 	create() {
 		const apiRoutes = new Hono()
 			.route("/auth", AuthRouter)
-			.route("/ads", AdvertRouter);
-		// .route("/onboarding", onboardingRouter)
-		// .route("/foods", foodRouter)
-		// .route("/wallets", walletRouter)
-		// .route("/payment", paymentRouter);
+			.route("/ads", AdvertRouter)
+			// .route("/onboarding", onboardingRouter)
+			// .route("/foods", foodRouter)
+			.route("/wallets", WalletRouter)
+			.route("/payment", PaymentRouter);
 
 		return new Hono()
 			.use(compress())

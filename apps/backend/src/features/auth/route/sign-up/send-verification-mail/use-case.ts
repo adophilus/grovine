@@ -7,7 +7,7 @@ import { config } from "@/features/config";
 import { addSeconds } from "date-fns";
 import type { Request, Response } from "./types";
 import { generateToken } from "@/features/auth/utils/token";
-import { WalletRepository } from "@/features/wallets";
+import { WalletRepository } from "@/features/wallet/repository";
 import type {
 	AuthTokenRepository,
 	AuthUserRepository,
@@ -17,6 +17,7 @@ class SendSignUpVerificationEmailUseCase {
 	constructor(
 		private authUserRepository: AuthUserRepository,
 		private authTokenRepository: AuthTokenRepository,
+		private walletRepository: WalletRepository,
 		private mailer: Mailer,
 	) {}
 
@@ -50,7 +51,7 @@ class SendSignUpVerificationEmailUseCase {
 
 		const user = userCreationResult.value;
 
-		const walletCreationResult = await WalletRepository.createWallet({
+		const walletCreationResult = await this.walletRepository.create({
 			id: ulid(),
 			balance: "0",
 			user_id: user.id,

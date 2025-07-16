@@ -16,7 +16,7 @@ export const bootstrap = () => {
 	const logger = new Logger({ name: "App" });
 
 	const kyselyClient = createKyselyClient();
-	const advertRepository = new AdvertKyselyRepository(kyselyClient);
+	const advertRepository = new AdvertKyselyRepository(kyselyClient, logger);
 
 	const createAdvertUseCase = new CreateAdvertUseCase(advertRepository);
 	const listAdvertUseCase = new ListAdvertUseCase(advertRepository);
