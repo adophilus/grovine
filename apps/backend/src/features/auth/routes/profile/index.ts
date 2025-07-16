@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { Response } from "./types";
 import { StatusCodes } from "@/features/http";
-import AuthMiddleware from "../../middleware";
+import AuthMiddleware from "@/features/auth/middleware";
 import { Container } from "@n8n/di";
 import GetUserProfileUseCase from "./use-case";
 
