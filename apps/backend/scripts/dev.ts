@@ -1,19 +1,13 @@
 import "reflect-metadata";
 
 import { serve } from "@hono/node-server";
-import {
-	bootstrap,
-	createApp,
-	config,
-	appLogger as logger,
-} from "@grovine/backend";
+import { bootstrap } from "@grovine/backend";
 
-bootstrap();
-const app = createApp();
+const { app, logger, config } = bootstrap();
 
 serve(
 	{
-		fetch: app.fetch,
+		fetch: app.create().fetch,
 		port: config.server.port,
 	},
 	(info) => {

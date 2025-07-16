@@ -4,10 +4,10 @@ import { ListAdvertRoute } from "./list";
 import { UpdateAdvertRoute } from "./update";
 import { DeleteAdvertRoute } from "./delete";
 
-const advertRouter = new Hono()
+const AdvertRouter = new Hono()
 	.route("/", CreateAdvertRoute)
 	.route("/", ListAdvertRoute)
 	.route("/", UpdateAdvertRoute)
 	.route("/", DeleteAdvertRoute);
 
-export default advertRouter;
+export default AdvertRouter;

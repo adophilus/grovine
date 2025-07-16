@@ -1,5 +1,9 @@
 import { Hono } from "hono";
-import verify from "./verify";
-import resend from "./resend";
+import VerifySignInVerificationEmailRoute from "./verify";
+import ResendSignInVerificationEmailRoute from "./resend";
 
-export default new Hono().route("/", verify).route("/resend", resend);
+const SignInVerificationRoute = new Hono()
+	.route("/", VerifySignInVerificationEmailRoute)
+	.route("/resend", ResendSignInVerificationEmailRoute);
+
+export default SignInVerificationRoute;

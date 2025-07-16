@@ -1,9 +1,11 @@
 import { Hono } from "hono";
-import signInRouter from "./sign-in";
-import signUpRouter from "./sign-up";
-import authProfileRouter from "./profile";
+import GetUserProfileRoute from "./profile";
+import SignInRoute from "./sign-in";
+import SignUpRoute from "./sign-up";
 
-export default new Hono()
-	.route("/sign-in", signInRouter)
-	.route("/sign-up", signUpRouter)
-	.route("/profile", authProfileRouter);
+const AuthRouter = new Hono()
+	.route("/sign-in", SignInRoute)
+	.route("/sign-up", SignUpRoute)
+	.route("/profile", GetUserProfileRoute);
+
+export default AuthRouter;

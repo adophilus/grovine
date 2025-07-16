@@ -1,7 +1,9 @@
 import { Hono } from "hono";
-import sendVerificationMail from "./send-verification-mail";
-import verification from "./verification";
+import SendSignUpVerificationEmailRoute from "./send-verification-mail";
+import SignUpVerificationRoute from "./verification";
 
-export default new Hono()
-	.route("/", sendVerificationMail)
-	.route("/verification", verification);
+const SignUpRoute = new Hono()
+	.route("/", SendSignUpVerificationEmailRoute)
+	.route("/verification", SignUpVerificationRoute);
+
+export default SignUpRoute;

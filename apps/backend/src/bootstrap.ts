@@ -2,16 +2,18 @@ import { Container } from "@n8n/di";
 import { createKyselyClient, KyselyClient } from "./features/database/kysely";
 import { AdvertRepository } from "./features/advert/repository";
 import { AdvertKyselyRepository } from "./features/advert/repository/kysely";
-import { globalLogger } from "./features/logger";
 import {
 	CreateAdvertUseCase,
 	DeleteAdvertUseCase,
 	ListAdvertUseCase,
 	UpdateAdvertUseCase,
 } from "./features/advert/use-case";
+import { Logger } from "./features/logger";
+import { HonoApp } from "./features/app";
+import { config } from "./features/config";
 
 export const bootstrap = () => {
-	const logger = globalLogger.getSubLogger({ name: "ServerLogger" });
+	const logger = new Logger({ name: "App" });
 
 	const kyselyClient = createKyselyClient();
 	const advertRepository = new AdvertKyselyRepository(kyselyClient);
@@ -21,6 +23,8 @@ export const bootstrap = () => {
 	const updateAdvertUseCase = new UpdateAdvertUseCase(advertRepository);
 	const deleteAdvertUseCase = new DeleteAdvertUseCase(advertRepository);
 
+	const app = new HonoApp(logger);
+
 	Container.set(KyselyClient, kyselyClient);
 	Container.set(AdvertRepository, advertRepository);
 
@@ -29,5 +33,5 @@ export const bootstrap = () => {
 	Container.set(UpdateAdvertUseCase, updateAdvertUseCase);
 	Container.set(DeleteAdvertUseCase, deleteAdvertUseCase);
 
-	logger.info("✅ Registered services");
+	return { app, logger, config };
 };
