@@ -1,6 +1,7 @@
 import { Paystack } from "paystack-sdk";
+import crypto from "node:crypto";
 import { Result, Unit } from "true-myth";
-import type { CreateInvoicePayload, Webhook } from "../types";
+import { type CreateInvoicePayload, Webhook } from "../types";
 import { config } from "@/features/config";
 import type PaymentService from "./interface";
 import type { PaymentServiceError } from "./interface";
@@ -33,17 +34,57 @@ class PaystackPaymentService implements PaymentService {
 		return Result.ok({ url: response.data.authorization_url });
 	}
 
-	public async handleWebhookEvent(
-		event: Webhook.Events.All,
-	): Promise<Result<Unit, unknown>> {
-		switch (event.event) {
-			case "charge.success": {
-				return await this.handleChargeSuccessWebhookEvent(event);
-			}
+	private async validateRequestPayload(
+		request: Request,
+	): Promise<Result<Webhook.Events.All, "ERR_VALIDATION">> {
+		const paystackSignature = request.headers.get("x-paystack-signature");
+
+		if (!paystackSignature) return Result.err("ERR_VALIDATION");
+
+		const rawBody = await request.arrayBuffer();
+		const textBody = new TextDecoder().decode(rawBody);
+
+		const hash = crypto
+			.createHmac("sha512", config.payment.paystack.secretKey)
+			.update(textBody)
+			.digest("hex");
+
+		if (hash !== paystackSignature) {
+			return Result.err("ERR_VALIDATION");
 		}
+
+		let jsonBody: Webhook.Events.All;
+
+		try {
+			jsonBody = Webhook.Events.all.parse(JSON.parse(textBody));
+		} catch (err) {
+			return Result.err("ERR_VALIDATION");
+		}
+
+		return Result.ok(jsonBody);
 	}
 
-	protected async handleChargeSuccessWebhookEvent(
+	public async handleWebhookEvent(
+		request: Request,
+	): Promise<Result<Unit, unknown>> {
+		const validationResult = await this.validateRequestPayload(request);
+
+		if (validationResult.isErr) {
+			return Result.err();
+		}
+
+		const event = validationResult.value;
+
+		switch (event.event) {
+			case "charge.success": {
+				return this.handleChargeSuccessWebhookEvent(event);
+			}
+		}
+
+		return Result.err();
+	}
+
+	private async handleChargeSuccessWebhookEvent(
 		event: Webhook.Events.ChargeSuccess,
 	): Promise<Result<Unit, unknown>> {
 		const payload = event.data;

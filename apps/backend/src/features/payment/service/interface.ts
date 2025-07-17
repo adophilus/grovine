@@ -9,7 +9,7 @@ abstract class PaymentService {
 	): Promise<Result<{ url: string }, PaymentServiceError>>;
 
 	public abstract handleWebhookEvent(
-		event: Webhook.Events.All,
+		request: Request,
 	): Promise<Result<Unit, unknown>>;
 }
 

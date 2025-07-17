@@ -1,7 +1,14 @@
 import { createClient, type Middleware } from "@grovine/api";
 import { config } from "@/features/config";
+import { app } from "./bootstrap"
 
 export const client = createClient(config.server.url);
+
+client.use({
+	onRequest: ({ request }) => {
+		return app.request(request)
+	}
+})
 
 export const bodySerializer = (body: any) => {
 	const fd = new FormData();
@@ -18,7 +25,7 @@ export const useAuth = (
 	tokens: { access_token: string; refresh_token: string },
 ) => {
 	const middleware: Middleware = {
-		async onRequest({ request, options }) {
+		async onRequest({ request }) {
 			request.headers.set("Authorization", `Bearer ${tokens.access_token}`);
 			return request;
 		},

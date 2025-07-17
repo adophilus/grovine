@@ -1,11 +1,15 @@
 import { describe, test } from "node:test";
 import assert from "node:assert";
 import { faker } from "@faker-js/faker";
-import { AuthUserRepository } from "@/features/auth/repository";
+import { AuthTokenRepository, AuthUserRepository } from "@/features/auth/repository";
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from "@/types";
-import { getStore, sleep, client, logger, type TStore } from "../utils";
+import { getStore, sleep, client } from "../utils";
+import { Container } from "@n8n/di";
 
 describe("auth", async () => {
+	const authUserRepository = Container.get(AuthUserRepository)
+	const authTokenRepository = Container.get(AuthTokenRepository)
+
 	const store = await getStore();
 
 	const email = faker.internet.email();
@@ -26,14 +30,14 @@ describe("auth", async () => {
 	});
 
 	test("sign up verification", async () => {
-		const findUserResult = await AuthRepository.findUserByEmail(email);
+		const findUserResult = await authUserRepository.findByEmail(email);
 
 		assert(findUserResult.isOk, "User should be created");
 		assert(findUserResult.value, "User should not be null");
 
 		const user = findUserResult.value;
 
-		const findTokenResult = await AuthRepository.findTokenByUserIdAndPurpose({
+		const findTokenResult = await authTokenRepository.findByUserIdAndPurpose({
 			user_id: user.id,
 			purpose: SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY,
 		});
@@ -57,7 +61,7 @@ describe("auth", async () => {
 	});
 
 	test("sign in", async () => {
-		const findUserResult = await AuthRepository.findUserByEmail(email);
+		const findUserResult = await authUserRepository.findByEmail(email);
 		assert(findUserResult.isOk, "User should be created");
 		assert(findUserResult.value, "User should not be null");
 
@@ -74,13 +78,13 @@ describe("auth", async () => {
 	});
 
 	test("sign in verification", async () => {
-		const findUserResult = await AuthRepository.findUserByEmail(email);
+		const findUserResult = await authUserRepository.findByEmail(email);
 		assert(findUserResult.isOk, "User should be created");
 		assert(findUserResult.value, "User should not be null");
 
 		const user = findUserResult.value;
 
-		const findTokenResult = await AuthRepository.findTokenByUserIdAndPurpose({
+		const findTokenResult = await authTokenRepository.findByUserIdAndPurpose({
 			user_id: user.id,
 			purpose: "SIGN_IN_VERIFICATION",
 		});
