@@ -1,27 +1,26 @@
-import { db } from "@/features/database";
 import type { Cart, CartItem, Order } from "@/types";
 import { Result, type Unit } from "true-myth";
-import { logger } from "./logger";
 import { ulid } from "ulidx";
 import ItemsRepository from "@/features/food/items/repository";
-import { sql } from "kysely";
+import type {
+	CartWithGroupedItems,
+	FoodCartRepositoryError,
+} from "./interface";
+import type FoodCartRepository from "./interface";
+import type { KyselyClient } from "@/features/database/kysely";
+import type { Logger } from "@/features/logger";
 
-namespace Repository {
-	export type Error = "ERR_UNEXPECTED";
+class FoodCartKyselyRepository implements FoodCartRepository {
+	constructor(
+		private client: KyselyClient,
+		private logger: Logger,
+	) {}
 
-	export type CartWithGroupedItems = Cart.Selectable & {
-		items: {
-			image: CartItem.Selectable["image"];
-			items: CartItem.Selectable[];
-			total_price: number;
-		}[];
-	};
-
-	export const findCartByUserId = async (
+	public async findByUserId(
 		userId: string,
-	): Promise<Result<CartWithGroupedItems | null, Error>> => {
+	): Promise<Result<CartWithGroupedItems | null, FoodCartRepositoryError>> {
 		try {
-			const cart = await db
+			const cart = await this.client
 				.selectFrom("carts")
 				.selectAll()
 				.where("user_id", "=", userId)
@@ -31,7 +30,7 @@ namespace Repository {
 				return Result.ok(null);
 			}
 
-			const items = await db
+			const items = await this.client
 				.selectFrom("cart_items")
 				.selectAll()
 				.where("cart_id", "=", cart.id)
@@ -67,34 +66,30 @@ namespace Repository {
 				items: Object.values(groupedItems),
 			});
 		} catch (err) {
-			logger.error("failed to list cart:", err);
+			this.logger.error("failed to list cart:", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
-	};
+	}
 
-	export type AddItemToCartPayload = {
+	public async addItem(payload: {
 		userId: string;
 		itemId: string;
 		quantity: number;
-	};
-
-	export const addItemToCart = async (
-		payload: AddItemToCartPayload,
-	): Promise<
+	}): Promise<
 		Result<
 			Cart.Selectable,
 			"ERR_ITEM_NOT_FOUND" | "ERR_UNEXPECTED" | "ERR_ITEM_NOT_FOUND"
 		>
-	> => {
+	> {
 		try {
-			let cart = await db
+			let cart = await this.client
 				.selectFrom("carts")
 				.selectAll()
 				.where("user_id", "=", payload.userId)
 				.executeTakeFirst();
 
 			if (!cart) {
-				cart = await db
+				cart = await this.client
 					.with("_food_item", (qb) =>
 						qb
 							.selectFrom("food_items")
@@ -121,7 +116,7 @@ namespace Repository {
 				return Result.err("ERR_ITEM_NOT_FOUND");
 			}
 
-			await db
+			await this.client
 				.insertInto("cart_items")
 				.values({
 					id: ulid(),
@@ -135,60 +130,25 @@ namespace Repository {
 
 			return Result.ok(cart);
 		} catch (err) {
-			logger.error("failed to add item to cart:", err);
+			this.logger.error("failed to add item to cart:", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
-	};
+	}
 
-	export type CreateOrderFromCartPayload = Order.Insertable;
-
-	export const createOrderFromCart = async (
-		cartId: string,
-		payload: CreateOrderFromCartPayload,
-	): Promise<Result<Order.Selectable, Error>> => {
-		try {
-			const order = await db
-				.insertInto("orders")
-				.values(payload)
-				.returningAll()
-				.executeTakeFirstOrThrow();
-
-			await db
-				.with("_cart_items", (qb) =>
-					qb.selectFrom("cart_items").selectAll().where("cart_id", "=", cartId),
-				)
-				.insertInto("order_items")
-				.expression((qb) =>
-					qb
-						.selectFrom("_cart_items")
-						.select([
-							"_cart_items.id",
-							"_cart_items.image",
-							"_cart_items.quantity",
-							"_cart_items.price",
-							qb.val(order.id).as("order_id"),
-						]),
-				)
-				.execute();
-
-			return Result.ok(order);
-		} catch (err) {
-			logger.error("failed to create order from cart:", err);
-			return Result.err("ERR_UNEXPECTED");
-		}
-	};
-
-	export const clearCartById = async (
+	public async clearById(
 		id: string,
-	): Promise<Result<Unit, Error>> => {
+	): Promise<Result<Unit, FoodCartRepositoryError>> {
 		try {
-			await db.deleteFrom("cart_items").where("cart_id", "=", id).execute();
+			await this.client
+				.deleteFrom("cart_items")
+				.where("cart_id", "=", id)
+				.execute();
 			return Result.ok();
 		} catch (err) {
-			logger.error("failed to clear cart:", err);
+			this.logger.error("failed to clear cart:", err);
 			return Result.err("ERR_UNEXPECTED");
 		}
-	};
+	}
 }
 
-export default Repository;
+export default FoodCartKyselyRepository;
