@@ -1,9 +1,11 @@
 import { Hono } from 'hono'
-import listRouter from './list'
-import getRouter from './get'
-import updateRouter from './update'
+import ListOrdersRoute from './list'
+import GetOrderRoute from './get'
+import UpdateOrderStatusRoute from './update'
 
-export default new Hono()
-  .route('/', listRouter)
-  .route('/', getRouter)
-  .route('/', updateRouter)
+const FoodOrderRouter = new Hono()
+  .route('/', ListOrdersRoute)
+  .route('/', GetOrderRoute)
+  .route('/', UpdateOrderStatusRoute)
+
+export default FoodOrderRouter

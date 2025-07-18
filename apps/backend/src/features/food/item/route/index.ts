@@ -5,9 +5,11 @@ import UpdateFoodItemRoute from './update'
 import DeleteFoodItemRoute from './delete'
 import GetFoodItemRoute from './get'
 
-export default new Hono()
+const FoodItemRouter = new Hono()
   .route('/', CreateFoodItemRoute)
   .route('/', ListFoodItemsRoute)
   .route('/', GetFoodItemRoute)
   .route('/', UpdateFoodItemRoute)
   .route('/', DeleteFoodItemRoute)
+
+export default FoodItemRouter

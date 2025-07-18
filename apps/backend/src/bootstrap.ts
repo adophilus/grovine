@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { Container } from '@n8n/di'
 import { createKyselyClient, KyselyClient } from './features/database/kysely'
 import { AdvertRepository } from './features/advert/repository'
@@ -45,16 +47,48 @@ import {
 } from './features/food/item/repository'
 import UpdateFoodItemUseCase from './features/food/item/route/update/use-case'
 import DeleteFoodItemUseCase from './features/food/item/route/delete/use-case'
+import {
+  OrderRepository,
+  OrderKyselyRepository
+} from './features/food/order/repository'
+import {
+  ListOrdersUseCase,
+  GetOrderUseCase,
+  UpdateOrderStatusUseCase
+} from './features/food/order/use-case'
+import {
+  TransactionRepository,
+  TransactionKyselyRepository
+} from './features/transaction/repository'
+import {
+  ListTransactionsUseCase,
+  GetTransactionUseCase
+} from './features/transaction/use-case'
+import { StorageServiceImplementation } from './features/storage/impl'
+import { Storage } from './features/storage'
+import {
+  FoodCartRepository,
+  FoodCartKyselyRepository
+} from './features/food/cart/repository'
+import {
+  CartSetItemUseCase,
+  GetCartUseCase,
+  CheckoutCartUseCase
+} from './features/food/cart/use-case'
 
 export const bootstrap = () => {
+  // Logger
   const logger = new Logger({ name: 'App' })
 
+  // Database
   const kyselyClient = createKyselyClient()
+
+  // Mailer
   const mailer = new NodemailerMailer(logger)
 
+  // Wallet DI
   const walletRepository = new WalletKyselyRepository(logger, kyselyClient)
   const paymentService = new PaystackPaymentService(walletRepository, logger)
-
   const getWalletUseCase = new GetWalletUseCase(walletRepository)
   const topupWalletUseCase = new TopupWalletUseCase(
     walletRepository,
@@ -62,6 +96,7 @@ export const bootstrap = () => {
   )
   const withdrawWalletUseCase = new WithdrawWalletUseCase()
 
+  // Auth DI
   const authUserRepository = new AuthUserKyselyRepository(kyselyClient, logger)
   const authTokenRepository = new AuthTokenKyselyRepository(
     kyselyClient,
@@ -105,6 +140,7 @@ export const bootstrap = () => {
       mailer
     )
 
+  // Advert DI
   const advertRepository = new AdvertKyselyRepository(kyselyClient, logger)
   const createAdvertUseCase = new CreateAdvertUseCase(advertRepository)
   const listAdvertUseCase = new ListAdvertUseCase(advertRepository)
@@ -116,21 +152,62 @@ export const bootstrap = () => {
   const updateFoodItemUseCase = new UpdateFoodItemUseCase(foodItemRepository)
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
 
+  // Food Order DI
+  const orderRepository = new OrderKyselyRepository(kyselyClient, logger)
+  const listOrdersUseCase = new ListOrdersUseCase(orderRepository)
+  const getOrderUseCase = new GetOrderUseCase(orderRepository)
+  const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(orderRepository)
+
+  // Food Cart DI
+  const foodCartRepository = new FoodCartKyselyRepository(
+    kyselyClient,
+    foodItemRepository,
+    logger
+  )
+  const cartSetItemUseCase = new CartSetItemUseCase(foodCartRepository)
+  const getCartUseCase = new GetCartUseCase(foodCartRepository)
+  const checkoutCartUseCase = new CheckoutCartUseCase(
+    foodCartRepository,
+    orderRepository,
+    paymentService
+  )
+
+  // Transaction DI
+  const transactionRepository = new TransactionKyselyRepository(
+    kyselyClient,
+    logger
+  )
+  const listTransactionsUseCase = new ListTransactionsUseCase(
+    transactionRepository
+  )
+  const getTransactionUseCase = new GetTransactionUseCase(transactionRepository)
+
+  // Storage DI
+  const storageService = new StorageServiceImplementation(
+    config.storage.mediaServerUrl
+  )
+
   const app = new HonoApp(logger)
 
+  // Logger
   Container.set(Logger, logger)
 
+  // Database
   Container.set(KyselyClient, kyselyClient)
 
+  // Payment
   Container.set(PaymentService, paymentService)
 
+  // Mailer
   Container.set(Mailer, mailer)
 
+  // Wallet DI
   Container.set(WalletRepository, walletRepository)
   Container.set(GetWalletUseCase, getWalletUseCase)
   Container.set(TopupWalletUseCase, topupWalletUseCase)
   Container.set(WithdrawWalletUseCase, withdrawWalletUseCase)
 
+  // Auth DI
   Container.set(AuthUserRepository, authUserRepository)
   Container.set(AuthTokenRepository, authTokenRepository)
   Container.set(
@@ -158,6 +235,7 @@ export const bootstrap = () => {
     verifySignUpVerificationEmailUseCase
   )
 
+  // Advert DI
   Container.set(AdvertRepository, advertRepository)
   Container.set(CreateAdvertUseCase, createAdvertUseCase)
   Container.set(ListAdvertUseCase, listAdvertUseCase)
@@ -168,6 +246,26 @@ export const bootstrap = () => {
   Container.set(FoodItemRepository, foodItemRepository)
   Container.set(UpdateFoodItemUseCase, updateFoodItemUseCase)
   Container.set(DeleteFoodItemUseCase, deleteFoodItemUseCase)
+
+  // Food Order DI
+  Container.set(OrderRepository, orderRepository)
+  Container.set(ListOrdersUseCase, listOrdersUseCase)
+  Container.set(GetOrderUseCase, getOrderUseCase)
+  Container.set(UpdateOrderStatusUseCase, updateOrderStatusUseCase)
+
+  // Food Cart DI
+  Container.set(FoodCartRepository, foodCartRepository)
+  Container.set(CartSetItemUseCase, cartSetItemUseCase)
+  Container.set(GetCartUseCase, getCartUseCase)
+  Container.set(CheckoutCartUseCase, checkoutCartUseCase)
+
+  // Transaction DI
+  Container.set(TransactionRepository, transactionRepository)
+  Container.set(ListTransactionsUseCase, listTransactionsUseCase)
+  Container.set(GetTransactionUseCase, getTransactionUseCase)
+
+  // Storage DI
+  Container.set(StorageServiceImplementation, storageService)
 
   return { app, logger, config }
 }
