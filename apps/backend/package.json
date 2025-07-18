@@ -6,6 +6,7 @@
     "start": "tsx ./scripts/dev.ts",
     "dev": "tsx watch ./scripts/dev.ts",
     "build": "tsc && tsx ./scripts/build.ts",
+    "lint": "tsc",
     "test": "./scripts/test.sh",
     "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
     "db:migration": "tsx ./scripts/migrate.ts"
@@ -14,6 +15,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.3.5",
     "@grovine/api": "workspace:^",
     "@grovine/backend": "workspace:^",
     "@grovine/media-server": "workspace:^",
@@ -25,6 +27,7 @@
     "jose": "^6.0.11",
     "jsx-email": "^2.7.2",
     "kysely": "^0.28.2",
+    "kysely-pglite": "^0.6.1",
     "kysely-plugin-prefix": "^1.2.2",
     "nodemailer": "^7.0.3",
     "paystack-sdk": "^2.5.26",
