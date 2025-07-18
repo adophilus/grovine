@@ -1,6 +1,6 @@
 import { describe, test, before } from 'node:test'
 import assert from 'node:assert'
-import { client, useAuth, getStore } from '../utils'
+import { client, useAuth, getStore, useApp } from '../utils'
 
 describe('order', async () => {
   const store = await getStore()
@@ -8,7 +8,10 @@ describe('order', async () => {
 
   before(() => {
     assert(store.state.stage === '005', 'Should be in 005 stage')
+
     useAuth(client, store.state.auth)
+    useApp(client)
+
     orderId = store.state.order.id
   })
 

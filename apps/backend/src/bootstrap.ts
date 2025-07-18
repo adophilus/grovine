@@ -1,7 +1,11 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import { createKyselyClient, KyselyClient } from '@/features/database/kysely'
+import {
+  createKyselyMigrator,
+  createKyselyPgClient,
+  KyselyClient
+} from '@/features/database/kysely'
 import { AdvertRepository } from '@/features/advert/repository'
 import { AdvertKyselyRepository } from '@/features/advert/repository/kysely'
 import {
@@ -79,12 +83,14 @@ import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
 import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 
-export const bootstrap = () => {
+export const bootstrap = async () => {
   // Logger
   const logger = new Logger({ name: 'App' })
+  const migrationFolder = new URL('../migrations', import.meta.url).pathname
 
   // Database
-  const kyselyClient = createKyselyClient()
+  const kyselyClient = await createKyselyPgClient()
+  const kyselyMigrator = createKyselyMigrator(kyselyClient, migrationFolder)
 
   // Mailer
   const mailer = new NodemailerMailer(logger)
@@ -281,6 +287,8 @@ export const bootstrap = () => {
 
   // Storage DI
   Container.set(StorageServiceImplementation, storageService)
+
+  await kyselyMigrator.migrateToLatest()
 
   return { app, logger, config }
 }

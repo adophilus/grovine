@@ -1,11 +1,11 @@
 import { Result } from 'true-myth'
-import {
+import type {
   AuthTokenRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
 import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
 import type { Request, Response } from './types'
-import { Mailer } from '@/features/mailer'
+import type { Mailer } from '@/features/mailer'
 import VerificationSuccessful from './mail/verification-successful'
 import { compareAsc } from 'date-fns'
 import { generateTokens } from '@/features/auth/utils/token'

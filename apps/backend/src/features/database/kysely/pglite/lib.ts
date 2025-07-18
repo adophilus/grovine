@@ -4,7 +4,7 @@ import { KyselyPGlite } from 'kysely-pglite'
 import { KyselyClient } from '../interface'
 
 export const createKyselyPgLiteClient = async (): Promise<KyselyClient> => {
-  const { dialect } = await KyselyPGlite.create()
+  const { dialect } = await KyselyPGlite.create('./storage/pglite')
 
   return new KyselyClient({
     dialect,

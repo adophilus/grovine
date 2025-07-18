@@ -1,5 +1,5 @@
-import type { Cart, CartItem, Order } from '@/types'
-import { Result, type Unit } from 'true-myth'
+import type { Cart, CartItem } from '@/types'
+import type { Result, Unit } from 'true-myth'
 
 export type FoodCartRepositoryError = 'ERR_UNEXPECTED'
 

@@ -1,7 +1,7 @@
 import { serve } from '@hono/node-server'
 import { bootstrap } from '@grovine/backend'
 
-const { app, logger, config } = bootstrap()
+const { app, logger, config } = await bootstrap()
 
 serve(
   {

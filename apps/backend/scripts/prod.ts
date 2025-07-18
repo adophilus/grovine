@@ -1,7 +1,7 @@
 import { handle } from 'hono/vercel'
 import { bootstrap } from '@grovine/backend'
 
-const { app } = bootstrap()
+const { app } = await bootstrap()
 
 const handler = handle(app.create())
 

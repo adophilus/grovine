@@ -47,7 +47,6 @@ namespace AuthMiddleware {
     const findUserResult = await authUserRepository.findById(
       tokenVerificationResult.value.user_id
     )
-
     if (findUserResult.isErr) {
       response = {
         code: 'ERR_UNEXPECTED'
