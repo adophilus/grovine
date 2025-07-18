@@ -1,10 +1,10 @@
 import { Hono } from 'hono'
-// import { onboardingRouter } from "./features/onboarding";
+import OnboardingRouter from '@/features/onboarding/route'
 import AdvertRouter from '@/features/advert/route'
 import { compress } from 'hono/compress'
 import { cors } from 'hono/cors'
 import { logger as honoLogger } from 'hono/logger'
-import { Logger } from '@/features/logger'
+import type { Logger } from '@/features/logger'
 import { StatusCodes } from '@/features/http'
 import AuthRouter from '@/features/auth/route'
 import type App from './interface'
@@ -19,7 +19,7 @@ class HonoApp implements App {
     const apiRoutes = new Hono()
       .route('/auth', AuthRouter)
       .route('/ads', AdvertRouter)
-      // .route("/onboarding", onboardingRouter)
+      .route('/onboarding', OnboardingRouter)
       .route('/foods', FoodRouter)
       .route('/wallets', WalletRouter)
       .route('/payment', PaymentRouter)

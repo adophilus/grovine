@@ -104,9 +104,7 @@ class FoodCartKyselyRepository implements FoodCartRepository {
           .executeTakeFirstOrThrow()
       }
 
-      const itemResult = await this.foodItemRepository.findItemById(
-        payload.itemId
-      )
+      const itemResult = await this.foodItemRepository.findById(payload.itemId)
       if (itemResult.isErr) {
         return Result.err('ERR_UNEXPECTED')
       }
