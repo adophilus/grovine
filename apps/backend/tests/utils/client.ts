@@ -4,12 +4,6 @@ import { app } from './bootstrap'
 
 export const client = createClient(config.server.url)
 
-client.use({
-  onRequest: ({ request }) => {
-    return app.request(request)
-  }
-})
-
 export const bodySerializer = (body: any) => {
   const fd = new FormData()
   for (const name in body) {
@@ -28,6 +22,16 @@ export const useAuth = (
     async onRequest({ request }) {
       request.headers.set('Authorization', `Bearer ${tokens.access_token}`)
       return request
+    }
+  }
+
+  client.use(middleware)
+}
+
+export const useApp = (client: Client) => {
+  const middleware: Middleware = {
+    onRequest: ({ request }) => {
+      return app.request(request)
     }
   }
 

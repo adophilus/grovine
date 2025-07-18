@@ -1,5 +1,6 @@
 import type {
   CreateWalletTopupInvoiceMetadataPayload,
+  CreateOrderInvoiceMetadataPayload,
   CreateInvoicePayload,
   Metadata
 } from './types'
@@ -14,6 +15,20 @@ export const createWalletTopupInvoicePayload = (
     metadata: {
       type: 'WALLET_TOPUP',
       wallet_id
+    }
+  }
+}
+
+export const createOrderInvoicePayload = (
+  payload: CreateOrderInvoiceMetadataPayload
+): CreateInvoicePayload<Metadata.Order> => {
+  const { order_id, ..._payload } = payload
+
+  return {
+    ..._payload,
+    metadata: {
+      type: 'ORDER',
+      order_id
     }
   }
 }

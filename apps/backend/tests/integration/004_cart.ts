@@ -1,11 +1,13 @@
 import { describe, test, before } from 'node:test'
 import assert from 'node:assert'
 import { ulid } from 'ulidx'
-import { client, bodySerializer, getStore, logger, useAuth } from '../utils'
-import createFoodItem from '@/features/food/items/routes/create/service'
+import { client, getStore, logger, useApp, useAuth } from '../utils'
 import { faker } from '@faker-js/faker'
+import { Container } from '@n8n/di'
+import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 
 describe('cart', async () => {
+  const createFoodItemUseCase = Container.get(CreateFoodItemUseCase)
   const store = await getStore()
 
   const imageBase64 =
@@ -18,8 +20,9 @@ describe('cart', async () => {
   before(async () => {
     assert(store.state.stage === '002', 'Should be in 002 stage')
     useAuth(client, store.state.auth)
+    useApp(client)
 
-    const res = await createFoodItem({
+    const res = await createFoodItemUseCase.execute({
       price: 1000,
       video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       image,

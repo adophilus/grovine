@@ -1,4 +1,4 @@
-import { describe, test } from 'node:test'
+import { before, describe, test } from 'node:test'
 import assert from 'node:assert'
 import { faker } from '@faker-js/faker'
 import {
@@ -6,7 +6,7 @@ import {
   AuthUserRepository
 } from '@/features/auth/repository'
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import { getStore, sleep, client } from '../utils'
+import { getStore, sleep, client, useApp } from '../utils'
 import { Container } from '@n8n/di'
 
 describe('auth', async () => {
@@ -16,6 +16,10 @@ describe('auth', async () => {
   const store = await getStore()
 
   const email = faker.internet.email()
+
+  before(async () => {
+    useApp(client)
+  })
 
   test('sign up', async () => {
     const res = await client.POST('/auth/sign-up', {

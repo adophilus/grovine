@@ -12,13 +12,14 @@ class TestPaymentService implements PaymentService {
   public async createInvoice(
     invoicePayload: CreateInvoicePayload
   ): Promise<Result<{ url: string }, PaymentServiceError>> {
-    const payload = Webhook.Events.all.parse({
+    const rawPayload = {
       event: 'charge.success',
       data: {
         amount: invoicePayload.amount,
         metadata: invoicePayload.metadata
       }
-    })
+    }
+    const payload = Webhook.Events.all.parse(rawPayload)
 
     const serializedPayload = encodeBase64Url(JSON.stringify(payload))
 

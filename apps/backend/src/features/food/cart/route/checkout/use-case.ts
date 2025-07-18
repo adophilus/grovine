@@ -5,6 +5,7 @@ import { ulid } from 'ulidx'
 import type FoodCartRepository from '../../repository/interface'
 import type { OrderRepository } from '@/features/food/order/repository'
 import type { PaymentService } from '@/features/payment/service'
+import { createOrderInvoicePayload } from '@/features/payment/utils'
 
 class CheckoutCartUseCase {
   constructor(
@@ -34,11 +35,14 @@ class CheckoutCartUseCase {
     let paymentUrl: string | undefined
 
     if (payload.payment_method === 'ONLINE') {
-      const paymentResult = await this.paymentService.createInvoice({
-        amount: Number.parseFloat(cart.price),
-        email: user.email,
-        reference: orderId
-      })
+      const paymentResult = await this.paymentService.createInvoice(
+        createOrderInvoicePayload({
+          amount: Number.parseFloat(cart.price),
+          email: user.email,
+          reference: orderId,
+          order_id: orderId
+        })
+      )
 
       if (paymentResult.isErr) {
         return Result.err({ code: 'ERR_UNEXPECTED' })

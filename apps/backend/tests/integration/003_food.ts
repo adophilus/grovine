@@ -1,15 +1,22 @@
-import { describe, test } from 'node:test'
+import { before, describe, test } from 'node:test'
 import assert from 'node:assert'
 import { ulid } from 'ulidx'
-import { client, bodySerializer } from '../utils'
-import { ItemRepository } from '@/features/food/items'
+import { client, bodySerializer, useApp } from '../utils'
+import { FoodItemRepository } from '@/features/food/item/repository'
+import { Container } from '@n8n/di'
 
 describe('food items', async () => {
+  const foodItemRepository = Container.get(FoodItemRepository)
+
   const imageBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII'
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
   let itemId: string
+
+  before(async () => {
+    useApp(client)
+  })
 
   test('create item', async () => {
     const res = await client.POST('/foods/items', {
@@ -143,7 +150,7 @@ describe('food items', async () => {
       'Response should have ITEM_DELETED code'
     )
 
-    const findItemResult = await ItemRepository.findItemById(itemId)
+    const findItemResult = await foodItemRepository.findById(itemId)
 
     assert(findItemResult.isOk, 'Item should be deleted from database')
     assert(

@@ -28,13 +28,12 @@ import {
   VerifySignUpVerificationEmailUseCase,
   GetUserProfileUseCase
 } from '@/features/auth/use-case'
-import NodemailerMailer from '@/features/mailer/nodemailer'
 import {
   WalletKyselyRepository,
   WalletRepository
 } from '@/features/wallet/repository'
 import GetWalletUseCase from '@/features/wallet/route/get/use-case'
-import { Mailer } from '@/features/mailer'
+import { Mailer, NodemailerMailer } from '@/features/mailer'
 import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
 import {
   PaymentService,
@@ -76,6 +75,9 @@ import {
   CheckoutCartUseCase
 } from '@/features/food/cart/use-case'
 import { WebhookUseCase } from './features/payment/use-case'
+import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
+import GetFoodItemUseCase from './features/food/item/route/get/use-case'
+import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 
 export const bootstrap = () => {
   // Logger
@@ -152,6 +154,9 @@ export const bootstrap = () => {
 
   // Food Item DI
   const foodItemRepository = new FoodItemKyselyRepository(kyselyClient, logger)
+  const createFoodItemUseCase = new CreateFoodItemUseCase(foodItemRepository)
+  const getFoodItemUseCase = new GetFoodItemUseCase(foodItemRepository)
+  const listFoodItemUseCase = new ListFoodItemsUseCase(foodItemRepository)
   const updateFoodItemUseCase = new UpdateFoodItemUseCase(foodItemRepository)
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
 
@@ -251,6 +256,9 @@ export const bootstrap = () => {
 
   // Food Item DI
   Container.set(FoodItemRepository, foodItemRepository)
+  Container.set(CreateFoodItemUseCase, createFoodItemUseCase)
+  Container.set(GetFoodItemUseCase, getFoodItemUseCase)
+  Container.set(ListFoodItemsUseCase, listFoodItemUseCase)
   Container.set(UpdateFoodItemUseCase, updateFoodItemUseCase)
   Container.set(DeleteFoodItemUseCase, deleteFoodItemUseCase)
 

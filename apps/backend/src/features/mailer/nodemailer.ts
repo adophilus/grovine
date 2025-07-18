@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import { config } from '../config'
 import { Result, type Unit } from 'true-myth'
 import { render } from 'jsx-email'
-import { Logger } from '@/features/logger'
+import type { Logger } from '@/features/logger'
 import type { MailerError } from './interface'
 
 class NodemailerMailer {
