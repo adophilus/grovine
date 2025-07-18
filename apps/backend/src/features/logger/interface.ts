@@ -1,4 +1,4 @@
-import { type ILogObj, Logger as TSLogLogger } from "tslog";
+import { type ILogObj, Logger as TSLogLogger } from 'tslog'
 
 class Logger extends TSLogLogger<ILogObj> {}
 

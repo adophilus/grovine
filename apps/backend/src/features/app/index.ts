@@ -1,4 +1,4 @@
-import HonoApp from "./hono";
-import App from "./interface";
+import HonoApp from './hono'
+import App from './interface'
 
-export { App, HonoApp };
+export { App, HonoApp }

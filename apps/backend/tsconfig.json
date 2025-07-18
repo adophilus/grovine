@@ -18,20 +18,12 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "noImplicitAny": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "scripts",
-    "src",
-    "tests"
-  ]
+  "include": ["scripts", "src", "tests"]
 }

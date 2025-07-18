@@ -1,3 +1,3 @@
-import Logger from "./interface";
+import Logger from './interface'
 
-export { Logger };
+export { Logger }

@@ -1,35 +1,35 @@
-import { createClient, type Middleware } from "@grovine/api";
-import { config } from "@/features/config";
-import { app } from "./bootstrap"
+import { createClient, type Middleware } from '@grovine/api'
+import { config } from '@/features/config'
+import { app } from './bootstrap'
 
-export const client = createClient(config.server.url);
+export const client = createClient(config.server.url)
 
 client.use({
-	onRequest: ({ request }) => {
-		return app.request(request)
-	}
+  onRequest: ({ request }) => {
+    return app.request(request)
+  }
 })
 
 export const bodySerializer = (body: any) => {
-	const fd = new FormData();
-	for (const name in body) {
-		fd.append(name, body[name]);
-	}
-	return fd;
-};
+  const fd = new FormData()
+  for (const name in body) {
+    fd.append(name, body[name])
+  }
+  return fd
+}
 
-type Client = ReturnType<typeof createClient>;
+type Client = ReturnType<typeof createClient>
 
 export const useAuth = (
-	client: Client,
-	tokens: { access_token: string; refresh_token: string },
+  client: Client,
+  tokens: { access_token: string; refresh_token: string }
 ) => {
-	const middleware: Middleware = {
-		async onRequest({ request }) {
-			request.headers.set("Authorization", `Bearer ${tokens.access_token}`);
-			return request;
-		},
-	};
+  const middleware: Middleware = {
+    async onRequest({ request }) {
+      request.headers.set('Authorization', `Bearer ${tokens.access_token}`)
+      return request
+    }
+  }
 
-	client.use(middleware);
-};
+  client.use(middleware)
+}

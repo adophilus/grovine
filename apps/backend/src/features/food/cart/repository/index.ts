@@ -1,4 +1,4 @@
-import FoodCartRepository from "./interface";
-import FoodCartKyselyRepository from "./kysely";
+import FoodCartRepository from './interface'
+import FoodCartKyselyRepository from './kysely'
 
-export { FoodCartRepository, FoodCartKyselyRepository };
+export { FoodCartRepository, FoodCartKyselyRepository }

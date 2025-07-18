@@ -75,6 +75,7 @@ import {
   GetCartUseCase,
   CheckoutCartUseCase
 } from '@/features/food/cart/use-case'
+import { WebhookUseCase } from './features/payment/use-case'
 
 export const bootstrap = () => {
   // Logger
@@ -89,6 +90,7 @@ export const bootstrap = () => {
   // Wallet DI
   const walletRepository = new WalletKyselyRepository(logger, kyselyClient)
   const paymentService = new PaystackPaymentService(walletRepository, logger)
+  const webhookUseCase = new WebhookUseCase(paymentService)
   const getWalletUseCase = new GetWalletUseCase(walletRepository)
   const topupWalletUseCase = new TopupWalletUseCase(
     walletRepository,
@@ -201,6 +203,9 @@ export const bootstrap = () => {
 
   // Mailer
   Container.set(Mailer, mailer)
+
+  // Payment DI
+  Container.set(WebhookUseCase, webhookUseCase)
 
   // Wallet DI
   Container.set(WalletRepository, walletRepository)

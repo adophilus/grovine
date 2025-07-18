@@ -1,4 +1,4 @@
-import WalletRepository from "./interface";
-import WalletKyselyRepository from "./kysely";
+import WalletRepository from './interface'
+import WalletKyselyRepository from './kysely'
 
-export { WalletKyselyRepository, WalletRepository };
+export { WalletKyselyRepository, WalletRepository }

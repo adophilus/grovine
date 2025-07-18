@@ -1,48 +1,48 @@
-import nodemailer from "nodemailer";
-import { config } from "../config";
-import { Result, type Unit } from "true-myth";
-import { render } from "jsx-email";
-import { Logger } from "@/features/logger";
-import type { MailerError } from "./interface";
+import nodemailer from 'nodemailer'
+import { config } from '../config'
+import { Result, type Unit } from 'true-myth'
+import { render } from 'jsx-email'
+import { Logger } from '@/features/logger'
+import type { MailerError } from './interface'
 
 class NodemailerMailer {
-	declare transporter: nodemailer.Transporter;
+  declare transporter: nodemailer.Transporter
 
-	constructor(private logger: Logger) {
-		this.transporter = nodemailer.createTransport({
-			url: config.mail.url,
-			headers: { "Content-Transfer-Encoding": "quoted-printable" },
-		});
+  constructor(private logger: Logger) {
+    this.transporter = nodemailer.createTransport({
+      url: config.mail.url,
+      headers: { 'Content-Transfer-Encoding': 'quoted-printable' }
+    })
 
-		this.transporter.on("error", (err) => {
-			this.logger.error("Nodemailer transporter error:", err);
-		});
-	}
+    this.transporter.on('error', (err) => {
+      this.logger.error('Nodemailer transporter error:', err)
+    })
+  }
 
-	async send(payload: {
-		recipients: string[];
-		subject: string;
-		email: JSX.Element;
-	}): Promise<Result<Unit, MailerError>> {
-		const recipients = payload.recipients.join(", ");
-		try {
-			const plainText = await render(payload.email);
-			const htmlText = await render(payload.email);
+  async send(payload: {
+    recipients: string[]
+    subject: string
+    email: JSX.Element
+  }): Promise<Result<Unit, MailerError>> {
+    const recipients = payload.recipients.join(', ')
+    try {
+      const plainText = await render(payload.email)
+      const htmlText = await render(payload.email)
 
-			await this.transporter.sendMail({
-				from: `"${config.mail.sender.name}" <${config.mail.sender.email}>`,
-				to: recipients,
-				subject: payload.subject,
-				text: plainText,
-				html: htmlText,
-			});
+      await this.transporter.sendMail({
+        from: `"${config.mail.sender.name}" <${config.mail.sender.email}>`,
+        to: recipients,
+        subject: payload.subject,
+        text: plainText,
+        html: htmlText
+      })
 
-			return Result.ok();
-		} catch (err) {
-			this.logger.error("Failed to send mail to recipients: ", recipients, err);
-			return Result.err("ERR_MAIL_NOT_SENT");
-		}
-	}
+      return Result.ok()
+    } catch (err) {
+      this.logger.error('Failed to send mail to recipients: ', recipients, err)
+      return Result.err('ERR_MAIL_NOT_SENT')
+    }
+  }
 }
 
-export default NodemailerMailer;
+export default NodemailerMailer

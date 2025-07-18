@@ -1,1 +1,1 @@
-export { AdvertRepository } from "./interface";
+export { AdvertRepository } from './interface'

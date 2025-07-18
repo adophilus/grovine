@@ -1,16 +1,16 @@
-import { Result, Unit } from "true-myth";
-import type { CreateInvoicePayload, Webhook } from "../types";
+import { Result, Unit } from 'true-myth'
+import type { CreateInvoicePayload, Webhook } from '../types'
 
-export type PaymentServiceError = "ERR_UNEXPECTED";
+export type PaymentServiceError = 'ERR_UNEXPECTED'
 
 abstract class PaymentService {
-	public abstract createInvoice(
-		payload: CreateInvoicePayload,
-	): Promise<Result<{ url: string }, PaymentServiceError>>;
+  public abstract createInvoice(
+    payload: CreateInvoicePayload
+  ): Promise<Result<{ url: string }, PaymentServiceError>>
 
-	public abstract handleWebhookEvent(
-		request: Request,
-	): Promise<Result<Unit, unknown>>;
+  public abstract handleWebhookEvent(
+    request: Request
+  ): Promise<Result<Unit, unknown>>
 }
 
-export default PaymentService;
+export default PaymentService

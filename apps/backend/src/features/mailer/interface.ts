@@ -1,13 +1,13 @@
-import { Result, type Unit } from "true-myth";
+import { Result, type Unit } from 'true-myth'
 
-export type MailerError = "ERR_MAIL_NOT_SENT";
+export type MailerError = 'ERR_MAIL_NOT_SENT'
 
 abstract class Mailer {
-	public abstract send(payload: {
-		recipients: string[];
-		subject: string;
-		email: JSX.Element;
-	}): Promise<Result<Unit, MailerError>>;
+  public abstract send(payload: {
+    recipients: string[]
+    subject: string
+    email: JSX.Element
+  }): Promise<Result<Unit, MailerError>>
 }
 
-export default Mailer;
+export default Mailer

@@ -1,9 +1,9 @@
 type AppInterface = {
-	fetch: (request: Request, env: any) => unknown | Promise<unknown>;
-};
-
-abstract class App {
-	public abstract create(): AppInterface;
+  fetch: (request: Request, env: any) => unknown | Promise<unknown>
 }
 
-export default App;
+abstract class App {
+  public abstract create(): AppInterface
+}
+
+export default App

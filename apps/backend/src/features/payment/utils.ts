@@ -1,19 +1,19 @@
 import type {
-	CreateWalletTopupInvoiceMetadataPayload,
-	CreateInvoicePayload,
-	Metadata,
-} from "./types";
+  CreateWalletTopupInvoiceMetadataPayload,
+  CreateInvoicePayload,
+  Metadata
+} from './types'
 
 export const createWalletTopupInvoicePayload = (
-	payload: CreateWalletTopupInvoiceMetadataPayload,
+  payload: CreateWalletTopupInvoiceMetadataPayload
 ): CreateInvoicePayload<Metadata.WalletTopup> => {
-	const { wallet_id, ..._payload } = payload;
+  const { wallet_id, ..._payload } = payload
 
-	return {
-		..._payload,
-		metadata: {
-			type: "WALLET_TOPUP",
-			wallet_id,
-		},
-	};
-};
+  return {
+    ..._payload,
+    metadata: {
+      type: 'WALLET_TOPUP',
+      wallet_id
+    }
+  }
+}

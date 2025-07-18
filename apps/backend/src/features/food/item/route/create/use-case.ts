@@ -1,46 +1,46 @@
-import { ulid } from "ulidx";
-import type { Request, Response } from "./types";
-import { Result } from "true-myth";
-import { Storage } from "@/features/storage";
-import { serializeItem } from "../../utils";
-import type { FoodItemRepository } from "../../repository";
+import { ulid } from 'ulidx'
+import type { Request, Response } from './types'
+import { Result } from 'true-myth'
+import { Storage } from '@/features/storage'
+import { serializeItem } from '../../utils'
+import type { FoodItemRepository } from '../../repository'
 
 class CreateFoodItemUseCase {
-	constructor(private foodItemRepository: FoodItemRepository) {}
+  constructor(private foodItemRepository: FoodItemRepository) {}
 
-	async execute(
-		payload: Request.Body,
-	): Promise<Result<Response.Success, Response.Error>> {
-		const { image, ..._payload } = payload;
+  async execute(
+    payload: Request.Body
+  ): Promise<Result<Response.Success, Response.Error>> {
+    const { image, ..._payload } = payload
 
-		const uploadImageResult = await Storage.service.upload(image);
+    const uploadImageResult = await Storage.service.upload(image)
 
-		if (uploadImageResult.isErr) {
-			return Result.err({
-				code: "ERR_UNEXPECTED",
-			});
-		}
+    if (uploadImageResult.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
 
-		const uploadedImage = uploadImageResult.value;
+    const uploadedImage = uploadImageResult.value
 
-		const createItemResult = await this.foodItemRepository.create({
-			..._payload,
-			price: _payload.price.toString(),
-			image: uploadedImage,
-			id: ulid(),
-		});
+    const createItemResult = await this.foodItemRepository.create({
+      ..._payload,
+      price: _payload.price.toString(),
+      image: uploadedImage,
+      id: ulid()
+    })
 
-		if (createItemResult.isErr) {
-			return Result.err({
-				code: "ERR_UNEXPECTED",
-			});
-		}
+    if (createItemResult.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
 
-		return Result.ok({
-			code: "ITEM_CREATED",
-			data: serializeItem(createItemResult.value),
-		});
-	}
+    return Result.ok({
+      code: 'ITEM_CREATED',
+      data: serializeItem(createItemResult.value)
+    })
+  }
 }
 
-export default CreateFoodItemUseCase;
+export default CreateFoodItemUseCase

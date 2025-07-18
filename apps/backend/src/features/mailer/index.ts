@@ -1,4 +1,4 @@
-import Mailer from "./interface";
-import NodemailerMailer from "./nodemailer";
+import Mailer from './interface'
+import NodemailerMailer from './nodemailer'
 
-export { Mailer };
+export { Mailer }
