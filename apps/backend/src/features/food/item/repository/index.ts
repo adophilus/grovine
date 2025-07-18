@@ -1,4 +1,4 @@
-import FoodItemRepository from "./interface";
-import FoodItemKyselyRepository from "./kysely";
+import FoodItemRepository from './interface'
+import FoodItemKyselyRepository from './kysely'
 
-export { FoodItemRepository, FoodItemKyselyRepository };
+export { FoodItemRepository, FoodItemKyselyRepository }

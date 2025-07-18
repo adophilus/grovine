@@ -1,11 +1,13 @@
 import { Hono } from 'hono'
-import service from './service'
+import { Container } from '@n8n/di'
+import DeleteFoodItemUseCase from './use-case'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 
-export default new Hono().delete('/:id', async (c) => {
+const DeleteFoodItemRoute = new Hono().delete('/:id', async (c) => {
   const id = c.req.param('id')
-  const result = await service(id)
+  const useCase = Container.get(DeleteFoodItemUseCase)
+  const result = await useCase.execute(id)
   let response: Response.Response
   let statusCode: StatusCodes
 
@@ -28,3 +30,5 @@ export default new Hono().delete('/:id', async (c) => {
   }
   return c.json(response, statusCode)
 })
+
+export default DeleteFoodItemRoute
