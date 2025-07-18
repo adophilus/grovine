@@ -1,24 +1,24 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import { createKyselyClient, KyselyClient } from './features/database/kysely'
-import { AdvertRepository } from './features/advert/repository'
-import { AdvertKyselyRepository } from './features/advert/repository/kysely'
+import { createKyselyClient, KyselyClient } from '@/features/database/kysely'
+import { AdvertRepository } from '@/features/advert/repository'
+import { AdvertKyselyRepository } from '@/features/advert/repository/kysely'
 import {
   CreateAdvertUseCase,
   DeleteAdvertUseCase,
   ListAdvertUseCase,
   UpdateAdvertUseCase
-} from './features/advert/use-case'
-import { Logger } from './features/logger'
-import { HonoApp } from './features/app'
-import { config } from './features/config'
+} from '@/features/advert/use-case'
+import { Logger } from '@/features/logger'
+import { HonoApp } from '@/features/app'
+import { config } from '@/features/config'
 import {
   AuthTokenKyselyRepository,
   AuthTokenRepository,
   AuthUserKyselyRepository,
   AuthUserRepository
-} from './features/auth/repository'
+} from '@/features/auth/repository'
 import {
   SendSignInVerificationEmailUseCase,
   ResendSignInVerificationEmailUseCase,
@@ -27,54 +27,54 @@ import {
   ResendSignUpVerificationEmailUseCase,
   VerifySignUpVerificationEmailUseCase,
   GetUserProfileUseCase
-} from './features/auth/use-case'
-import NodemailerMailer from './features/mailer/nodemailer'
+} from '@/features/auth/use-case'
+import NodemailerMailer from '@/features/mailer/nodemailer'
 import {
   WalletKyselyRepository,
   WalletRepository
-} from './features/wallet/repository'
-import GetWalletUseCase from './features/wallet/route/get/use-case'
-import { Mailer } from './features/mailer'
-import TopupWalletUseCase from './features/wallet/route/topup/use-case'
+} from '@/features/wallet/repository'
+import GetWalletUseCase from '@/features/wallet/route/get/use-case'
+import { Mailer } from '@/features/mailer'
+import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
 import {
   PaymentService,
   PaystackPaymentService
-} from './features/payment/service'
-import WithdrawWalletUseCase from './features/wallet/route/withdraw/use-case'
+} from '@/features/payment/service'
+import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
   FoodItemKyselyRepository
-} from './features/food/item/repository'
-import UpdateFoodItemUseCase from './features/food/item/route/update/use-case'
-import DeleteFoodItemUseCase from './features/food/item/route/delete/use-case'
+} from '@/features/food/item/repository'
+import UpdateFoodItemUseCase from '@/features/food/item/route/update/use-case'
+import DeleteFoodItemUseCase from '@/features/food/item/route/delete/use-case'
 import {
   OrderRepository,
   OrderKyselyRepository
-} from './features/food/order/repository'
+} from '@/features/food/order/repository'
 import {
   ListOrdersUseCase,
   GetOrderUseCase,
   UpdateOrderStatusUseCase
-} from './features/food/order/use-case'
+} from '@/features/food/order/use-case'
 import {
   TransactionRepository,
   TransactionKyselyRepository
-} from './features/transaction/repository'
+} from '@/features/transaction/repository'
 import {
   ListTransactionsUseCase,
   GetTransactionUseCase
-} from './features/transaction/use-case'
-import { StorageServiceImplementation } from './features/storage/impl'
-import { Storage } from './features/storage'
+} from '@/features/transaction/use-case'
+import { StorageServiceImplementation } from '@/features/storage/impl'
+import { Storage } from '@/features/storage'
 import {
   FoodCartRepository,
   FoodCartKyselyRepository
-} from './features/food/cart/repository'
+} from '@/features/food/cart/repository'
 import {
   CartSetItemUseCase,
   GetCartUseCase,
   CheckoutCartUseCase
-} from './features/food/cart/use-case'
+} from '@/features/food/cart/use-case'
 
 export const bootstrap = () => {
   // Logger
@@ -139,6 +139,7 @@ export const bootstrap = () => {
       authTokenRepository,
       mailer
     )
+  const getUserProfileUseCase = new GetUserProfileUseCase()
 
   // Advert DI
   const advertRepository = new AdvertKyselyRepository(kyselyClient, logger)
@@ -234,6 +235,7 @@ export const bootstrap = () => {
     VerifySignUpVerificationEmailUseCase,
     verifySignUpVerificationEmailUseCase
   )
+  Container.set(GetUserProfileUseCase, getUserProfileUseCase)
 
   // Advert DI
   Container.set(AdvertRepository, advertRepository)

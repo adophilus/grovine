@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import webhookRouter from "./webhook";
+import WebhookRoute from "./webhook";
 
-const PaymentRouter = new Hono().route("/webhook", webhookRouter);
+const PaymentRouter = new Hono().route("/webhook", WebhookRoute);
 
 export default PaymentRouter;

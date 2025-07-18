@@ -3,7 +3,7 @@ import { StatusCodes } from "@/features/http";
 import { Container } from "@n8n/di";
 import WebhookUseCase from "./use-case";
 
-export default new Hono().post("/", async (c) => {
+const WebhookRoute = new Hono().post("/", async (c) => {
 	const payload = c.req.raw;
 
 	const useCase = Container.get(WebhookUseCase);
@@ -15,3 +15,5 @@ export default new Hono().post("/", async (c) => {
 
 	return c.json({ code: "SUCCESSFUL" }, StatusCodes.OK);
 });
+
+export default WebhookRoute;

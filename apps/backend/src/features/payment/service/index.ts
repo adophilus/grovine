@@ -1,4 +1,5 @@
-import PaystackPaymentService from "./paystack";
-import PaymentService from "./interface";
+import PaystackPaymentService from './paystack'
+import PaymentService from './interface'
+import TestPaymentService from './test'
 
-export { PaystackPaymentService, PaymentService };
+export { PaymentService, PaystackPaymentService, TestPaymentService }

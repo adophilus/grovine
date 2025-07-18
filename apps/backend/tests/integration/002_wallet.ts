@@ -1,9 +1,9 @@
 import { describe, test, after } from "node:test";
 import assert from "node:assert";
-import { client, getStoreAtStage, sleep } from "../utils";
+import { app, client, getStoreAtStage, sleep } from "../utils";
 
 describe("wallet", async () => {
-	after(async () => sleep(60 * 1000));
+	// after(async () => sleep(60 * 1000));
 
 	const store = await getStoreAtStage("001");
 	const accessToken = store.state.auth.access_token;
@@ -44,7 +44,7 @@ describe("wallet", async () => {
 			"Response should have WALLET_TOPUP_REQUEST_SUCCESSFUL code",
 		);
 
-		console.log("Topup url:", res.data.data.url);
+		await app.request(res.data.data.url, { method: "POST" });
 
 		await store.setStage("002", {});
 	});
