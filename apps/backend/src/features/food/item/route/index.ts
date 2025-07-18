@@ -1,13 +1,13 @@
-import { Hono } from 'hono'
-import create from './create'
-import get from './get'
-import list from './list'
-import update from './update'
-import del from './delete'
+import { Hono } from "hono";
+import CreateFoodItemRoute from "./create";
+import ListFoodItemsRoute from "./list";
+import update from "./update";
+import del from "./delete";
+import GetFoodItemRoute from "./get";
 
 export default new Hono()
-  .route('/', create)
-  .route('/', list)
-  .route('/', get)
-  .route('/', update)
-  .route('/', del)
+	.route("/", CreateFoodItemRoute)
+	.route("/", ListFoodItemsRoute)
+	.route("/", GetFoodItemRoute)
+	.route("/", update)
+	.route("/", del);

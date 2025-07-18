@@ -1,7 +1,6 @@
-import type { Cart, CartItem, Order } from "@/types";
+import type { Cart, CartItem } from "@/types";
 import { Result, type Unit } from "true-myth";
 import { ulid } from "ulidx";
-import ItemsRepository from "@/features/food/items/repository";
 import type {
 	CartWithGroupedItems,
 	FoodCartRepositoryError,
