@@ -1,17 +1,17 @@
-import type Repository from './repository'
+import type { OrderWithItems } from './repository/interface'
 
 export type SerializedOrderWithItems = Omit<
-  Repository.OrderWithItems,
+  OrderWithItems,
   'price' | 'items'
 > & {
   price: number
-  items: (Omit<Repository.OrderWithItems['items'][number], 'price'> & {
+  items: (Omit<OrderWithItems['items'][number], 'price'> & {
     price: number
   })[]
 }
 
 export const serializeOrderWithItems = (
-  order: Repository.OrderWithItems
+  order: OrderWithItems
 ): SerializedOrderWithItems => {
   return {
     ...order,

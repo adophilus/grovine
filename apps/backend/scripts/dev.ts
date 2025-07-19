@@ -1,13 +1,14 @@
 import { serve } from '@hono/node-server'
-import { config } from '@grovine/backend'
-import { app, appLogger as logger } from '@grovine/backend'
+import { bootstrap } from '@grovine/backend'
+
+const { app, logger, config } = await bootstrap()
 
 serve(
   {
-    fetch: app.fetch,
+    fetch: app.create().fetch,
     port: config.server.port
   },
   (info) => {
-    logger.info(`Server is running on https://${info.address}:${info.port}`)
+    logger.info(`Server is running on http://${info.address}:${info.port}`)
   }
 )

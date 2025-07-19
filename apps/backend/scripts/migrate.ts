@@ -1,18 +1,22 @@
-import * as path from "path";
-import { promises as fs } from "fs";
-import { Migrator, FileMigrationProvider } from "kysely";
-import { run } from "kysely-migration-cli";
-import { db } from "@/features/database";
+import { run } from 'kysely-migration-cli'
+import {
+  createKyselyMigrator,
+  createKyselyPgClient,
+  createKyselyPgLiteClient,
+  type KyselyClient
+} from '@/features/database/kysely'
+import { config } from '@/features/config'
 
-const migrationFolder = new URL("../migrations", import.meta.url).pathname;
+let db: KyselyClient
 
-const migrator = new Migrator({
-	db,
-	provider: new FileMigrationProvider({
-		fs,
-		path,
-		migrationFolder,
-	}),
-});
+if (config.environment.TEST) {
+  db = await createKyselyPgLiteClient()
+} else {
+  db = await createKyselyPgClient()
+}
 
-run(db, migrator, migrationFolder);
+const migrationFolder = new URL('../migrations', import.meta.url).pathname
+
+const migrator = createKyselyMigrator(db, migrationFolder)
+
+run(db, migrator, migrationFolder)

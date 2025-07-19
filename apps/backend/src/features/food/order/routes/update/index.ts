@@ -1,19 +1,20 @@
 import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
-import { AuthMiddleware } from '@/features/auth'
-import service from './service'
+import AuthMiddleware from '@/features/auth/middleware'
 import middleware from './middleware'
+import { Container } from '@n8n/di'
+import UpdateOrderStatusUseCase from './use-case'
 
-export default new Hono().put(
+const UpdateOrderStatusRoute = new Hono().put(
   '/:id',
   AuthMiddleware.middleware,
   middleware,
   async (c) => {
     const path = c.req.param()
     const body = c.req.valid('json')
-
-    const result = await service({ ...body, ...path })
+    const useCase = Container.get(UpdateOrderStatusUseCase)
+    const result = await useCase.execute({ ...body, ...path })
 
     let response: Response.Response
     let statusCode: StatusCodes
@@ -38,3 +39,5 @@ export default new Hono().put(
     return c.json(response, statusCode)
   }
 )
+
+export default UpdateOrderStatusRoute

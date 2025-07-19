@@ -1,17 +1,17 @@
 import type { MiddlewareHandler } from 'hono'
 import type { User } from '@/types'
-import { StatusCodes } from '../http'
+import { StatusCodes } from '@/features/http'
 import type { types } from '@grovine/api'
-import Repository from './repository'
+import { AuthUserRepository } from './repository'
 import { verifyToken } from './utils/token'
-import { logger } from './logger'
+import { Container } from '@n8n/di'
 
 export type Response =
   | types.components['schemas']['Api.UnauthorizedError']
   | types.components['schemas']['Api.UserNotVerifiedError']
   | types.components['schemas']['Api.UnexpectedError']
 
-namespace Middleware {
+namespace AuthMiddleware {
   export const middleware: MiddlewareHandler<{
     Variables: {
       user: User.Selectable
@@ -43,10 +43,10 @@ namespace Middleware {
       return c.json(response, StatusCodes.UNAUTHORIZED)
     }
 
-    const findUserResult = await Repository.findUserById(
+    const authUserRepository = Container.get(AuthUserRepository)
+    const findUserResult = await authUserRepository.findById(
       tokenVerificationResult.value.user_id
     )
-
     if (findUserResult.isErr) {
       response = {
         code: 'ERR_UNEXPECTED'
@@ -76,4 +76,4 @@ namespace Middleware {
   }
 }
 
-export default Middleware
+export default AuthMiddleware

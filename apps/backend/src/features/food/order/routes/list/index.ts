@@ -1,11 +1,13 @@
 import { Hono } from 'hono'
-import service from './service'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
-import { AuthMiddleware } from '@/features/auth'
+import AuthMiddleware from '@/features/auth/middleware'
+import { Container } from '@n8n/di'
+import ListOrdersUseCase from './use-case'
+import type { User } from '@/types'
 
-export default new Hono().get(
+const ListOrdersRoute = new Hono().get(
   '/',
   AuthMiddleware.middleware,
   middleware,
@@ -13,9 +15,10 @@ export default new Hono().get(
     let response: Response.Response
     let statusCode: StatusCodes
 
-    const user = c.get('user')
+    const user = c.get('user') as User.Selectable
     const payload = c.req.valid('query')
-    const result = await service(payload, user)
+    const useCase = Container.get(ListOrdersUseCase)
+    const result = await useCase.execute(payload, user)
 
     if (result.isErr) {
       response = result.error
@@ -28,3 +31,5 @@ export default new Hono().get(
     return c.json(response, statusCode)
   }
 )
+
+export default ListOrdersRoute

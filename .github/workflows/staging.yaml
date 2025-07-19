@@ -58,6 +58,9 @@ jobs:
       - name: Build stack
         run: pnpm build
 
+      - name: Test stack
+        run: pnpm test
+
       - name: Deploy docs
         run: pnpm --filter @grovine/docs run deploy --target "$VERCEL_ENVIRONMENT"
         env:

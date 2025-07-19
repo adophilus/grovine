@@ -8,18 +8,31 @@ export namespace Metadata {
 
   export type WalletTopup = z.infer<typeof walletTopup>
 
-  export const all = z.discriminatedUnion('type', [walletTopup])
+  export const order = z.object({
+    type: z.literal('ORDER'),
+    order_id: z.string()
+  })
+
+  export type Order = z.infer<typeof order>
+
+  export const all = z.discriminatedUnion('type', [walletTopup, order])
 }
 
 export type CreateWalletTopupInvoiceMetadataPayload = {
   amount: number
   email: string
+  reference?: string
   wallet_id: string
 }
 
-export type CreatePaymentInvoicePayload<
-  T extends Record<string, unknown> = {}
-> = {
+export type CreateOrderInvoiceMetadataPayload = {
+  amount: number
+  email: string
+  reference?: string
+  order_id: string
+}
+
+export type CreateInvoicePayload<T extends Record<string, unknown> = {}> = {
   amount: number
   email: string
   reference?: string

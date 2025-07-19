@@ -3,7 +3,8 @@ import { SignJWT, jwtVerify } from 'jose'
 import { addMinutes } from 'date-fns'
 import { config } from '@/features/config'
 import { Result } from 'true-myth'
-import { logger } from '../logger'
+import { Container } from '@n8n/di'
+import { Logger } from '@/features/logger'
 
 export const generateToken = (): string => {
   return Math.floor(10000 + Math.random() * 90000).toString()
@@ -54,6 +55,8 @@ export const generateTokens = async (
 export const verifyToken = async (
   token: string
 ): Promise<Result<TokenPayload, Error>> => {
+  const logger = Container.get(Logger)
+
   try {
     const { payload } = await jwtVerify<TokenPayload>(token, secret)
     return Result.ok(payload)
