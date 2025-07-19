@@ -302,7 +302,5 @@ export const bootstrap = async () => {
   Container.set(ListTransactionsUseCase, listTransactionsUseCase)
   Container.set(GetTransactionUseCase, getTransactionUseCase)
 
-  await kyselyMigrator.migrateToLatest()
-
   return { app, logger, config }
 }
