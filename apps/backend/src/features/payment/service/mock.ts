@@ -6,7 +6,7 @@ import type { WalletRepository } from '@/features/wallet/repository'
 import { decodeBase64UrlString, encodeBase64Url } from 'effect/Encoding'
 import { Either } from 'effect'
 
-class TestPaymentService implements PaymentService {
+class MockPaymentService implements PaymentService {
   constructor(private walletRepository: WalletRepository) {}
 
   public async createInvoice(
@@ -95,4 +95,4 @@ class TestPaymentService implements PaymentService {
   }
 }
 
-export default TestPaymentService
+export default MockPaymentService

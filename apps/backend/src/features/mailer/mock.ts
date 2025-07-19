@@ -1,7 +1,7 @@
 import { Result, type Unit } from 'true-myth'
 import type { MailerError } from './interface'
 
-class TestMailer {
+class MockMailer {
   public async send(_: {
     recipients: string[]
     subject: string
@@ -11,4 +11,4 @@ class TestMailer {
   }
 }
 
-export default TestMailer
+export default MockMailer

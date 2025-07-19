@@ -1,13 +1,15 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import { Storage } from '@/features/storage'
-import type { UploadedData } from '@/features/storage/types'
-import { AdvertRepository } from '../../repository'
+import type { StorageService, UploadedData } from '@/features/storage/service'
+import type { AdvertRepository } from '../../repository'
 import { Service } from '@n8n/di'
 
 @Service()
 class UpdateAdvertUseCase {
-  constructor(private advertRepository: AdvertRepository) {}
+  constructor(
+    private advertRepository: AdvertRepository,
+    private storage: StorageService
+  ) {}
 
   async execute(
     id: string,
@@ -25,10 +27,10 @@ class UpdateAdvertUseCase {
 
     const { image, ..._payload } = payload
 
-    let updatedImage: UploadedData | undefined = undefined
+    let updatedImage: UploadedData | undefined
 
     if (image) {
-      const uploadImageResult = await Storage.service.upload(image)
+      const uploadImageResult = await this.storage.upload(image)
 
       if (uploadImageResult.isErr) {
         return Result.err({

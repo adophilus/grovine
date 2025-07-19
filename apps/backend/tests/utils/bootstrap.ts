@@ -37,9 +37,9 @@ import {
   WalletRepository
 } from '@/features/wallet/repository'
 import GetWalletUseCase from '@/features/wallet/route/get/use-case'
-import { Mailer, TestMailer } from '@/features/mailer'
+import { Mailer, MockMailer } from '@/features/mailer'
 import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
-import { PaymentService, TestPaymentService } from '@/features/payment/service'
+import { PaymentService, MockPaymentService } from '@/features/payment/service'
 import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
@@ -64,8 +64,7 @@ import {
   ListTransactionsUseCase,
   GetTransactionUseCase
 } from '@/features/transaction/use-case'
-import { StorageServiceImplementation } from '@/features/storage/impl'
-import { Storage } from '@/features/storage'
+import { StorageService, MockStorageService } from '@/features/storage/service'
 import {
   FoodCartRepository,
   FoodCartKyselyRepository
@@ -89,12 +88,15 @@ export const bootstrap = async () => {
   const kyselyClient = await createKyselyPgLiteClient()
   const kyselyMigrator = createKyselyMigrator(kyselyClient, migrationFolder)
 
-  // Mailer
-  const mailer = new TestMailer()
+  // Storage DI
+  const storageService = new MockStorageService()
+
+  // Mailer DI
+  const mailer = new MockMailer()
 
   // Wallet DI
   const walletRepository = new WalletKyselyRepository(logger, kyselyClient)
-  const paymentService = new TestPaymentService(walletRepository)
+  const paymentService = new MockPaymentService(walletRepository)
   const webhookUseCase = new WebhookUseCase(paymentService)
   const getWalletUseCase = new GetWalletUseCase(walletRepository)
   const topupWalletUseCase = new TopupWalletUseCase(
@@ -150,17 +152,29 @@ export const bootstrap = async () => {
 
   // Advert DI
   const advertRepository = new AdvertKyselyRepository(kyselyClient, logger)
-  const createAdvertUseCase = new CreateAdvertUseCase(advertRepository)
+  const createAdvertUseCase = new CreateAdvertUseCase(
+    advertRepository,
+    storageService
+  )
   const listAdvertUseCase = new ListAdvertUseCase(advertRepository)
-  const updateAdvertUseCase = new UpdateAdvertUseCase(advertRepository)
+  const updateAdvertUseCase = new UpdateAdvertUseCase(
+    advertRepository,
+    storageService
+  )
   const deleteAdvertUseCase = new DeleteAdvertUseCase(advertRepository)
 
   // Food Item DI
   const foodItemRepository = new FoodItemKyselyRepository(kyselyClient, logger)
-  const createFoodItemUseCase = new CreateFoodItemUseCase(foodItemRepository)
+  const createFoodItemUseCase = new CreateFoodItemUseCase(
+    foodItemRepository,
+    storageService
+  )
   const getFoodItemUseCase = new GetFoodItemUseCase(foodItemRepository)
   const listFoodItemUseCase = new ListFoodItemsUseCase(foodItemRepository)
-  const updateFoodItemUseCase = new UpdateFoodItemUseCase(foodItemRepository)
+  const updateFoodItemUseCase = new UpdateFoodItemUseCase(
+    foodItemRepository,
+    storageService
+  )
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
 
   // Food Order DI
@@ -193,23 +207,21 @@ export const bootstrap = async () => {
   )
   const getTransactionUseCase = new GetTransactionUseCase(transactionRepository)
 
-  // Storage DI
-  const storageService = new StorageServiceImplementation(
-    config.storage.mediaServerUrl
-  )
-
   const app = new HonoApp(logger)
 
-  // Logger
+  // Logger DI
   Container.set(Logger, logger)
 
-  // Database
+  // Database DI
   Container.set(KyselyClient, kyselyClient)
 
-  // Payment
+  // Payment DI
   Container.set(PaymentService, paymentService)
 
-  // Mailer
+  // Storage DI
+  Container.set(StorageService, storageService)
+
+  // Mailer DI
   Container.set(Mailer, mailer)
 
   // Payment DI
@@ -281,9 +293,6 @@ export const bootstrap = async () => {
   Container.set(TransactionRepository, transactionRepository)
   Container.set(ListTransactionsUseCase, listTransactionsUseCase)
   Container.set(GetTransactionUseCase, getTransactionUseCase)
-
-  // Storage DI
-  Container.set(StorageServiceImplementation, storageService)
 
   await kyselyMigrator.migrateToLatest()
 

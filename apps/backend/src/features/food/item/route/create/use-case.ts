@@ -1,19 +1,22 @@
 import { ulid } from 'ulidx'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import { Storage } from '@/features/storage'
+import type { StorageService } from '@/features/storage/service'
 import { serializeItem } from '../../utils'
 import type { FoodItemRepository } from '../../repository'
 
 class CreateFoodItemUseCase {
-  constructor(private foodItemRepository: FoodItemRepository) {}
+  constructor(
+    private foodItemRepository: FoodItemRepository,
+    private storage: StorageService
+  ) {}
 
   async execute(
     payload: Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
     const { image, ..._payload } = payload
 
-    const uploadImageResult = await Storage.service.upload(image)
+    const uploadImageResult = await this.storage.upload(image)
 
     if (uploadImageResult.isErr) {
       return Result.err({

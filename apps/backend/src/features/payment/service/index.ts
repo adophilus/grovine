@@ -1,5 +1,5 @@
 import PaystackPaymentService from './paystack'
 import PaymentService from './interface'
-import TestPaymentService from './test'
+import MockPaymentService from './mock'
 
-export { PaymentService, PaystackPaymentService, TestPaymentService }
+export { PaymentService, PaystackPaymentService, MockPaymentService }

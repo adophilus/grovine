@@ -1,34 +1,27 @@
-import { Result } from 'true-myth'
-import { StatusCodes } from 'http-status-codes'
-import {
-  StorageServiceAbstractClass,
-  type StorageService,
-  type StorageServiceError,
-  type UploadedData
-} from './types'
-import { z } from 'zod'
+import { Result, type Unit } from 'true-myth'
+import type StorageService from './interface'
+import type { StorageServiceError, UploadedData } from './interface'
+import { parseUrl, type UrlScheme } from '@grovine/media-server'
+import { StatusCodes } from '@/features/http'
+import z from 'zod'
 
-const cloudinaryUploadJsonResponseSchema = z.object({
-  secure_url: z.string().url(),
-  public_id: z.string()
-})
+class CloudinaryStorageService implements StorageService {
+  private declare urlScheme: UrlScheme
 
-const hash = async (payload: string) => {
-  const msgUint8 = new TextEncoder().encode(payload)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  private uploadJsonResponseSchema = z.object({
+    secure_url: z.string().url(),
+    public_id: z.string()
+  })
 
-  return hashHex
-}
+  constructor(url: string) {
+    this.urlScheme = parseUrl(url)
+  }
 
-export class StorageServiceImplementation
-  extends StorageServiceAbstractClass
-  implements StorageService
-{
-  upload(file: File): Promise<Result<UploadedData, StorageServiceError>>
-  upload(file: File[]): Promise<Result<UploadedData[], StorageServiceError>>
-  async upload(
+  public upload(file: File): Promise<Result<UploadedData, StorageServiceError>>
+  public upload(
+    file: File[]
+  ): Promise<Result<UploadedData[], StorageServiceError>>
+  public async upload(
     file: unknown
   ): Promise<Result<UploadedData | UploadedData[], StorageServiceError>> {
     const files = Array.isArray(file) ? file : [file]
@@ -40,7 +33,7 @@ export class StorageServiceImplementation
 
       // formData.set('upload_preset', config.mediaServer.uploadPreset)
       const timestamp = new Date().toString()
-      const signature = await hash(`timestamp=${timestamp}`)
+      const signature = await this.hash(`timestamp=${timestamp}`)
 
       formData.set('signature', signature)
       formData.set('signature_algorithm', 'sha256')
@@ -62,7 +55,7 @@ export class StorageServiceImplementation
 
       if (res.status !== 200) return Result.err('UPLOAD_FAILED')
 
-      const json = cloudinaryUploadJsonResponseSchema.parse(await res.json())
+      const json = this.uploadJsonResponseSchema.parse(await res.json())
 
       uploadedImageData.push({
         public_id: json.public_id,
@@ -80,9 +73,7 @@ export class StorageServiceImplementation
     return returnValue
   }
 
-  async remove(
-    fileId: string
-  ): Promise<Result<undefined, StorageServiceError>> {
+  async remove(fileId: string): Promise<Result<Unit, StorageServiceError>> {
     const deleteResponse = await fetch(
       `${this.urlScheme.serverUrl}/v1_1/image/destroy`,
       {
@@ -92,18 +83,31 @@ export class StorageServiceImplementation
         },
         body: JSON.stringify({
           public_id: fileId,
-          signature: hash(
+          signature: this.hash(
             `timestamp=${Date.now()}&api_key=${this.urlScheme.apiKey}`
           )
         })
       }
     )
 
-    const res: Result<undefined, StorageServiceError> =
+    const res: Result<Unit, StorageServiceError> =
       deleteResponse.status === StatusCodes.OK
-        ? Result.ok(undefined)
+        ? Result.ok()
         : Result.err('REMOVE_FAILED')
 
     return res
   }
+
+  private async hash(payload: string) {
+    const msgUint8 = new TextEncoder().encode(payload)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    return hashHex
+  }
 }
+
+export default CloudinaryStorageService

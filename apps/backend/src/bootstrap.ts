@@ -67,8 +67,10 @@ import {
   ListTransactionsUseCase,
   GetTransactionUseCase
 } from '@/features/transaction/use-case'
-import { StorageServiceImplementation } from '@/features/storage/impl'
-import { Storage } from '@/features/storage'
+import {
+  StorageService,
+  CloudinaryStorageService
+} from '@/features/storage/service'
 import {
   FoodCartRepository,
   FoodCartKyselyRepository
@@ -92,7 +94,12 @@ export const bootstrap = async () => {
   const kyselyClient = await createKyselyPgClient()
   const kyselyMigrator = createKyselyMigrator(kyselyClient, migrationFolder)
 
-  // Mailer
+  // Storage DI
+  const storageService = new CloudinaryStorageService(
+    config.storage.mediaServerUrl
+  )
+
+  // Mailer DI
   const mailer = new NodemailerMailer(logger)
 
   // Wallet DI
@@ -153,17 +160,29 @@ export const bootstrap = async () => {
 
   // Advert DI
   const advertRepository = new AdvertKyselyRepository(kyselyClient, logger)
-  const createAdvertUseCase = new CreateAdvertUseCase(advertRepository)
+  const createAdvertUseCase = new CreateAdvertUseCase(
+    advertRepository,
+    storageService
+  )
   const listAdvertUseCase = new ListAdvertUseCase(advertRepository)
-  const updateAdvertUseCase = new UpdateAdvertUseCase(advertRepository)
+  const updateAdvertUseCase = new UpdateAdvertUseCase(
+    advertRepository,
+    storageService
+  )
   const deleteAdvertUseCase = new DeleteAdvertUseCase(advertRepository)
 
   // Food Item DI
   const foodItemRepository = new FoodItemKyselyRepository(kyselyClient, logger)
-  const createFoodItemUseCase = new CreateFoodItemUseCase(foodItemRepository)
+  const createFoodItemUseCase = new CreateFoodItemUseCase(
+    foodItemRepository,
+    storageService
+  )
   const getFoodItemUseCase = new GetFoodItemUseCase(foodItemRepository)
   const listFoodItemUseCase = new ListFoodItemsUseCase(foodItemRepository)
-  const updateFoodItemUseCase = new UpdateFoodItemUseCase(foodItemRepository)
+  const updateFoodItemUseCase = new UpdateFoodItemUseCase(
+    foodItemRepository,
+    storageService
+  )
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
 
   // Food Order DI
@@ -196,11 +215,6 @@ export const bootstrap = async () => {
   )
   const getTransactionUseCase = new GetTransactionUseCase(transactionRepository)
 
-  // Storage DI
-  const storageService = new StorageServiceImplementation(
-    config.storage.mediaServerUrl
-  )
-
   const app = new HonoApp(logger)
 
   // Logger
@@ -212,7 +226,10 @@ export const bootstrap = async () => {
   // Payment
   Container.set(PaymentService, paymentService)
 
-  // Mailer
+  // Storage DI
+  Container.set(StorageService, storageService)
+
+  // Mailer DI
   Container.set(Mailer, mailer)
 
   // Payment DI
@@ -284,9 +301,6 @@ export const bootstrap = async () => {
   Container.set(TransactionRepository, transactionRepository)
   Container.set(ListTransactionsUseCase, listTransactionsUseCase)
   Container.set(GetTransactionUseCase, getTransactionUseCase)
-
-  // Storage DI
-  Container.set(StorageServiceImplementation, storageService)
 
   await kyselyMigrator.migrateToLatest()
 

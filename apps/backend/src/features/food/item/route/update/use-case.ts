@@ -1,12 +1,14 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import { Storage } from '@/features/storage'
+import { StorageService, type UploadedData } from '@/features/storage/service'
 import { serializeItem } from '../../utils'
-import type { UploadedData } from '@/features/storage/types'
 import type { FoodItemRepository } from '../../repository'
 
 class UpdateFoodItemUseCase {
-  constructor(private foodItemRepository: FoodItemRepository) {}
+  constructor(
+    private foodItemRepository: FoodItemRepository,
+    private storage: StorageService
+  ) {}
 
   async execute(
     id: string,
@@ -24,10 +26,10 @@ class UpdateFoodItemUseCase {
 
     const { image, ..._payload } = payload
 
-    let updatedImage: UploadedData | undefined = undefined
+    let updatedImage: UploadedData | undefined
 
     if (image) {
-      const uploadImageResult = await Storage.service.upload(image)
+      const uploadImageResult = await this.storage.upload(image)
 
       if (uploadImageResult.isErr) {
         return Result.err({
