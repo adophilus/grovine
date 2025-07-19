@@ -1,11 +1,7 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import {
-  createKyselyMigrator,
-  createKyselyPgClient,
-  KyselyClient
-} from '@/features/database/kysely'
+import { createKyselyPgClient, KyselyClient } from '@/features/database/kysely'
 import { AdvertRepository } from '@/features/advert/repository'
 import { AdvertKyselyRepository } from '@/features/advert/repository/kysely'
 import {
@@ -92,7 +88,6 @@ export const bootstrap = async () => {
 
   // Database
   const kyselyClient = await createKyselyPgClient()
-  const kyselyMigrator = createKyselyMigrator(kyselyClient, migrationFolder)
 
   // Storage DI
   const storageService = new CloudinaryStorageService(
