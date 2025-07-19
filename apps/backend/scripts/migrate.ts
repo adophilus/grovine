@@ -1,11 +1,9 @@
 import { run } from 'kysely-migration-cli'
-import {
-  createKyselyMigrator,
-  createKyselyPgClient,
-  createKyselyPgLiteClient,
-  type KyselyClient
-} from '@/features/database/kysely'
+import type { KyselyClient } from '@/features/database/kysely'
 import { config } from '@/features/config'
+import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
+import { createKyselyPgClient } from '@/features/database/kysely/pg'
+import { createKyselyMigrator } from '@/features/database/kysely/migrator'
 
 let db: KyselyClient
 

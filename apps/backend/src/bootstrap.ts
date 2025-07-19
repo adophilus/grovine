@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import { createKyselyPgClient, KyselyClient } from '@/features/database/kysely'
+import { KyselyClient } from '@/features/database/kysely'
 import { AdvertRepository } from '@/features/advert/repository'
 import { AdvertKyselyRepository } from '@/features/advert/repository/kysely'
 import {
@@ -80,11 +80,11 @@ import { WebhookUseCase } from './features/payment/use-case'
 import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
 import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
+import { createKyselyPgClient } from './features/database/kysely/pg'
 
 export const bootstrap = async () => {
   // Logger
   const logger = new Logger({ name: 'App' })
-  const migrationFolder = new URL('../migrations', import.meta.url).pathname
 
   // Database
   const kyselyClient = await createKyselyPgClient()

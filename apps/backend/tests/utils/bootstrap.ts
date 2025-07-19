@@ -1,11 +1,7 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import {
-  createKyselyMigrator,
-  createKyselyPgLiteClient,
-  KyselyClient
-} from '@/features/database/kysely'
+import { KyselyClient } from '@/features/database/kysely'
 import { AdvertRepository } from '@/features/advert/repository'
 import { AdvertKyselyRepository } from '@/features/advert/repository/kysely'
 import {
@@ -78,6 +74,8 @@ import { WebhookUseCase } from '@/features/payment/use-case'
 import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
+import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
+import { createKyselyMigrator } from '@/features/database/kysely/migrator'
 
 export const bootstrap = async () => {
   // Logger
