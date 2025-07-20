@@ -115,6 +115,8 @@ type OrderTable = TimestampModel & {
       }
   )
 
+import type { VendorTable } from '../../vendor/types'
+
 export type KyselyDatabaseTables = {
   users: UsersTable
   tokens: TokensTable
@@ -128,4 +130,5 @@ export type KyselyDatabaseTables = {
   orders: OrderTable
   transactions: TransactionsTable
   adverts: AdvertsTable
+  vendors: VendorTable
 }

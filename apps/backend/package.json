@@ -26,7 +26,7 @@
     "hono": "^4.7.11",
     "jose": "^6.0.11",
     "jsx-email": "^2.7.2",
-    "kysely": "^0.28.2",
+    "kysely": "^0.28.3",
     "kysely-pglite": "^0.6.1",
     "kysely-plugin-prefix": "^1.2.2",
     "nodemailer": "^7.0.3",
@@ -34,6 +34,7 @@
     "pg": "^8.16.0",
     "react": "^19.1.0",
     "reflect-metadata": "^0.2.2",
+    "ts-results": "^3.3.0",
     "tslog": "^4.9.3",
     "tsyringe": "^4.10.0"
   },
