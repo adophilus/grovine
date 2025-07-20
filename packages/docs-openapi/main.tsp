@@ -49,9 +49,153 @@ namespace Api {
     ...OmitProperties<T, "created_at" | "updated_at" | "deleted_at">;
   }
 
+  
+
+  
+
+  
+
+  
+
   enum Role {
     ADMIN,
     USER,
+  }
+
+  @tag("Vendor")
+  @route("/vendors")
+  namespace Vendor {
+    model Vendor {
+      id: Id;
+      user_id: Id;
+      name: string;
+      niches: string[];
+      profile_picture: string | null;
+      rating: numeric | null;
+      is_verified: boolean | null;
+      is_banned: boolean | null;
+      created_at: DateTime;
+      updated_at: DateTime | null;
+    }
+
+    namespace Create {
+      namespace Request {
+        model Body {
+          name: string;
+          niches: string[];
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 201;
+            code: "VENDOR_CREATED";
+            data: Vendor;
+          }
+        }
+
+        namespace Error {
+          @error
+          model VendorAlreadyExistsError {
+            @statusCode _code: 409;
+            code: "ERR_VENDOR_ALREADY_EXISTS";
+          }
+
+          alias Error = VendorAlreadyExistsError | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Create a new vendor")
+      op createVendor(@body body: Request.Body): Response.Response;
+    }
+
+    @route("/{user_id}")
+    namespace Read {
+      namespace Request {
+        model Path {
+          @path
+          user_id: Id;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "VENDOR_FOUND";
+            data: Vendor;
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"VENDOR"> | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("Get a vendor by user ID")
+      op getVendorByUserId(...Request.Path): Response.Response;
+    }
+
+    namespace Update {
+      namespace Request {
+        model Body {
+          name?: string;
+          niches?: string[];
+          profile_picture?: string;
+          rating?: numeric;
+          is_verified?: boolean;
+          is_banned?: boolean;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "VENDOR_UPDATED";
+            data: Vendor;
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"VENDOR"> | BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @patch
+      @doc("Update vendor information")
+      op updateVendor(@body body: Request.Body): Response.Response;
+    }
+
+    namespace Delete {
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "VENDOR_DELETED";
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"VENDOR"> | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @delete
+      @doc("Delete vendor")
+      op deleteVendor(): Response.Response;
+    }
   }
 
   @example("mary.slessor@mail.com")
@@ -1216,6 +1360,8 @@ namespace Api {
     }
   }
 
+  
+
   @tag("Wallet")
   @route("/wallets")
   namespace Wallet {
@@ -1316,13 +1462,15 @@ namespace Api {
   }
 }
 
-model Media {
-  @example("h93suhw7mzyujf9tbugy")
-  public_id: string;
+  model Media {
+    @example("h93suhw7mzyujf9tbugy")
+    public_id: string;
 
-  @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
-  url: string;
-}
+    @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
+    url: string;
+  }
+
+  
 
 namespace Pagination {
   model Options {
