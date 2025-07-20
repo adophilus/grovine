@@ -1,1 +1,4 @@
-export type { VendorRepository } from './interface'
+import VendorRepository from './interface'
+import KyselyVendorRepository from './kysely'
+
+export { VendorRepository, KyselyVendorRepository }

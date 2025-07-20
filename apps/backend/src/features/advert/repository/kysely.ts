@@ -1,7 +1,7 @@
 import type { Adverts } from '@/types'
-import { Result, Unit } from 'true-myth'
+import { Result, type Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
-import { AdvertRepository, type AdvertRepositoryError } from './interface'
+import type { AdvertRepository, AdvertRepositoryError } from './interface'
 import type { KyselyClient } from '@/features/database/kysely/interface'
 import type { Logger } from '@/features/logger'
 

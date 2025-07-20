@@ -8,7 +8,7 @@ import {
   CreateAdvertUseCase,
   DeleteAdvertUseCase,
   ListAdvertUseCase,
-  UpdateAdvertUseCase,
+  UpdateAdvertUseCase
 } from '@/features/advert/use-case'
 import { Logger } from '@/features/logger'
 import { HonoApp } from '@/features/app'
@@ -17,7 +17,7 @@ import {
   AuthTokenKyselyRepository,
   AuthTokenRepository,
   AuthUserKyselyRepository,
-  AuthUserRepository,
+  AuthUserRepository
 } from '@/features/auth/repository'
 import {
   SendSignInVerificationEmailUseCase,
@@ -26,68 +26,68 @@ import {
   SendSignUpVerificationEmailUseCase,
   ResendSignUpVerificationEmailUseCase,
   VerifySignUpVerificationEmailUseCase,
-  GetUserProfileUseCase,
+  GetUserProfileUseCase
 } from '@/features/auth/use-case'
 import {
   WalletKyselyRepository,
-  WalletRepository,
+  WalletRepository
 } from '@/features/wallet/repository'
 import GetWalletUseCase from '@/features/wallet/route/get/use-case'
 import { Mailer, NodemailerMailer } from '@/features/mailer'
 import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
 import {
   PaymentService,
-  PaystackPaymentService,
+  PaystackPaymentService
 } from '@/features/payment/service'
 import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
-  FoodItemKyselyRepository,
+  FoodItemKyselyRepository
 } from '@/features/food/item/repository'
 import UpdateFoodItemUseCase from '@/features/food/item/route/update/use-case'
 import DeleteFoodItemUseCase from '@/features/food/item/route/delete/use-case'
 import {
   OrderRepository,
-  OrderKyselyRepository,
+  OrderKyselyRepository
 } from '@/features/food/order/repository'
 import {
   ListOrdersUseCase,
   GetOrderUseCase,
-  UpdateOrderStatusUseCase,
+  UpdateOrderStatusUseCase
 } from '@/features/food/order/use-case'
 import {
   TransactionRepository,
-  TransactionKyselyRepository,
+  TransactionKyselyRepository
 } from '@/features/transaction/repository'
 import {
   ListTransactionsUseCase,
-  GetTransactionUseCase,
+  GetTransactionUseCase
 } from '@/features/transaction/use-case'
 import {
   StorageService,
-  CloudinaryStorageService,
+  CloudinaryStorageService
 } from '@/features/storage/service'
 import {
   FoodCartRepository,
-  FoodCartKyselyRepository,
+  FoodCartKyselyRepository
 } from '@/features/food/cart/repository'
 import {
   CartSetItemUseCase,
   GetCartUseCase,
-  CheckoutCartUseCase,
+  CheckoutCartUseCase
 } from '@/features/food/cart/use-case'
 import { WebhookUseCase } from './features/payment/use-case'
 import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
 import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 import { createKyselyPgClient } from './features/database/kysely/pg'
-import type { VendorRepository } from '@/features/vendor/repository'
+import { VendorRepository } from '@/features/vendor/repository'
 import { KyselyVendorRepository } from '@/features/vendor/repository/kysely'
 import {
   CreateVendorUseCase,
   ReadVendorUseCase,
   UpdateVendorUseCase,
-  DeleteVendorUseCase,
+  DeleteVendorUseCase
 } from '@/features/vendor/use-case'
 
 export const bootstrap = async () => {
@@ -316,7 +316,6 @@ export const bootstrap = async () => {
   Container.set(CreateVendorUseCase, createVendorUseCase)
   Container.set(ReadVendorUseCase, readVendorUseCase)
   Container.set(UpdateVendorUseCase, updateVendorUseCase)
-  Container.set(DeleteVendorUseCase, deleteVendorUseCase)
 
   return { app, logger, config }
 }

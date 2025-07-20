@@ -1,9 +1,29 @@
-import type { InsertableVendor, SelectableVendor, UpdateableVendor } from '../types'
 import type { Result } from 'true-myth'
+import type { Vendor } from '@/types'
 
-export interface VendorRepository {
-  create(payload: InsertableVendor): Promise<Result<SelectableVendor, Error>>
-  find(user_id: string): Promise<Result<SelectableVendor, Error>>
-  update(user_id: string, payload: UpdateableVendor): Promise<Result<SelectableVendor, Error>>
-  delete(user_id: string): Promise<Result<SelectableVendor, Error>>
+export type VendorRepositoryError = 'ERR_UNEXPECTED'
+
+abstract class VendorRepository {
+  public abstract create(
+    payload: Vendor.Insertable
+  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
+
+  public abstract findById(
+    id: string
+  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
+
+  public abstract findByUserId(
+    user_id: string
+  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
+
+  public abstract updateById(
+    id: string,
+    payload: Vendor.Updateable
+  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
+
+  public abstract deleteById(
+    id: string
+  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
 }
+
+export default VendorRepository

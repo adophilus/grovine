@@ -115,7 +115,16 @@ type OrderTable = TimestampModel & {
       }
   )
 
-import type { VendorTable } from '../../vendor/types'
+type VendorTable = TimestampModel & {
+  id: string
+  name: string
+  niches: string[]
+  profile_picture: string | null
+  rating: number | null
+  is_verified: boolean | null
+  is_banned: boolean | null
+  user_id: string
+}
 
 export type KyselyDatabaseTables = {
   users: UsersTable
