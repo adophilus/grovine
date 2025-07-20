@@ -45,8 +45,10 @@ case $env in
     ;;
 esac
 
+env_file=$(dirname $0)/../.env
+
 # Update .env file
-echo "NODE_ENV=\"$node_env\"" > .env
-echo "VITE_NODE_ENV=\"\$NODE_ENV\"" >> .env
+echo "NODE_ENV=\"$node_env\"" > $env_file
+echo "VITE_NODE_ENV=\"\$NODE_ENV\"" >> $env_file
 
 echo "Switched to $node_env environment"
