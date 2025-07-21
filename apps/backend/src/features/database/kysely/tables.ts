@@ -71,6 +71,7 @@ type FoodsTable = TimestampModel & {
   image: Media
   is_available: boolean
 }
+
 type AdvertsTable = TimestampModel & {
   id: string
   media: Media
@@ -119,10 +120,10 @@ type VendorTable = TimestampModel & {
   id: string
   name: string
   niches: string[]
-  profile_picture: string | null
-  rating: number | null
-  is_verified: boolean | null
-  is_banned: boolean | null
+  profile_picture: Media | null
+  rating: number
+  is_verified: boolean
+  is_banned: boolean
   user_id: string
 }
 

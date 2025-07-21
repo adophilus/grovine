@@ -1,20 +1,17 @@
-import { z } from 'zod'
-import { Vendor } from '@/features/vendor/types'
+import { schema as apiSchema, type types } from '@grovine/api'
+import type { z } from 'zod'
 
 export namespace Request {
-  export const body = Vendor.pick({ name: true, niches: true, profile_picture: true })
+  export const body = apiSchema.schemas.Api_Vendor_Create_Request_Body
   export type Body = z.infer<typeof body>
 }
 
 export namespace Response {
-  export type Success = {
-    code: 'VENDOR_ACCOUNT_CREATED'
-    data: {
-      id: string
-    }
-  }
+  type Endpoint = '/vendors'
 
-  export type Error = {
-    code: 'ERR_UNEXPECTED'
-  }
+  export type Response =
+    types.paths[Endpoint]['post']['responses'][keyof types.paths[Endpoint]['post']['responses']]['content']['application/json']
+
+  export type Success = Extract<Response, { code: 'VENDOR_PROFILE_CREATED' }>
+  export type Error = Exclude<Response, Success>
 }

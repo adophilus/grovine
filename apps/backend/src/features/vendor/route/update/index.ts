@@ -4,24 +4,35 @@ import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
 import UpdateVendorUseCase from './use-case'
+import middleware from './middleware'
 
 export const UpdateVendorRoute = new Hono().patch(
-  '/',
+  '/:id',
   AuthMiddleware.middleware,
+  middleware,
   async (c) => {
     let response: Response.Success | Response.Error
     let statusCode: StatusCodes
 
-    const payload = c.req.valid('json')
-    const { id: user_id } = c.get('user')
+    const id = c.req.param('id')
+    const payload = c.req.valid('form')
 
     const useCase = Container.get(UpdateVendorUseCase)
 
-    const result = await useCase.execute(payload, user_id)
+    const result = await useCase.execute(id, payload)
 
     if (result.isErr) {
       response = result.error
-      statusCode = StatusCodes.NOT_FOUND
+      switch (result.error.code) {
+        case 'ERR_VENDOR_NOT_FOUND': {
+          statusCode = StatusCodes.NOT_FOUND
+          break
+        }
+        default: {
+          statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+          break
+        }
+      }
     } else {
       response = result.value
       statusCode = StatusCodes.OK

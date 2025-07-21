@@ -505,6 +505,7 @@ namespace Api {
           price: HttpPart<Price>;
           image: HttpPart<ImageFile>;
         }
+
         model Headers {
           @header
           contentType: "multipart/form-data";
@@ -1344,7 +1345,6 @@ namespace Api {
           model Success {
             @statusCode _code: 201;
             code: "VENDOR_PROFILE_CREATED";
-            data: Vendor;
           }
         }
 
@@ -1366,65 +1366,103 @@ namespace Api {
       op createVendor(@body body: Request.Body): Response.Response;
     }
 
-    @route("/{id}")
-    namespace Read {
+    namespace List {
       namespace Request {
-        model Path {
-          @path
-          id: Id;
-        }
+        alias Query = Pagination.Query;
       }
 
       namespace Response {
         namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "VENDOR_PROFILE_FOUND";
-            data: Vendor;
-          }
+          alias Success = Pagination.Paginated<Vendor>;
         }
 
         namespace Error {
-          alias Error = NotFoundError<"VENDOR_PROFILE"> | UnexpectedError;
+          alias Error = UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
       }
 
       @get
-      @doc("Get a vendor profile by user ID")
-      op getVendorByUserId(...Request.Path): Response.Response;
+      @doc("List all vendors")
+      op listVendors(...Request.Query): Response.Response;
     }
 
-    namespace Update {
-      namespace Request {
-        model Body {
-          ...OptionalProperties<OmitProperties<
-            Vendor,
-            "id" | "user_id" | "created_at" | "updated_at"
-          >>;
-        }
-      }
-
-      namespace Response {
-        namespace Success {
-          model Success {
-            @statusCode _code: 200;
-            code: "VENDOR_UPDATED";
-            data: Vendor;
+    @route("/{id}")
+    namespace ById {
+      namespace Get {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
           }
         }
 
-        namespace Error {
-          alias Error = NotFoundError<"VENDOR"> | BadRequestError | UnexpectedError;
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "VENDOR_PROFILE_FOUND";
+              data: Vendor;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"VENDOR_PROFILE"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
         }
 
-        alias Response = Success.Success | Error.Error;
+        @get
+        @doc("Get a vendor profile by ID")
+        op getVendorById(...Request.Path): Response.Response;
       }
 
-      @patch(#{ implicitOptionality: false })
-      @doc("Update vendor information")
-      op updateVendor(@body body: Request.Body): Response.Response;
+      namespace Update {
+        namespace Request {
+          model Headers {
+            @header contentType: "multipart/form-data";
+          }
+
+          model Path {
+            @path
+            id: Id;
+          }
+
+          model Body {
+            ...OptionalProperties<OmitProperties<
+              Vendor,
+              "id" | "profile_picture" | "user_id" | "created_at" | "updated_at"
+            >>;
+            profile_picture?: ImageFile;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "VENDOR_UPDATED";
+              data: Vendor;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"VENDOR"> | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @patch(#{ implicitOptionality: false })
+        @doc("Update vendor information")
+        op updateVendorById(
+          ...Request.Headers,
+          ...Request.Path,
+          @multipartBody body: HttpPart<Request.Body>,
+        ): Response.Response;
+      }
     }
   }
 }

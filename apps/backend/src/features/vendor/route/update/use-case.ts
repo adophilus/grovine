@@ -1,24 +1,44 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import type { VendorRepository } from '../../repository'
+import type { StorageService, UploadedData } from '@/features/storage/service'
 
 class UpdateVendorUseCase {
-  constructor(private vendorRepository: VendorRepository) {}
+  constructor(
+    private vendorRepository: VendorRepository,
+    private storageService: StorageService
+  ) {}
 
   async execute(
-    payload: Request.Body,
-    user_id: string
+    id: string,
+    payload: Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
-    const updateVendorResult = await this.vendorRepository.update(user_id, payload)
+    const { profile_picture, ..._payload } = payload
+    let updatedProfilePicture: UploadedData | undefined
+
+    if (profile_picture) {
+      const uploadedResult = await this.storageService.upload(profile_picture)
+      if (uploadedResult.isErr) {
+        return Result.err({
+          code: 'ERR_UNEXPECTED'
+        })
+      }
+      updatedProfilePicture = uploadedResult.value
+    }
+
+    const updateVendorResult = await this.vendorRepository.updateById(id, {
+      ..._payload,
+      profile_picture: updatedProfilePicture
+    })
 
     if (updateVendorResult.isErr) {
       return Result.err({
-        code: 'VENDOR_ACCOUNT_NOT_FOUND'
+        code: 'ERR_UNEXPECTED'
       })
     }
 
     return Result.ok({
-      code: 'VENDOR_ACCOUNT_UPDATED',
+      code: 'VENDOR_UPDATED',
       data: updateVendorResult.value
     })
   }

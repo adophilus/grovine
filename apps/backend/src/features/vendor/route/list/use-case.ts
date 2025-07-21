@@ -2,25 +2,25 @@ import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import type { VendorRepository } from '../../repository'
 
-class ReadVendorUseCase {
+class ListVendorUseCase {
   constructor(private vendorRepository: VendorRepository) {}
 
   async execute(
-    payload: Request.Params
+    payload: Request.Query
   ): Promise<Result<Response.Success, Response.Error>> {
-    const findVendorResult = await this.vendorRepository.find(payload.user_id)
+    const findVendorsResult = await this.vendorRepository.findMany(payload)
 
-    if (findVendorResult.isErr) {
+    if (findVendorsResult.isErr) {
       return Result.err({
-        code: 'VENDOR_ACCOUNT_NOT_FOUND'
+        code: 'ERR_UNEXPECTED'
       })
     }
 
     return Result.ok({
-      code: 'VENDOR_ACCOUNT_FOUND',
-      data: findVendorResult.value
+      code: 'LIST',
+      data: findVendorsResult.value
     })
   }
 }
 
-export default ReadVendorUseCase
+export default ListVendorUseCase

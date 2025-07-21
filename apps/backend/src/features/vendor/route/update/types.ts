@@ -1,18 +1,21 @@
 import { z } from 'zod'
-import { Vendor } from '@/features/vendor/types'
+import { schema as apiSchema, type types } from '@grovine/api'
 
 export namespace Request {
-  export const body = Vendor.pick({ name: true, niches: true, profile_picture: true }).partial()
+  export const body =
+    apiSchema.schemas.Api_Vendor_ById_Update_Request_Body.omit({
+      profile_picture: true
+    }).extend({
+      profile_picture: z.instanceof(File)
+    })
   export type Body = z.infer<typeof body>
 }
 
 export namespace Response {
-  export type Success = {
-    code: 'VENDOR_ACCOUNT_UPDATED'
-    data: z.infer<typeof Vendor>
-  }
+  type Endpoint = '/vendors/{id}'
 
-  export type Error = {
-    code: 'ERR_UNEXPECTED' | 'VENDOR_ACCOUNT_NOT_FOUND'
-  }
+  export type Response =
+    types.paths[Endpoint]['patch']['responses'][keyof types.paths[Endpoint]['patch']['responses']]['content']['application/json']
+  export type Success = Extract<Response, { code: 'VENDOR_UPDATED' }>
+  export type Error = Exclude<Response, Success>
 }
