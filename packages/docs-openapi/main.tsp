@@ -1431,11 +1431,9 @@ namespace Api {
           }
 
           model Body {
-            ...OptionalProperties<OmitProperties<
-              Vendor,
-              "id" | "profile_picture" | "user_id" | "created_at" | "updated_at"
-            >>;
-            profile_picture?: ImageFile;
+            name?: HttpPart<string>;
+            niches?: HttpPart<string[]>;
+            profile_picture?: HttpPart<ImageFile>;
           }
         }
 
@@ -1460,7 +1458,7 @@ namespace Api {
         op updateVendorById(
           ...Request.Headers,
           ...Request.Path,
-          @multipartBody body: HttpPart<Request.Body>,
+          @multipartBody body: Request.Body,
         ): Response.Response;
       }
     }

@@ -18,7 +18,7 @@ class ListVendorUseCase {
 
     return Result.ok({
       code: 'LIST',
-      data: findVendorsResult.value
+      ...findVendorsResult.value
     })
   }
 }
