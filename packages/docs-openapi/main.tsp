@@ -1366,6 +1366,68 @@ namespace Api {
       op createChef(@body body: Request.Body): Response.Response;
     }
 
+    @route("/profile")
+    namespace Profile {
+      namespace Get {
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_FOUND";
+              data: Chef;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("Get active chef profile")
+        op getChefByProfile(): Response.Response;
+      }
+
+      namespace Update {
+        namespace Request {
+          model Headers {
+            @header contentType: "multipart/form-data";
+          }
+
+          model Body {
+            name?: HttpPart<string>;
+            niches?: HttpPart<string[]>;
+            profile_picture?: HttpPart<ImageFile>;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_UPDATED";
+              data: Chef;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @patch(#{ implicitOptionality: false })
+        @doc("Update active chef profile")
+        op updateChefById(
+          ...Request.Headers,
+          @multipartBody body: Request.Body,
+        ): Response.Response;
+      }
+    }
+
     namespace List {
       namespace Request {
         alias Query = Pagination.Query;
@@ -1417,49 +1479,6 @@ namespace Api {
         @get
         @doc("Get a chef profile by ID")
         op getChefById(...Request.Path): Response.Response;
-      }
-
-      namespace Update {
-        namespace Request {
-          model Headers {
-            @header contentType: "multipart/form-data";
-          }
-
-          model Path {
-            @path
-            id: Id;
-          }
-
-          model Body {
-            name?: HttpPart<string>;
-            niches?: HttpPart<string[]>;
-            profile_picture?: HttpPart<ImageFile>;
-          }
-        }
-
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 200;
-              code: "CHEF_UPDATED";
-              data: Chef;
-            }
-          }
-
-          namespace Error {
-            alias Error = NotFoundError<"CHEF"> | BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
-        }
-
-        @patch(#{ implicitOptionality: false })
-        @doc("Update chef information")
-        op updateChefById(
-          ...Request.Headers,
-          ...Request.Path,
-          @multipartBody body: Request.Body,
-        ): Response.Response;
       }
     }
   }

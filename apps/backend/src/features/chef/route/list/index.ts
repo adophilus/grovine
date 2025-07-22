@@ -5,7 +5,7 @@ import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
 import ListChefUseCase from './use-case'
 
-export const ListChefRoute = new Hono().get('/', middleware, async (c) => {
+const ListChefRoute = new Hono().get('/', middleware, async (c) => {
   let response: Response.Success | Response.Error
   let statusCode: StatusCodes
 
@@ -25,3 +25,5 @@ export const ListChefRoute = new Hono().get('/', middleware, async (c) => {
 
   return c.json(response, statusCode)
 })
+
+export default ListChefRoute

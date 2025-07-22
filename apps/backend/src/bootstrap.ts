@@ -85,10 +85,12 @@ import { ChefRepository } from '@/features/chef/repository'
 import { KyselyChefRepository } from '@/features/chef/repository'
 import {
   CreateChefUseCase,
+  GetActiveChefProfileUseCase,
   GetChefUseCase,
   ListChefUseCase,
-  UpdateChefUseCase
+  UpdateActiveChefProfileUseCase
 } from '@/features/chef/use-case'
+import UpdateActiveChefProfileRoute from './features/chef/route/profile/update'
 
 export const bootstrap = async () => {
   // Logger
@@ -223,7 +225,10 @@ export const bootstrap = async () => {
   const createChefUseCase = new CreateChefUseCase(chefRepository)
   const getChefUseCase = new GetChefUseCase(chefRepository)
   const listChefUseCase = new ListChefUseCase(chefRepository)
-  const updateChefUseCase = new UpdateChefUseCase(
+  const getActiveChefProfileUseCase = new GetActiveChefProfileUseCase(
+    chefRepository
+  )
+  const updateActiveChefProfileUseCase = new UpdateActiveChefProfileUseCase(
     chefRepository,
     storageService
   )
@@ -320,7 +325,8 @@ export const bootstrap = async () => {
   Container.set(CreateChefUseCase, createChefUseCase)
   Container.set(GetChefUseCase, getChefUseCase)
   Container.set(ListChefUseCase, listChefUseCase)
-  Container.set(UpdateChefUseCase, updateChefUseCase)
+  Container.set(GetActiveChefProfileUseCase, getActiveChefProfileUseCase)
+  Container.set(UpdateActiveChefProfileUseCase, updateActiveChefProfileUseCase)
 
   return { app, logger, config }
 }

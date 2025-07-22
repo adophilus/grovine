@@ -1,17 +1,18 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefRepository } from '../../repository'
+import type { ChefRepository } from '../../../repository'
 import type { StorageService, UploadedData } from '@/features/storage/service'
+import type { User } from '@/types'
 
-class UpdateChefUseCase {
+class UpdateActiveChefProfileUseCase {
   constructor(
     private chefRepository: ChefRepository,
     private storageService: StorageService
   ) {}
 
   async execute(
-    id: string,
-    payload: Request.Body
+    payload: Request.Body,
+    user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
     const { profile_picture, ..._payload } = payload
     let updatedProfilePicture: UploadedData | undefined
@@ -26,7 +27,7 @@ class UpdateChefUseCase {
       updatedProfilePicture = uploadedResult.value
     }
 
-    const updateChefResult = await this.chefRepository.updateById(id, {
+    const updateChefResult = await this.chefRepository.updateById(user.id, {
       ..._payload,
       profile_picture: updatedProfilePicture
     })
@@ -44,4 +45,4 @@ class UpdateChefUseCase {
   }
 }
 
-export default UpdateChefUseCase
+export default UpdateActiveChefProfileUseCase

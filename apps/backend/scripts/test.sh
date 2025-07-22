@@ -15,7 +15,7 @@ fi
 
 # Run tests with realtime output
 echo "Running tests..."
-NODE_ENV=test tsx --test --test-concurrency 1 ./tests/integration/001_auth.ts ./tests/integration/002_wallet.ts ./tests/integration/003_food.ts ./tests/integration/004_cart.ts ./tests/integration/005_order.ts
+NODE_ENV=test tsx --test --test-concurrency 1 ./tests/integration/*.ts
 # vitest run
 test_code=$?
 

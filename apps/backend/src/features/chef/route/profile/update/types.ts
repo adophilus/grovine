@@ -2,11 +2,12 @@ import { z } from 'zod'
 import { schema as apiSchema, type types } from '@grovine/api'
 
 export namespace Request {
-  export const body = apiSchema.schemas.Api_Chef_ById_Update_Request_Body.omit({
-    profile_picture: true
-  }).extend({
-    profile_picture: z.instanceof(File)
-  })
+  export const body =
+    apiSchema.schemas.Api_Chef_Profile_Update_Request_Body.omit({
+      profile_picture: true
+    }).extend({
+      profile_picture: z.instanceof(File)
+    })
   export type Body = z.infer<typeof body>
 }
 

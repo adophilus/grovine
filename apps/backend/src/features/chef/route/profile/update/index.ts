@@ -3,11 +3,11 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import UpdateChefUseCase from './use-case'
+import UpdateActiveChefProfileUseCase from './use-case'
 import middleware from './middleware'
 
-export const UpdateChefRoute = new Hono().patch(
-  '/:id',
+const UpdateActiveChefProfileRoute = new Hono().patch(
+  '/',
   AuthMiddleware.middleware,
   middleware,
   async (c) => {
@@ -17,7 +17,7 @@ export const UpdateChefRoute = new Hono().patch(
     const id = c.req.param('id')
     const payload = c.req.valid('form')
 
-    const useCase = Container.get(UpdateChefUseCase)
+    const useCase = Container.get(UpdateActiveChefProfileUseCase)
 
     const result = await useCase.execute(id, payload)
 
@@ -41,3 +41,5 @@ export const UpdateChefRoute = new Hono().patch(
     return c.json(response, statusCode)
   }
 )
+
+export default UpdateActiveChefProfileRoute

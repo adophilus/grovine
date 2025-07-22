@@ -6,7 +6,7 @@ import { Container } from '@n8n/di'
 import CreateChefUseCase from './use-case'
 import middleware from './middleware'
 
-export const CreateChefRoute = new Hono().post(
+const CreateChefRoute = new Hono().post(
   '/',
   AuthMiddleware.middleware,
   middleware,
@@ -41,3 +41,5 @@ export const CreateChefRoute = new Hono().post(
     return c.json(response, statusCode)
   }
 )
+
+export default CreateChefRoute
