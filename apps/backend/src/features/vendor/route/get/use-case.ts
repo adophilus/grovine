@@ -16,9 +16,16 @@ class GetVendorUseCase {
       })
     }
 
+    const vendor = findVendorResult.value
+    if (!vendor) {
+      return Result.err({
+        code: 'ERR_VENDOR_PROFILE_NOT_FOUND'
+      })
+    }
+
     return Result.ok({
       code: 'VENDOR_PROFILE_FOUND',
-      data: findVendorResult.value
+      data: vendor
     })
   }
 }
