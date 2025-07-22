@@ -81,14 +81,14 @@ import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
 import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 import { createKyselyPgClient } from './features/database/kysely/pg'
-import { VendorRepository } from '@/features/vendor/repository'
-import { KyselyVendorRepository } from '@/features/vendor/repository'
+import { ChefRepository } from '@/features/chef/repository'
+import { KyselyChefRepository } from '@/features/chef/repository'
 import {
-  CreateVendorUseCase,
-  GetVendorUseCase,
-  ListVendorUseCase,
-  UpdateVendorUseCase
-} from '@/features/vendor/use-case'
+  CreateChefUseCase,
+  GetChefUseCase,
+  ListChefUseCase,
+  UpdateChefUseCase
+} from '@/features/chef/use-case'
 
 export const bootstrap = async () => {
   // Logger
@@ -218,13 +218,13 @@ export const bootstrap = async () => {
   )
   const getTransactionUseCase = new GetTransactionUseCase(transactionRepository)
 
-  // Vendor DI
-  const vendorRepository = new KyselyVendorRepository(kyselyClient, logger)
-  const createVendorUseCase = new CreateVendorUseCase(vendorRepository)
-  const getVendorUseCase = new GetVendorUseCase(vendorRepository)
-  const listVendorUseCase = new ListVendorUseCase(vendorRepository)
-  const updateVendorUseCase = new UpdateVendorUseCase(
-    vendorRepository,
+  // Chef DI
+  const chefRepository = new KyselyChefRepository(kyselyClient, logger)
+  const createChefUseCase = new CreateChefUseCase(chefRepository)
+  const getChefUseCase = new GetChefUseCase(chefRepository)
+  const listChefUseCase = new ListChefUseCase(chefRepository)
+  const updateChefUseCase = new UpdateChefUseCase(
+    chefRepository,
     storageService
   )
 
@@ -315,12 +315,12 @@ export const bootstrap = async () => {
   Container.set(ListTransactionsUseCase, listTransactionsUseCase)
   Container.set(GetTransactionUseCase, getTransactionUseCase)
 
-  // Vendor DI
-  Container.set(VendorRepository, vendorRepository)
-  Container.set(CreateVendorUseCase, createVendorUseCase)
-  Container.set(GetVendorUseCase, getVendorUseCase)
-  Container.set(ListVendorUseCase, listVendorUseCase)
-  Container.set(UpdateVendorUseCase, updateVendorUseCase)
+  // Chef DI
+  Container.set(ChefRepository, chefRepository)
+  Container.set(CreateChefUseCase, createChefUseCase)
+  Container.set(GetChefUseCase, getChefUseCase)
+  Container.set(ListChefUseCase, listChefUseCase)
+  Container.set(UpdateChefUseCase, updateChefUseCase)
 
   return { app, logger, config }
 }

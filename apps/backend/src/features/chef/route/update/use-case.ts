@@ -1,11 +1,11 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { VendorRepository } from '../../repository'
+import type { ChefRepository } from '../../repository'
 import type { StorageService, UploadedData } from '@/features/storage/service'
 
-class UpdateVendorUseCase {
+class UpdateChefUseCase {
   constructor(
-    private vendorRepository: VendorRepository,
+    private chefRepository: ChefRepository,
     private storageService: StorageService
   ) {}
 
@@ -26,22 +26,22 @@ class UpdateVendorUseCase {
       updatedProfilePicture = uploadedResult.value
     }
 
-    const updateVendorResult = await this.vendorRepository.updateById(id, {
+    const updateChefResult = await this.chefRepository.updateById(id, {
       ..._payload,
       profile_picture: updatedProfilePicture
     })
 
-    if (updateVendorResult.isErr) {
+    if (updateChefResult.isErr) {
       return Result.err({
         code: 'ERR_UNEXPECTED'
       })
     }
 
     return Result.ok({
-      code: 'VENDOR_UPDATED',
-      data: updateVendorResult.value
+      code: 'CHEF_UPDATED',
+      data: updateChefResult.value
     })
   }
 }
 
-export default UpdateVendorUseCase
+export default UpdateChefUseCase

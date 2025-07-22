@@ -3,10 +3,10 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import UpdateVendorUseCase from './use-case'
+import UpdateChefUseCase from './use-case'
 import middleware from './middleware'
 
-export const UpdateVendorRoute = new Hono().patch(
+export const UpdateChefRoute = new Hono().patch(
   '/:id',
   AuthMiddleware.middleware,
   middleware,
@@ -17,14 +17,14 @@ export const UpdateVendorRoute = new Hono().patch(
     const id = c.req.param('id')
     const payload = c.req.valid('form')
 
-    const useCase = Container.get(UpdateVendorUseCase)
+    const useCase = Container.get(UpdateChefUseCase)
 
     const result = await useCase.execute(id, payload)
 
     if (result.isErr) {
       response = result.error
       switch (result.error.code) {
-        case 'ERR_VENDOR_NOT_FOUND': {
+        case 'ERR_CHEF_NOT_FOUND': {
           statusCode = StatusCodes.NOT_FOUND
           break
         }
