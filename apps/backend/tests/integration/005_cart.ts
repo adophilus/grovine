@@ -38,7 +38,7 @@ describe('cart', async () => {
 
     itemId = item.data.id
 
-    await store.setStage('003', {
+    await store.setStage('004', {
       ...store.state,
       item: {
         id: itemId
@@ -111,7 +111,7 @@ describe('cart', async () => {
       res.data.data.items[0].items[0].food_item_id === itemId,
       'Cart should contain the added item'
     )
-    await store.setStage('004', {
+    await store.setStage('005', {
       cart: {
         id: res.data.data.id
       }
@@ -143,7 +143,7 @@ describe('cart', async () => {
       res.data.data.url,
       'Response should have payment URL for ONLINE payment'
     )
-    await store.setStage('005', {
+    await store.setStage('006', {
       order: {
         id: res.data.data.order_id
       }

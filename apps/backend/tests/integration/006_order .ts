@@ -7,7 +7,7 @@ describe('order', async () => {
   let orderId: string
 
   before(() => {
-    assert(store.state.stage === '005', 'Should be in 005 stage')
+    assert(store.state.stage === '006', 'Should be in 006 stage')
 
     useAuth(client, store.state.auth)
     useApp(client)

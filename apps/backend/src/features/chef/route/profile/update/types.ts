@@ -12,10 +12,10 @@ export namespace Request {
 }
 
 export namespace Response {
-  type Endpoint = '/chefs/{id}'
+  type Endpoint = '/chefs/profile'
 
   export type Response =
     types.paths[Endpoint]['patch']['responses'][keyof types.paths[Endpoint]['patch']['responses']]['content']['application/json']
-  export type Success = Extract<Response, { code: 'CHEF_UPDATED' }>
+  export type Success = Extract<Response, { code: 'CHEF_PROFILE_UPDATED' }>
   export type Error = Exclude<Response, Success>
 }

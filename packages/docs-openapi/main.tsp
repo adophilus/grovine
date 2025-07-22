@@ -1421,7 +1421,7 @@ namespace Api {
 
         @patch(#{ implicitOptionality: false })
         @doc("Update active chef profile")
-        op updateChefById(
+        op updateChefByProfile(
           ...Request.Headers,
           @multipartBody body: Request.Body,
         ): Response.Response;

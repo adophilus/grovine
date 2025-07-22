@@ -14,17 +14,17 @@ const UpdateActiveChefProfileRoute = new Hono().patch(
     let response: Response.Success | Response.Error
     let statusCode: StatusCodes
 
-    const id = c.req.param('id')
+    const user = c.get('user')
     const payload = c.req.valid('form')
 
     const useCase = Container.get(UpdateActiveChefProfileUseCase)
 
-    const result = await useCase.execute(id, payload)
+    const result = await useCase.execute(payload, user)
 
     if (result.isErr) {
       response = result.error
       switch (result.error.code) {
-        case 'ERR_CHEF_NOT_FOUND': {
+        case 'ERR_CHEF_PROFILE_NOT_FOUND': {
           statusCode = StatusCodes.NOT_FOUND
           break
         }

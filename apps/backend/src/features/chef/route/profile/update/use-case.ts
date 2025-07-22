@@ -39,7 +39,7 @@ class UpdateActiveChefProfileUseCase {
     }
 
     return Result.ok({
-      code: 'CHEF_UPDATED',
+      code: 'CHEF_PROFILE_UPDATED',
       data: updateChefResult.value
     })
   }
