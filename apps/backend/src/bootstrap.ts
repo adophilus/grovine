@@ -81,8 +81,10 @@ import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
 import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 import { createKyselyPgClient } from './features/database/kysely/pg'
-import { ChefRepository } from '@/features/chef/repository'
-import { KyselyChefRepository } from '@/features/chef/repository'
+import {
+  ChefRepository,
+  KyselyChefRepository
+} from '@/features/chef/repository'
 import {
   CreateChefUseCase,
   GetActiveChefProfileUseCase,
@@ -90,7 +92,6 @@ import {
   ListChefUseCase,
   UpdateActiveChefProfileUseCase
 } from '@/features/chef/use-case'
-import UpdateActiveChefProfileRoute from './features/chef/route/profile/update'
 
 export const bootstrap = async () => {
   // Logger
