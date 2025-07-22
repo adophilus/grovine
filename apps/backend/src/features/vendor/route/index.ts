@@ -1,11 +1,13 @@
 import { Hono } from 'hono'
 import { CreateVendorRoute } from './create'
-import { ReadVendorRoute } from './read'
+import { GetVendorRoute } from './get'
+import { ListVendorRoute } from './list'
 import { UpdateVendorRoute } from './update'
 
 const VendorRouter = new Hono()
   .route('/', CreateVendorRoute)
-  .route('/', ReadVendorRoute)
+  .route('/', GetVendorRoute)
+  .route('/', ListVendorRoute)
   .route('/', UpdateVendorRoute)
 
 export default VendorRouter

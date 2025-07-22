@@ -82,12 +82,12 @@ import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 import { createKyselyPgClient } from './features/database/kysely/pg'
 import { VendorRepository } from '@/features/vendor/repository'
-import { KyselyVendorRepository } from '@/features/vendor/repository/kysely'
+import { KyselyVendorRepository } from '@/features/vendor/repository'
 import {
   CreateVendorUseCase,
-  ReadVendorUseCase,
-  UpdateVendorUseCase,
-  DeleteVendorUseCase
+  GetVendorUseCase,
+  ListVendorUseCase,
+  UpdateVendorUseCase
 } from '@/features/vendor/use-case'
 
 export const bootstrap = async () => {
@@ -219,10 +219,14 @@ export const bootstrap = async () => {
   const getTransactionUseCase = new GetTransactionUseCase(transactionRepository)
 
   // Vendor DI
-  const vendorRepository = new KyselyVendorRepository(kyselyClient)
+  const vendorRepository = new KyselyVendorRepository(kyselyClient, logger)
   const createVendorUseCase = new CreateVendorUseCase(vendorRepository)
-  const readVendorUseCase = new ReadVendorUseCase(vendorRepository)
-  const updateVendorUseCase = new UpdateVendorUseCase(vendorRepository)
+  const getVendorUseCase = new GetVendorUseCase(vendorRepository)
+  const listVendorUseCase = new ListVendorUseCase(vendorRepository)
+  const updateVendorUseCase = new UpdateVendorUseCase(
+    vendorRepository,
+    storageService
+  )
 
   const app = new HonoApp(logger)
 
@@ -314,7 +318,8 @@ export const bootstrap = async () => {
   // Vendor DI
   Container.set(VendorRepository, vendorRepository)
   Container.set(CreateVendorUseCase, createVendorUseCase)
-  Container.set(ReadVendorUseCase, readVendorUseCase)
+  Container.set(GetVendorUseCase, getVendorUseCase)
+  Container.set(ListVendorUseCase, listVendorUseCase)
   Container.set(UpdateVendorUseCase, updateVendorUseCase)
 
   return { app, logger, config }

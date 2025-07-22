@@ -1,4 +1,5 @@
-import type { VendorRepository, VendorRepositoryError } from './interface'
+import type VendorRepository from './interface'
+import type { VendorRepositoryError } from './interface'
 import { Result } from 'true-myth'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Vendor } from '@/types'
@@ -30,7 +31,7 @@ class KyselyVendorRepository implements VendorRepository {
 
   async findById(
     id: string
-  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>> {
+  ): Promise<Result<Vendor.Selectable | null, VendorRepositoryError>> {
     try {
       const result = await this.client
         .selectFrom('vendors')

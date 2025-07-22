@@ -11,11 +11,11 @@ abstract class VendorRepository {
 
   public abstract findById(
     id: string
-  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
+  ): Promise<Result<Vendor.Selectable | null, VendorRepositoryError>>
 
   public abstract findByUserId(
     user_id: string
-  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>>
+  ): Promise<Result<Vendor.Selectable | null, VendorRepositoryError>>
 
   public abstract findMany(
     options: Pagination.Options

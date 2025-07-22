@@ -1,5 +1,11 @@
 import CreateVendorUseCase from './route/create/use-case'
-import ReadVendorUseCase from './route/read/use-case'
+import GetVendorUseCase from './route/get/use-case'
+import ListVendorUseCase from './route/list/use-case'
 import UpdateVendorUseCase from './route/update/use-case'
 
-export { CreateVendorUseCase, ReadVendorUseCase, UpdateVendorUseCase }
+export {
+  CreateVendorUseCase,
+  GetVendorUseCase,
+  ListVendorUseCase,
+  UpdateVendorUseCase
+}
