@@ -101,8 +101,8 @@ export namespace Transaction {
   export type Updateable = T['Updateable']
 }
 
-export namespace Vendor {
-  type T = GenerateTypes<KyselyDatabaseTables['vendors']>
+export namespace Chef {
+  type T = GenerateTypes<KyselyDatabaseTables['chefs']>
   export type Selectable = T['Selectable']
   export type Insertable = T['Insertable']
   export type Updateable = T['Updateable']

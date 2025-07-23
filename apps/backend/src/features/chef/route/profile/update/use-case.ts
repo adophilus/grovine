@@ -1,18 +1,33 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { VendorRepository } from '../../repository'
+import type { ChefRepository } from '../../../repository'
 import type { StorageService, UploadedData } from '@/features/storage/service'
+import type { User } from '@/types'
 
-class UpdateVendorUseCase {
+class UpdateActiveChefProfileUseCase {
   constructor(
-    private vendorRepository: VendorRepository,
+    private chefRepository: ChefRepository,
     private storageService: StorageService
   ) {}
 
   async execute(
-    id: string,
-    payload: Request.Body
+    payload: Request.Body,
+    user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
+    const findChefProfile = await this.chefRepository.findByUserId(user.id)
+    if (findChefProfile.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
+
+    const chefProfile = findChefProfile.value
+    if (!chefProfile) {
+      return Result.err({
+        code: 'ERR_CHEF_PROFILE_NOT_FOUND'
+      })
+    }
+
     const { profile_picture, ..._payload } = payload
     let updatedProfilePicture: UploadedData | undefined
 
@@ -26,22 +41,26 @@ class UpdateVendorUseCase {
       updatedProfilePicture = uploadedResult.value
     }
 
-    const updateVendorResult = await this.vendorRepository.updateById(id, {
+    const updatePayload = {
       ..._payload,
       profile_picture: updatedProfilePicture
-    })
+    }
+    const updateChefResult = await this.chefRepository.updateById(
+      chefProfile.id,
+      updatePayload
+    )
 
-    if (updateVendorResult.isErr) {
+    if (updateChefResult.isErr) {
       return Result.err({
         code: 'ERR_UNEXPECTED'
       })
     }
 
     return Result.ok({
-      code: 'VENDOR_UPDATED',
-      data: updateVendorResult.value
+      code: 'CHEF_PROFILE_UPDATED',
+      data: updateChefResult.value
     })
   }
 }
 
-export default UpdateVendorUseCase
+export default UpdateActiveChefProfileUseCase

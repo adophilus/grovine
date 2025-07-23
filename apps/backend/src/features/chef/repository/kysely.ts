@@ -1,64 +1,64 @@
-import type VendorRepository from './interface'
-import type { VendorRepositoryError } from './interface'
+import type ChefRepository from './interface'
+import type { ChefRepositoryError } from './interface'
 import { Result } from 'true-myth'
 import type { KyselyClient } from '@/features/database/kysely'
-import type { Vendor } from '@/types'
+import type { Chef } from '@/types'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
 
-class KyselyVendorRepository implements VendorRepository {
+class KyselyChefRepository implements ChefRepository {
   constructor(
     private readonly client: KyselyClient,
     private readonly logger: Logger
   ) {}
 
   async create(
-    payload: Vendor.Insertable
-  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>> {
+    payload: Chef.Insertable
+  ): Promise<Result<Chef.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.client
-        .insertInto('vendors')
+        .insertInto('chefs')
         .values(payload)
         .returningAll()
         .executeTakeFirstOrThrow()
 
       return Result.ok(result)
     } catch (err) {
-      this.logger.error('failed to create vendor', err)
+      this.logger.error('failed to create chef', err)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
   async findById(
     id: string
-  ): Promise<Result<Vendor.Selectable | null, VendorRepositoryError>> {
+  ): Promise<Result<Chef.Selectable | null, ChefRepositoryError>> {
     try {
       const result = await this.client
-        .selectFrom('vendors')
+        .selectFrom('chefs')
         .where('id', '=', id)
         .selectAll()
-        .executeTakeFirstOrThrow()
+        .executeTakeFirst()
 
-      return Result.ok(result)
+      return Result.ok(result ?? null)
     } catch (error) {
-      this.logger.error('failed to find vendor by id', error)
+      this.logger.error('failed to find chef by id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
   async findByUserId(
     user_id: string
-  ): Promise<Result<Vendor.Selectable | null, VendorRepositoryError>> {
+  ): Promise<Result<Chef.Selectable | null, ChefRepositoryError>> {
     try {
       const result = await this.client
-        .selectFrom('vendors')
+        .selectFrom('chefs')
         .where('user_id', '=', user_id)
         .selectAll()
         .executeTakeFirst()
 
       return Result.ok(result ?? null)
     } catch (error) {
-      this.logger.error('failed to find vendor by user id', error)
+      this.logger.error('failed to find chef by user id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -66,18 +66,18 @@ class KyselyVendorRepository implements VendorRepository {
   async findMany(
     options: Pagination.Options
   ): Promise<
-    Result<Pagination.Paginated<Vendor.Selectable>, VendorRepositoryError>
+    Result<Pagination.Paginated<Chef.Selectable>, ChefRepositoryError>
   > {
     try {
       const items = await this.client
-        .selectFrom('vendors')
+        .selectFrom('chefs')
         .limit(options.per_page)
         .offset((options.page - 1) * options.per_page)
         .selectAll()
         .execute()
 
       const { total } = await this.client
-        .selectFrom('vendors')
+        .selectFrom('chefs')
         .select((eb) => eb.fn.count<number>('id').as('total'))
         .executeTakeFirstOrThrow()
 
@@ -90,46 +90,46 @@ class KyselyVendorRepository implements VendorRepository {
 
       return Result.ok(paginatedData)
     } catch (error) {
-      this.logger.error('failed to find many vendors', error)
+      this.logger.error('failed to find many chefs', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
   async updateById(
     id: string,
-    payload: Vendor.Updateable
-  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>> {
+    payload: Chef.Updateable
+  ): Promise<Result<Chef.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.client
-        .updateTable('vendors')
-        .where('id', '=', id)
+        .updateTable('chefs')
         .set(payload)
+        .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
 
       return Result.ok(result)
     } catch (error) {
-      this.logger.error('failed to update vendor by id', error)
+      this.logger.error('failed to update chef by id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
   async deleteById(
     id: string
-  ): Promise<Result<Vendor.Selectable, VendorRepositoryError>> {
+  ): Promise<Result<Chef.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.client
-        .deleteFrom('vendors')
+        .deleteFrom('chefs')
         .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
 
       return Result.ok(result)
     } catch (error) {
-      this.logger.error('failed to delete vendor by id', error)
+      this.logger.error('failed to delete chef by id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 }
 
-export default KyselyVendorRepository
+export default KyselyChefRepository

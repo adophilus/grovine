@@ -76,6 +76,17 @@ import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
 import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
 import { createKyselyMigrator } from '@/features/database/kysely/migrator'
+import {
+  ChefRepository,
+  KyselyChefRepository
+} from '@/features/chef/repository'
+import {
+  CreateChefUseCase,
+  GetActiveChefProfileUseCase,
+  GetChefUseCase,
+  ListChefUseCase,
+  UpdateActiveChefProfileUseCase
+} from '@/features/chef/use-case'
 
 export const bootstrap = async () => {
   // Logger
@@ -205,6 +216,20 @@ export const bootstrap = async () => {
   )
   const getTransactionUseCase = new GetTransactionUseCase(transactionRepository)
 
+  // Chef DI
+  const chefRepository = new KyselyChefRepository(kyselyClient, logger)
+  const createChefUseCase = new CreateChefUseCase(chefRepository)
+  const getChefUseCase = new GetChefUseCase(chefRepository)
+  const listChefUseCase = new ListChefUseCase(chefRepository)
+  const getActiveChefProfileUseCase = new GetActiveChefProfileUseCase(
+    chefRepository,
+    logger
+  )
+  const updateActiveChefProfileUseCase = new UpdateActiveChefProfileUseCase(
+    chefRepository,
+    storageService
+  )
+
   const app = new HonoApp(logger)
 
   // Logger DI
@@ -291,6 +316,14 @@ export const bootstrap = async () => {
   Container.set(TransactionRepository, transactionRepository)
   Container.set(ListTransactionsUseCase, listTransactionsUseCase)
   Container.set(GetTransactionUseCase, getTransactionUseCase)
+
+  // Chef DI
+  Container.set(ChefRepository, chefRepository)
+  Container.set(CreateChefUseCase, createChefUseCase)
+  Container.set(GetChefUseCase, getChefUseCase)
+  Container.set(ListChefUseCase, listChefUseCase)
+  Container.set(GetActiveChefProfileUseCase, getActiveChefProfileUseCase)
+  Container.set(UpdateActiveChefProfileUseCase, updateActiveChefProfileUseCase)
 
   await kyselyMigrator.migrateToLatest()
 

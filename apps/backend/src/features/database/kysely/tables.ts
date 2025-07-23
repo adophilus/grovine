@@ -116,7 +116,7 @@ type OrderTable = TimestampModel & {
       }
   )
 
-type VendorTable = TimestampModel & {
+type ChefTable = TimestampModel & {
   id: string
   name: string
   niches: string[]
@@ -140,5 +140,5 @@ export type KyselyDatabaseTables = {
   orders: OrderTable
   transactions: TransactionsTable
   adverts: AdvertsTable
-  vendors: VendorTable
+  chefs: ChefTable
 }

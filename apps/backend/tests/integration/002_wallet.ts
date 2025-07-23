@@ -12,11 +12,7 @@ describe('wallet', async () => {
   })
 
   test('get user wallet', async () => {
-    const res = await client.GET('/wallets', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    const res = await client.GET('/wallets')
 
     assert(
       !res.error,
@@ -32,9 +28,6 @@ describe('wallet', async () => {
     const res = await client.POST('/wallets/topup', {
       body: {
         amount: 1000
-      },
-      headers: {
-        Authorization: `Bearer ${accessToken}`
       }
     })
 

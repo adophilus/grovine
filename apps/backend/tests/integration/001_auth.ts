@@ -109,9 +109,7 @@ describe('auth', async () => {
 
     await store.setStage('001', {
       ...store.state,
-      user: {
-        email
-      },
+      user,
       auth: res.data.data
     })
   })

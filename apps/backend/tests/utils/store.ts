@@ -13,6 +13,7 @@ const storeStage001 = z.object({
     refresh_token: z.string()
   }),
   user: z.object({
+    full_name: z.string(),
     email: z.string().email()
   })
 })
@@ -23,20 +24,25 @@ const storeStage002 = z.object({
 
 const storeStage003 = z.object({
   stage: z.literal('003'),
-  item: z.object({
-    id: z.string()
-  })
+  chef: z.object({})
 })
 
 const storeStage004 = z.object({
   stage: z.literal('004'),
-  cart: z.object({
+  item: z.object({
     id: z.string()
   })
 })
 
 const storeStage005 = z.object({
   stage: z.literal('005'),
+  cart: z.object({
+    id: z.string()
+  })
+})
+
+const storeStage006 = z.object({
+  stage: z.literal('006'),
   order: z.object({
     id: z.string()
   })
@@ -48,6 +54,7 @@ type TStoreStage002 = z.infer<typeof storeStage002>
 type TStoreStage003 = z.infer<typeof storeStage003>
 type TStoreStage004 = z.infer<typeof storeStage004>
 type TStoreStage005 = z.infer<typeof storeStage005>
+type TStoreStage006 = z.infer<typeof storeStage006>
 
 type TStoreStage =
   | TStoreStage000
@@ -56,6 +63,7 @@ type TStoreStage =
   | TStoreStage003
   | TStoreStage004
   | TStoreStage005
+  | TStoreStage006
 
 const storeStage000Progressive = storeStage000
 const storeStage001Progressive = storeStage001.extend(
@@ -73,6 +81,9 @@ const storeStage004Progressive = storeStage004.extend(
 const storeStage005Progressive = storeStage005.extend(
   storeStage004Progressive.omit({ stage: true }).shape
 )
+const storeStage006Progressive = storeStage006.extend(
+  storeStage005Progressive.omit({ stage: true }).shape
+)
 
 export const storeSchema = z.discriminatedUnion('stage', [
   storeStage000Progressive,
@@ -80,7 +91,8 @@ export const storeSchema = z.discriminatedUnion('stage', [
   storeStage002Progressive,
   storeStage003Progressive,
   storeStage004Progressive,
-  storeStage005Progressive
+  storeStage005Progressive,
+  storeStage006Progressive
 ])
 
 export type TStoreState = z.infer<typeof storeSchema>
@@ -100,7 +112,9 @@ function precursorStage<Stage extends TStoreStage['stage']>(
           ? '003'
           : Stage extends '005'
             ? '004'
-            : never
+            : Stage extends '006'
+              ? '005'
+              : never
 
 function precursorStage(stage: unknown): unknown {
   switch (stage) {
@@ -116,6 +130,8 @@ function precursorStage(stage: unknown): unknown {
       return '003'
     case '005':
       return '004'
+    case '006':
+      return '005'
     default:
       throw new Error(`Invalid stage: ${stage}`)
   }

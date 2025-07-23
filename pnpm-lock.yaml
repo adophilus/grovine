@@ -151,6 +151,9 @@ importers:
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
+      '@types/json-form-data':
+        specifier: ^1.7.5
+        version: 1.7.5
       '@types/node':
         specifier: ^20.19.0
         version: 20.19.0
@@ -169,6 +172,9 @@ importers:
       effect:
         specifier: ^3.16.5
         version: 3.16.7
+      json-form-data:
+        specifier: ^1.7.2
+        version: 1.7.2
       kysely-ctl:
         specifier: ^0.13.1
         version: 0.13.1(kysely@0.28.3)
@@ -3211,6 +3217,9 @@ packages:
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
 
+  '@types/json-form-data@1.7.5':
+    resolution: {integrity: sha512-POFCqlm6JtUhQODrCE0fjuSpHuTlRIJtq4hH3RRWrXKNeHAlb1L7eKl3VzZVuyuDhj+FrVGaT/klu1PJlqhq0w==}
+
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -5376,6 +5385,9 @@ packages:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
     hasBin: true
+
+  json-form-data@1.7.2:
+    resolution: {integrity: sha512-hMfmLSsnHsKWEWiPxy+0rfmty9eSAxok08ly/C1J8g8WV8ncJbXejyweVcDIL68CP3wmpe+BYhaSwi0T4Rguwg==}
 
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
@@ -10988,6 +11000,8 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
+  '@types/json-form-data@1.7.5': {}
+
   '@types/json-schema@7.0.15': {}
 
   '@types/linkify-it@5.0.0': {}
@@ -13380,6 +13394,8 @@ snapshots:
   jsesc@3.0.2: {}
 
   jsesc@3.1.0: {}
+
+  json-form-data@1.7.2: {}
 
   json-parse-even-better-errors@2.3.1: {}
 

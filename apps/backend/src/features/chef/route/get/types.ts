@@ -1,18 +1,18 @@
-import { Pagination } from '@/features/pagination'
 import type { types } from '@grovine/api'
-import type { z } from 'zod'
+import { z } from 'zod'
 
 export namespace Request {
-  export const query = Pagination.schema
-  export type Query = z.infer<typeof query>
+  export const path = z.object({ id: z.string() })
+
+  export type Path = z.infer<typeof path>
 }
 
 export namespace Response {
-  type Endpoint = '/vendors'
+  type Endpoint = '/chefs/{id}'
 
   export type Response =
     types.paths[Endpoint]['get']['responses'][keyof types.paths[Endpoint]['get']['responses']]['content']['application/json']
 
-  export type Success = Extract<Response, { code: 'LIST' }>
+  export type Success = Extract<Response, { code: 'CHEF_PROFILE_FOUND' }>
   export type Error = Exclude<Response, Success>
 }

@@ -11,7 +11,7 @@ import type App from './interface'
 import WalletRouter from '@/features/wallet/route'
 import PaymentRouter from '@/features/payment/route'
 import FoodRouter from '@/features/food/route'
-import VendorRoute from '@/features/vendor/route'
+import ChefRoute from '@/features/chef/route'
 
 class HonoApp implements App {
   constructor(private logger: Logger) {}
@@ -24,7 +24,7 @@ class HonoApp implements App {
       .route('/foods', FoodRouter)
       .route('/wallets', WalletRouter)
       .route('/payment', PaymentRouter)
-      .route('/vendors', VendorRoute)
+      .route('/chefs', ChefRoute)
 
     return new Hono()
       .use(compress())

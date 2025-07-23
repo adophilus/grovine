@@ -3,10 +3,10 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import CreateVendorUseCase from './use-case'
+import CreateChefUseCase from './use-case'
 import middleware from './middleware'
 
-export const CreateVendorRoute = new Hono().post(
+const CreateChefRoute = new Hono().post(
   '/',
   AuthMiddleware.middleware,
   middleware,
@@ -17,7 +17,7 @@ export const CreateVendorRoute = new Hono().post(
     const payload = c.req.valid('json')
     const user = c.get('user')
 
-    const useCase = Container.get(CreateVendorUseCase)
+    const useCase = Container.get(CreateChefUseCase)
 
     const result = await useCase.execute(payload, user)
 
@@ -25,7 +25,7 @@ export const CreateVendorRoute = new Hono().post(
       response = result.error
 
       switch (result.error.code) {
-        case 'ERR_VENDOR_PROFILE_ALREADY_CREATED': {
+        case 'ERR_CHEF_PROFILE_ALREADY_CREATED': {
           statusCode = StatusCodes.CONFLICT
           break
         }
@@ -41,3 +41,5 @@ export const CreateVendorRoute = new Hono().post(
     return c.json(response, statusCode)
   }
 )
+
+export default CreateChefRoute

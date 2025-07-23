@@ -1,6 +1,6 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import { StorageService, type UploadedData } from '@/features/storage/service'
+import type { StorageService, UploadedData } from '@/features/storage/service'
 import { serializeItem } from '../../utils'
 import type { FoodItemRepository } from '../../repository'
 

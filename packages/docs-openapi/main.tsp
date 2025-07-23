@@ -1316,10 +1316,10 @@ namespace Api {
     }
   }
 
-  @tag("Vendor")
-  @route("/vendors")
-  namespace Vendor {
-    model Vendor {
+  @tag("Chef")
+  @route("/chefs")
+  namespace Chef {
+    model Chef {
       id: Id;
       name: string;
       niches: string[];
@@ -1344,26 +1344,88 @@ namespace Api {
         namespace Success {
           model Success {
             @statusCode _code: 201;
-            code: "VENDOR_PROFILE_CREATED";
+            code: "CHEF_PROFILE_CREATED";
           }
         }
 
         namespace Error {
           @error
-          model VendorAlreadyExistsError {
+          model ChefAlreadyExistsError {
             @statusCode _code: 409;
-            code: "ERR_VENDOR_PROFILE_ALREADY_CREATED";
+            code: "ERR_CHEF_PROFILE_ALREADY_CREATED";
           }
 
-          alias Error = VendorAlreadyExistsError | BadRequestError | UnexpectedError;
+          alias Error = ChefAlreadyExistsError | BadRequestError | UnexpectedError;
         }
 
         alias Response = Success.Success | Error.Error;
       }
 
       @post
-      @doc("Create a new vendor")
-      op createVendor(@body body: Request.Body): Response.Response;
+      @doc("Create a new chef")
+      op createChef(@body body: Request.Body): Response.Response;
+    }
+
+    @route("/profile")
+    namespace Profile {
+      namespace Get {
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_FOUND";
+              data: Chef;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("Get active chef profile")
+        op getChefByProfile(): Response.Response;
+      }
+
+      namespace Update {
+        namespace Request {
+          model Headers {
+            @header contentType: "multipart/form-data";
+          }
+
+          model Body {
+            name?: HttpPart<string>;
+            niches?: HttpPart<string[]>;
+            profile_picture?: HttpPart<ImageFile>;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_UPDATED";
+              data: Chef;
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @patch(#{ implicitOptionality: false })
+        @doc("Update active chef profile")
+        op updateChefByProfile(
+          ...Request.Headers,
+          @multipartBody body: Request.Body,
+        ): Response.Response;
+      }
     }
 
     namespace List {
@@ -1373,7 +1435,7 @@ namespace Api {
 
       namespace Response {
         namespace Success {
-          alias Success = Pagination.Paginated<Vendor>;
+          alias Success = Pagination.Paginated<Chef>;
         }
 
         namespace Error {
@@ -1384,8 +1446,8 @@ namespace Api {
       }
 
       @get
-      @doc("List all vendors")
-      op listVendors(...Request.Query): Response.Response;
+      @doc("List all chefs")
+      op listChefs(...Request.Query): Response.Response;
     }
 
     @route("/{id}")
@@ -1402,64 +1464,21 @@ namespace Api {
           namespace Success {
             model Success {
               @statusCode _code: 200;
-              code: "VENDOR_PROFILE_FOUND";
-              data: Vendor;
+              code: "CHEF_PROFILE_FOUND";
+              data: Chef;
             }
           }
 
           namespace Error {
-            alias Error = NotFoundError<"VENDOR_PROFILE"> | UnexpectedError;
+            alias Error = NotFoundError<"CHEF_PROFILE"> | UnexpectedError;
           }
 
           alias Response = Success.Success | Error.Error;
         }
 
         @get
-        @doc("Get a vendor profile by ID")
-        op getVendorById(...Request.Path): Response.Response;
-      }
-
-      namespace Update {
-        namespace Request {
-          model Headers {
-            @header contentType: "multipart/form-data";
-          }
-
-          model Path {
-            @path
-            id: Id;
-          }
-
-          model Body {
-            name?: HttpPart<string>;
-            niches?: HttpPart<string[]>;
-            profile_picture?: HttpPart<ImageFile>;
-          }
-        }
-
-        namespace Response {
-          namespace Success {
-            model Success {
-              @statusCode _code: 200;
-              code: "VENDOR_UPDATED";
-              data: Vendor;
-            }
-          }
-
-          namespace Error {
-            alias Error = NotFoundError<"VENDOR"> | BadRequestError | UnexpectedError;
-          }
-
-          alias Response = Success.Success | Error.Error;
-        }
-
-        @patch(#{ implicitOptionality: false })
-        @doc("Update vendor information")
-        op updateVendorById(
-          ...Request.Headers,
-          ...Request.Path,
-          @multipartBody body: Request.Body,
-        ): Response.Response;
+        @doc("Get a chef profile by ID")
+        op getChefById(...Request.Path): Response.Response;
       }
     }
   }
