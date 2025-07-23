@@ -7,7 +7,7 @@ const mockChefDetails = (fullName: string) => ({
   name: fullName,
   niches: faker.helpers.arrayElements(
     ['Italian', 'Mexican', 'Indian', 'Chinese', 'French'],
-    { min: 0, max: 3 }
+    { min: 0, max: 5 }
   )
 })
 
