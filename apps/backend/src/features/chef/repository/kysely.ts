@@ -37,9 +37,9 @@ class KyselyChefRepository implements ChefRepository {
         .selectFrom('chefs')
         .where('id', '=', id)
         .selectAll()
-        .executeTakeFirstOrThrow()
+        .executeTakeFirst()
 
-      return Result.ok(result)
+      return Result.ok(result ?? null)
     } catch (error) {
       this.logger.error('failed to find chef by id', error)
       return Result.err('ERR_UNEXPECTED')
@@ -102,8 +102,8 @@ class KyselyChefRepository implements ChefRepository {
     try {
       const result = await this.client
         .updateTable('chefs')
-        .where('id', '=', id)
         .set(payload)
+        .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
 

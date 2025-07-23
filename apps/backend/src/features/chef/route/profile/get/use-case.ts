@@ -2,14 +2,18 @@ import type { Response } from './types'
 import { Result } from 'true-myth'
 import type { ChefRepository } from '../../../repository'
 import type { User } from '@/types'
+import type { Logger } from '@/features/logger'
 
-class GetChefProfileUseCase {
-  constructor(private chefRepository: ChefRepository) {}
+class GetActiveChefProfileUseCase {
+  constructor(
+    private chefRepository: ChefRepository,
+    private logger: Logger
+  ) {}
 
   async execute(
     user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
-    const findChefResult = await this.chefRepository.findById(user.id)
+    const findChefResult = await this.chefRepository.findByUserId(user.id)
 
     if (findChefResult.isErr) {
       return Result.err({
@@ -31,4 +35,4 @@ class GetChefProfileUseCase {
   }
 }
 
-export default GetChefProfileUseCase
+export default GetActiveChefProfileUseCase

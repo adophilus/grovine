@@ -11,14 +11,15 @@ class CreateChefUseCase {
     payload: Request.Body,
     user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
-    const createChefResult = await this.chefRepository.create({
+    const _payload = {
       ...payload,
       user_id: user.id,
       is_verified: true,
       is_banned: true,
       rating: 0,
       id: ulid()
-    })
+    }
+    const createChefResult = await this.chefRepository.create(_payload)
 
     if (createChefResult.isErr) {
       return Result.err({

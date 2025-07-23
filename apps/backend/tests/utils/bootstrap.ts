@@ -87,7 +87,6 @@ import {
   ListChefUseCase,
   UpdateActiveChefProfileUseCase
 } from '@/features/chef/use-case'
-import { NO_MIGRATIONS } from 'kysely'
 
 export const bootstrap = async () => {
   // Logger
@@ -223,7 +222,8 @@ export const bootstrap = async () => {
   const getChefUseCase = new GetChefUseCase(chefRepository)
   const listChefUseCase = new ListChefUseCase(chefRepository)
   const getActiveChefProfileUseCase = new GetActiveChefProfileUseCase(
-    chefRepository
+    chefRepository,
+    logger
   )
   const updateActiveChefProfileUseCase = new UpdateActiveChefProfileUseCase(
     chefRepository,
@@ -325,7 +325,6 @@ export const bootstrap = async () => {
   Container.set(GetActiveChefProfileUseCase, getActiveChefProfileUseCase)
   Container.set(UpdateActiveChefProfileUseCase, updateActiveChefProfileUseCase)
 
-  await kyselyMigrator.migrateTo(NO_MIGRATIONS)
   await kyselyMigrator.migrateToLatest()
 
   return { app, logger, config }

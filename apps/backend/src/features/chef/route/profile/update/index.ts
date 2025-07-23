@@ -18,7 +18,6 @@ const UpdateActiveChefProfileRoute = new Hono().patch(
     const payload = c.req.valid('form')
 
     const useCase = Container.get(UpdateActiveChefProfileUseCase)
-
     const result = await useCase.execute(payload, user)
 
     if (result.isErr) {

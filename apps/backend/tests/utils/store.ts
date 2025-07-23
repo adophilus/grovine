@@ -13,6 +13,7 @@ const storeStage001 = z.object({
     refresh_token: z.string()
   }),
   user: z.object({
+    full_name: z.string(),
     email: z.string().email()
   })
 })
@@ -23,9 +24,7 @@ const storeStage002 = z.object({
 
 const storeStage003 = z.object({
   stage: z.literal('003'),
-  chef: z.object({
-    id: z.string()
-  })
+  chef: z.object({})
 })
 
 const storeStage004 = z.object({

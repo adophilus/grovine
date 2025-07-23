@@ -3,15 +3,14 @@ import { sql, type Kysely } from 'kysely'
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('chefs')
-    .addColumn('user_id', 'varchar', (col) =>
-      col.primaryKey().references('users.id').onDelete('cascade')
-    )
+    .addColumn('id', 'varchar', (col) => col.primaryKey().notNull())
     .addColumn('name', 'varchar', (col) => col.notNull())
     .addColumn('niches', 'jsonb', (col) => col.notNull())
-    .addColumn('profile_picture', 'varchar')
-    .addColumn('rating', 'decimal(2, 1)', (col) => col.defaultTo(0.0))
-    .addColumn('is_verified', 'boolean', (col) => col.defaultTo(false))
-    .addColumn('is_banned', 'boolean', (col) => col.defaultTo(false))
+    .addColumn('profile_picture', 'jsonb')
+    .addColumn('rating', 'numeric', (col) => col.notNull())
+    .addColumn('is_verified', 'boolean', (col) => col.notNull())
+    .addColumn('is_banned', 'boolean', (col) => col.notNull())
+    .addColumn('user_id', 'varchar', (col) => col.notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`NOW()`).notNull()
     )

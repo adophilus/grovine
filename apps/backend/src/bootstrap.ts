@@ -227,7 +227,8 @@ export const bootstrap = async () => {
   const getChefUseCase = new GetChefUseCase(chefRepository)
   const listChefUseCase = new ListChefUseCase(chefRepository)
   const getActiveChefProfileUseCase = new GetActiveChefProfileUseCase(
-    chefRepository
+    chefRepository,
+    logger
   )
   const updateActiveChefProfileUseCase = new UpdateActiveChefProfileUseCase(
     chefRepository,

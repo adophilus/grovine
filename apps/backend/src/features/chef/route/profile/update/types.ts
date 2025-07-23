@@ -6,7 +6,7 @@ export namespace Request {
     apiSchema.schemas.Api_Chef_Profile_Update_Request_Body.omit({
       profile_picture: true
     }).extend({
-      profile_picture: z.instanceof(File)
+      profile_picture: z.instanceof(File).optional()
     })
   export type Body = z.infer<typeof body>
 }

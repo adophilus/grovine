@@ -3,8 +3,8 @@ import assert from 'node:assert'
 import { client, useAuth, getStore, useApp, bodySerializer } from '../utils'
 import { faker } from '@faker-js/faker'
 
-const mockChefDetails = () => ({
-  name: faker.person.fullName(),
+const mockChefDetails = (fullName: string) => ({
+  name: fullName,
   niches: faker.helpers.arrayElements(
     ['Italian', 'Mexican', 'Indian', 'Chinese', 'French'],
     { min: 0, max: 3 }
@@ -13,6 +13,7 @@ const mockChefDetails = () => ({
 
 describe('chef', async () => {
   const store = await getStore()
+  let userFullName: string
 
   const imageBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII'
@@ -21,13 +22,14 @@ describe('chef', async () => {
 
   before(() => {
     assert(store.state.stage === '002', 'Should be in stage 002')
+    userFullName = store.state.user.full_name
     useAuth(client, store.state.auth)
     useApp(client)
   })
 
   test('create chef profile', async () => {
     const res = await client.POST('/chefs', {
-      body: mockChefDetails()
+      body: mockChefDetails(userFullName)
     })
 
     assert(
@@ -38,6 +40,9 @@ describe('chef', async () => {
       res.data.code === 'CHEF_PROFILE_CREATED',
       'Response should have CHEF_PROFILE_CREATED code'
     )
+    store.setStage('003', {
+      chef: {}
+    })
   })
 
   test('get chef profile', async () => {
@@ -55,7 +60,7 @@ describe('chef', async () => {
 
   test('update chef profile', async () => {
     const res = await client.PATCH('/chefs/profile', {
-      body: { ...mockChefDetails(), profile_picture: image },
+      body: { ...mockChefDetails(userFullName), profile_picture: image },
       bodySerializer
     })
 

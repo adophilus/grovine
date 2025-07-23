@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import GetChefProfileUseCase from './use-case'
+import GetActiveChefProfileUseCase from './use-case'
 import AuthMiddleware from '@/features/auth/middleware'
 
 const GetActiveChefProfileRoute = new Hono().get(
@@ -14,8 +14,7 @@ const GetActiveChefProfileRoute = new Hono().get(
 
     const user = c.get('user')
 
-    const useCase = Container.get(GetChefProfileUseCase)
-
+    const useCase = Container.get(GetActiveChefProfileUseCase)
     const result = await useCase.execute(user)
 
     if (result.isErr) {

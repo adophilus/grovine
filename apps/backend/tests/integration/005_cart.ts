@@ -18,7 +18,7 @@ describe('cart', async () => {
   let itemId: string
 
   before(async () => {
-    assert(store.state.stage === '002', 'Should be in 002 stage')
+    assert(store.state.stage === '003', 'Should be in stage 003')
     useAuth(client, store.state.auth)
     useApp(client)
 

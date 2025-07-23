@@ -7,7 +7,12 @@ export const client = createClient(config.server.url)
 export const bodySerializer = (body: any) => {
   const fd = new FormData()
   for (const name in body) {
-    fd.append(name, body[name])
+    const val = body[name]
+    if (Array.isArray(val)) {
+      for (const value of val) fd.append(name, value)
+    } else {
+      fd.append(name, val)
+    }
   }
   return fd
 }

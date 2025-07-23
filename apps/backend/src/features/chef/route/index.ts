@@ -6,8 +6,8 @@ import ChefProfileRoute from './profile'
 
 const ChefRouter = new Hono()
   .route('/', CreateChefRoute)
-  .route('/', GetChefRoute)
   .route('/', ChefProfileRoute)
+  .route('/', GetChefRoute)
   .route('/', ListChefRoute)
 
 export default ChefRouter
