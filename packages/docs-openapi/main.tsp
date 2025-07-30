@@ -98,12 +98,6 @@ namespace Api {
   }
 
   @error
-  model ChefAccountNotCreatedError {
-    @statusCode _code: 401;
-    code: "ERR_CHEF_ACCOUNT_NOT_CREATED";
-  }
-
-  @error
   model UnauthorizedError {
     @statusCode _code: 401;
     code: "ERR_UNAUTHORIZED";
@@ -1062,148 +1056,158 @@ namespace Api {
             video: HttpPart<VideoFile>;
             cover_image: HttpPart<ImageFile>;
           }
-
-          namespace Response {
-            namespace Success {
-              model Success {
-                @statusCode _code: 201;
-                code: "RECIPE_CREATED";
-              }
-            }
-
-            namespace Error {
-              alias Error = ChefAccountNotCreatedError | BadRequestError | UnexpectedError;
-            }
-
-            alias Response = Success.Success | Error.Error;
-          }
-
-          @post
-          @doc("Create a new recipe")
-          op createRecipe(
-            ...Request.Headers,
-            @multipartBody body: Request.Body,
-          ): Response.Response;
         }
 
-        namespace List {
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 201;
+              code: "RECIPE_CREATED";
+            }
+          }
+
+          namespace Error {
+            alias Error = UnauthorizedError | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @post
+        @doc("Create a new recipe")
+        op createRecipe(
+          ...Request.Headers,
+          @multipartBody body: Request.Body,
+        ): Response.Response;
+      }
+
+      namespace List {
+        namespace Response {
+          namespace Success {
+            model Success {
+              code: "LIST";
+              data: Pagination.Paginated<Recipe>;
+            }
+          }
+
+          namespace Error {
+            alias Error = UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @get
+        @doc("List recipes")
+        op listRecipes(...Pagination.Query): Response.Response;
+      }
+
+      @route("/{id}")
+      namespace ById {
+        namespace Get {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
+            }
+          }
+
           namespace Response {
             namespace Success {
               model Success {
-                code: "LIST";
-                data: Pagination.Paginated<Recipe>;
+                @statusCode _code: 200;
+                code: "RECIPE_FOUND";
+                data: Recipe;
               }
             }
 
             namespace Error {
-              alias Error = UnexpectedError;
+              alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
             }
 
             alias Response = Success.Success | Error.Error;
           }
 
           @get
-          @doc("List recipes")
-          op listRecipes(...Pagination.Query): Response.Response;
+          @doc("Get a recipe by ID")
+          op getRecipeById(...Request.Path): Response.Response;
         }
 
-        @route("/{id}")
-        namespace ById {
-          namespace Get {
-            namespace Request {
-              model Path {
-                @path
-                id: Id;
-              }
+        namespace Update {
+          namespace Request {
+            model Headers {
+              @header
+              contentType: "multipart/form-data";
             }
 
-            namespace Response {
-              namespace Success {
-                model Success {
-                  @statusCode _code: 200;
-                  code: "RECIPE_FOUND";
-                  data: Recipe;
-                }
-              }
-
-              namespace Error {
-                alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
-              }
-
-              alias Response = Success.Success | Error.Error;
+            model Path {
+              @path
+              id: Id;
             }
 
-            @get
-            @doc("Get a recipe by ID")
-            op getRecipeById(...Request.Path): Response.Response;
+            model Body {
+              ...OptionalProperties<Api.Food.Recipe.Create.Request.Body>;
+            }
           }
 
-          namespace Update {
-            namespace Request {
-              model Headers {
-                @header
-                contentType: "multipart/form-data";
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 200;
+                code: "RECIPE_UPDATED";
               }
-
-              model Path {
-                @path
-                id: Id;
-              }
-
-              model Body extends OptionalProperties<Create.Request.Body> {}
             }
 
-            namespace Response {
-              namespace Success {
-                model Success {
-                  @statusCode _code: 200;
-                  code: "RECIPE_UPDATED";
-                }
-              }
-
-              namespace Error {
-                alias Error = NotFoundError<"RECIPE"> | BadRequestError | UnexpectedError;
-              }
-
-              alias Response = Success.Success | Error.Error;
+            namespace Error {
+              alias Error =
+                | UnauthorizedError
+                | NotFoundError<"RECIPE">
+                | BadRequestError
+                | UnexpectedError;
             }
 
-            @patch(#{ implicitOptionality: false })
-            @doc("Update a recipe by ID")
-            op updateRecipeById(
-              ...Request.Headers,
-              ...Request.Path,
-              @multipartBody body: Request.Body,
-            ): Response.Response;
+            alias Response = Success.Success | Error.Error;
           }
 
-          namespace Delete {
-            namespace Request {
-              model Path {
-                @path
-                id: Id;
-              }
+          @patch(#{ implicitOptionality: false })
+          @doc("Update a recipe by ID")
+          op updateRecipeById(
+            ...Request.Headers,
+            ...Request.Path,
+            @multipartBody body: Request.Body,
+          ): Response.Response;
+        }
+
+        namespace Delete {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
             }
-
-            namespace Response {
-              namespace Success {
-                model Success {
-                  @statusCode _code: 200;
-                  code: "RECIPE_DELETED";
-                }
-              }
-
-              namespace Error {
-                alias Error = NotFoundError<"RECIPE"> | BadRequestError | UnexpectedError;
-              }
-
-              alias Response = Success.Success | Error.Error;
-            }
-
-            @delete
-            @doc("Delete a recipe by ID")
-            op deleteRecipeById(...Request.Path): Response.Response;
           }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 200;
+                code: "RECIPE_DELETED";
+              }
+            }
+
+            namespace Error {
+              alias Error =
+                | NotFoundError<"RECIPE">
+                | BadRequestError
+                | UnauthorizedError
+                | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @delete
+          @doc("Delete a recipe by ID")
+          op deleteRecipeById(...Request.Path): Response.Response;
         }
       }
     }

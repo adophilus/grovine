@@ -1,5 +1,5 @@
-import ListOrdersUseCase from './routes/list/use-case'
-import GetOrderUseCase from './routes/get/use-case'
-import UpdateOrderStatusUseCase from './routes/update/use-case'
+import ListOrdersUseCase from './route/list/use-case'
+import GetOrderUseCase from './route/get/use-case'
+import UpdateOrderStatusUseCase from './route/update/use-case'
 
 export { ListOrdersUseCase, GetOrderUseCase, UpdateOrderStatusUseCase }
