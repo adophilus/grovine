@@ -1,5 +1,5 @@
 import type { FoodItem } from '@/types'
-import { Result, Unit } from 'true-myth'
+import type { Result, Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
 
 export type FoodItemRepositoryError = 'ERR_UNEXPECTED'
@@ -9,9 +9,11 @@ abstract class FoodItemRepository {
     payload: FoodItem.Insertable
   ): Promise<Result<FoodItem.Selectable, FoodItemRepositoryError>>
 
-  public abstract list(
-    payload: Pagination.Options
-  ): Promise<Result<FoodItem.Selectable[], FoodItemRepositoryError>>
+  public abstract findMany(
+    options: Pagination.Options
+  ): Promise<
+    Result<Pagination.Paginated<FoodItem.Selectable>, FoodItemRepositoryError>
+  >
 
   public abstract findById(
     id: string

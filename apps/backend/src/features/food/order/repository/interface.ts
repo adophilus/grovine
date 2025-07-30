@@ -21,7 +21,7 @@ abstract class OrderRepository {
   public abstract findManyByUserId(
     userId: string,
     options: Pagination.Options
-  ): Promise<Result<OrderWithItems[], OrderRepositoryError>>
+  ): Promise<Result<Pagination.Paginated<OrderWithItems>, OrderRepositoryError>>
 
   public abstract updateStatusById(
     id: string,

@@ -601,7 +601,10 @@ namespace Api {
       namespace List {
         namespace Response {
           namespace Success {
-            alias Success = Pagination.Paginated<Item>;
+            model Success {
+              code: "LIST";
+              data: Pagination.Paginated<Item>;
+            }
           }
 
           namespace Error {
@@ -908,7 +911,10 @@ namespace Api {
 
         namespace Response {
           namespace Success {
-            alias Success = Pagination.Paginated<Order>;
+            model Success {
+              code: "LIST";
+              data: Pagination.Paginated<Order>;
+            }
           }
 
           namespace Error {

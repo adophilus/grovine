@@ -1,6 +1,6 @@
 import type { FoodItem } from '@/types'
 import { Result, type Unit } from 'true-myth'
-import type { Pagination } from '@/features/pagination'
+import { Pagination } from '@/features/pagination'
 import type FoodItemRepository from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
@@ -28,18 +28,30 @@ class KyselyFoodItemRepository implements FoodItemRepository {
     }
   }
 
-  public async list(
-    payload: Pagination.Options
-  ): Promise<Result<FoodItem.Selectable[], FoodItemRepositoryError>> {
+  public async findMany(
+    options: Pagination.Options
+  ): Promise<
+    Result<Pagination.Paginated<FoodItem.Selectable>, FoodItemRepositoryError>
+  > {
     try {
       const items = await this.client
         .selectFrom('food_items')
         .selectAll()
-        .limit(payload.per_page)
-        .offset(payload.page)
+        .limit(options.per_page)
+        .offset(options.page)
         .execute()
 
-      return Result.ok(items)
+      const { total } = await this.client
+        .selectFrom('food_items')
+        .select((eb) => eb.fn.count('id').as('total'))
+        .executeTakeFirstOrThrow()
+
+      const paginatedItems = Pagination.paginate(items, {
+        ...options,
+        total: Number(total)
+      })
+
+      return Result.ok(paginatedItems)
     } catch (err) {
       this.logger.error('failed to list items:', err)
       return Result.err('ERR_UNEXPECTED')

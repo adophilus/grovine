@@ -13,7 +13,7 @@ abstract class FoodRecipeRepository {
     id: string
   ): Promise<Result<FoodRecipe.Selectable | null, FoodRecipeRepositoryError>>
 
-  public abstract list(
+  public abstract findMany(
     options: Pagination.Options
   ): Promise<
     Result<

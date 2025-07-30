@@ -1,6 +1,6 @@
 import type { Order } from '@/types'
 import { Result } from 'true-myth'
-import type { Pagination } from '@/features/pagination'
+import { Pagination } from '@/features/pagination'
 import type OrderRepository from './interface'
 import type { OrderRepositoryError, OrderWithItems } from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
@@ -45,7 +45,9 @@ class KyselyOrderRepository implements OrderRepository {
   public async findManyByUserId(
     userId: string,
     options: Pagination.Options
-  ): Promise<Result<OrderWithItems[], OrderRepositoryError>> {
+  ): Promise<
+    Result<Pagination.Paginated<OrderWithItems>, OrderRepositoryError>
+  > {
     try {
       const orders = await this.client
         .selectFrom('orders')
@@ -70,7 +72,18 @@ class KyselyOrderRepository implements OrderRepository {
 
       const resolved = await Promise.all(promises)
 
-      return Result.ok(resolved)
+      const { total } = await this.client
+        .selectFrom('orders')
+        .select((eb) => eb.fn.countAll().as('total'))
+        .where('user_id', '=', userId)
+        .executeTakeFirstOrThrow()
+
+      const paginatedOrders = Pagination.paginate(resolved, {
+        ...options,
+        total: Number(total)
+      })
+
+      return Result.ok(paginatedOrders)
     } catch (err) {
       this.logger.error('failed to find orders by user id:', userId, err)
       return Result.err('ERR_UNEXPECTED')

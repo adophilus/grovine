@@ -2,6 +2,7 @@ import { FoodItemRepository } from '../../repository'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import { serializeItem } from '../../utils'
+import { Pagination } from '@/features/pagination'
 
 class ListFoodItemsUseCase {
   constructor(private foodItemRepository: FoodItemRepository) {}
@@ -9,7 +10,7 @@ class ListFoodItemsUseCase {
   async execute(
     query: Request.Query
   ): Promise<Result<Response.Success, Response.Error>> {
-    const listItemsResult = await this.foodItemRepository.list(query)
+    const listItemsResult = await this.foodItemRepository.findMany(query)
 
     if (listItemsResult.isErr) {
       return Result.err({
@@ -17,16 +18,12 @@ class ListFoodItemsUseCase {
       })
     }
 
-    const items = listItemsResult.value
+    const paginatedItems = listItemsResult.value
+    const serializedItems = paginatedItems.data.map(serializeItem)
 
     return Result.ok({
       code: 'LIST',
-      data: items.map(serializeItem),
-      meta: {
-        page: query.page,
-        per_page: query.per_page,
-        total: items.length
-      }
+      data: Pagination.paginate(serializedItems, paginatedItems.meta)
     })
   }
 }

@@ -8,7 +8,7 @@ class ListFoodRecipeUseCase {
   async execute(
     payload: Request.Query
   ): Promise<Result<Response.Success, Response.Error>> {
-    const listRecipesResult = await this.recipeRepository.list(payload)
+    const listRecipesResult = await this.recipeRepository.findMany(payload)
     if (listRecipesResult.isErr) {
       return Result.err({
         code: 'ERR_UNEXPECTED'

@@ -2,9 +2,9 @@ import type { KyselyClient } from '@/features/database/kysely'
 import type FoodRecipeRepository from './interface'
 import type { Logger } from '@/features/logger'
 import type { FoodRecipe } from '@/types'
-import { Result, Unit } from 'true-myth'
+import { Result, type Unit } from 'true-myth'
 import type { FoodRecipeRepositoryError } from './interface'
-import type { Pagination } from '@/features/pagination'
+import { Pagination } from '@/features/pagination'
 
 class KyselyFoodRecipeRepository implements FoodRecipeRepository {
   constructor(
@@ -46,9 +46,14 @@ class KyselyFoodRecipeRepository implements FoodRecipeRepository {
     }
   }
 
-  async list(
+  async findMany(
     options: Pagination.Options
-  ): Promise<Result<FoodRecipe.Selectable[], FoodRecipeRepositoryError>> {
+  ): Promise<
+    Result<
+      Pagination.Paginated<FoodRecipe.Selectable>,
+      FoodRecipeRepositoryError
+    >
+  > {
     try {
       const recipes = await this.client
         .selectFrom('food_recipes')
@@ -57,7 +62,17 @@ class KyselyFoodRecipeRepository implements FoodRecipeRepository {
         .limit(options.per_page)
         .execute()
 
-      return Result.ok(recipes)
+      const { total } = await this.client
+        .selectFrom('food_recipes')
+        .select((eb) => eb.fn.countAll().as('total'))
+        .executeTakeFirstOrThrow()
+
+      const paginatedRecipes = Pagination.paginate(recipes, {
+        ...options,
+        total: Number(total)
+      })
+
+      return Result.ok(paginatedRecipes)
     } catch (error) {
       this.logger.error('Failed to list food recipes', error)
       return Result.err('ERR_UNEXPECTED')
