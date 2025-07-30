@@ -1,11 +1,12 @@
 import type { Adverts } from '@/types'
 import { Result, type Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
-import type { AdvertRepository, AdvertRepositoryError } from './interface'
+import type AdvertRepository from './interface'
+import type { AdvertRepositoryError } from './interface'
 import type { KyselyClient } from '@/features/database/kysely/interface'
 import type { Logger } from '@/features/logger'
 
-export class AdvertKyselyRepository implements AdvertRepository {
+class KyselyAdvertRepository implements AdvertRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
@@ -91,3 +92,5 @@ export class AdvertKyselyRepository implements AdvertRepository {
     }
   }
 }
+
+export default KyselyAdvertRepository

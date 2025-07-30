@@ -6,7 +6,7 @@ import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
 import type { FoodItemRepositoryError } from './interface'
 
-class FoodItemKyselyRepository implements FoodItemRepository {
+class KyselyFoodItemRepository implements FoodItemRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
@@ -97,4 +97,4 @@ class FoodItemKyselyRepository implements FoodItemRepository {
   }
 }
 
-export default FoodItemKyselyRepository
+export default KyselyFoodItemRepository

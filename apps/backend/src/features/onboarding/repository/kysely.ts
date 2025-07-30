@@ -7,7 +7,7 @@ import type {
   OnboardingRepositoryError
 } from './interface'
 
-class OnboardingKyselyRepository implements OnboardingRepository {
+class KyselyOnboardingRepository implements OnboardingRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
@@ -48,4 +48,4 @@ class OnboardingKyselyRepository implements OnboardingRepository {
   }
 }
 
-export default OnboardingKyselyRepository
+export default KyselyOnboardingRepository

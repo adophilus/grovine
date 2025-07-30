@@ -3,7 +3,7 @@ import 'reflect-metadata'
 import { Container } from '@n8n/di'
 import { KyselyClient } from '@/features/database/kysely'
 import { AdvertRepository } from '@/features/advert/repository'
-import { AdvertKyselyRepository } from '@/features/advert/repository/kysely'
+import { KyselyAdvertRepository } from '@/features/advert/repository'
 import {
   CreateAdvertUseCase,
   DeleteAdvertUseCase,
@@ -14,9 +14,9 @@ import { Logger } from '@/features/logger'
 import { HonoApp } from '@/features/app'
 import { config } from '@/features/config'
 import {
-  AuthTokenKyselyRepository,
+  KyselyAuthTokenRepository,
   AuthTokenRepository,
-  AuthUserKyselyRepository,
+  KyselyAuthUserRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
 import {
@@ -122,8 +122,8 @@ export const bootstrap = async () => {
   const referralRepository = new KyselyReferralRepository(kyselyClient, logger)
 
   // Auth DI
-  const authUserRepository = new AuthUserKyselyRepository(kyselyClient, logger)
-  const authTokenRepository = new AuthTokenKyselyRepository(
+  const authUserRepository = new KyselyAuthUserRepository(kyselyClient, logger)
+  const authTokenRepository = new KyselyAuthTokenRepository(
     kyselyClient,
     logger
   )
@@ -168,7 +168,7 @@ export const bootstrap = async () => {
   const getUserProfileUseCase = new GetUserProfileUseCase()
 
   // Advert DI
-  const advertRepository = new AdvertKyselyRepository(kyselyClient, logger)
+  const advertRepository = new KyselyAdvertRepository(kyselyClient, logger)
   const createAdvertUseCase = new CreateAdvertUseCase(
     advertRepository,
     storageService

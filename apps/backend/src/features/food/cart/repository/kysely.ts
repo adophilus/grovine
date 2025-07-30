@@ -7,7 +7,7 @@ import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
 import type { FoodItemRepository } from '../../item/repository'
 
-class FoodCartKyselyRepository implements FoodCartRepository {
+class KyselyFoodCartRepository implements FoodCartRepository {
   constructor(
     private client: KyselyClient,
     private foodItemRepository: FoodItemRepository,
@@ -149,4 +149,4 @@ class FoodCartKyselyRepository implements FoodCartRepository {
   }
 }
 
-export default FoodCartKyselyRepository
+export default KyselyFoodCartRepository

@@ -5,7 +5,7 @@ import type AuthUserRepository from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
 
-class AuthUserKyselyRepository implements AuthUserRepository {
+class KyselyAuthUserRepository implements AuthUserRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
@@ -87,4 +87,4 @@ class AuthUserKyselyRepository implements AuthUserRepository {
   }
 }
 
-export default AuthUserKyselyRepository
+export default KyselyAuthUserRepository

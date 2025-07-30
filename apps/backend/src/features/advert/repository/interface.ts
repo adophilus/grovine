@@ -4,7 +4,7 @@ import type { Pagination } from '@/features/pagination'
 
 export type AdvertRepositoryError = 'ERR_UNEXPECTED'
 
-export abstract class AdvertRepository {
+abstract class AdvertRepository {
   abstract create(
     payload: Adverts.Insertable
   ): Promise<Result<Adverts.Selectable, AdvertRepositoryError>>
@@ -24,3 +24,5 @@ export abstract class AdvertRepository {
 
   abstract deleteById(id: string): Promise<Result<Unit, AdvertRepositoryError>>
 }
+
+export default AdvertRepository

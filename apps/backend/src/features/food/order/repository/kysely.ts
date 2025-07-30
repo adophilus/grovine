@@ -6,7 +6,7 @@ import type { OrderRepositoryError, OrderWithItems } from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
 
-class OrderKyselyRepository implements OrderRepository {
+class KyselyOrderRepository implements OrderRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
@@ -135,4 +135,4 @@ class OrderKyselyRepository implements OrderRepository {
   }
 }
 
-export default OrderKyselyRepository
+export default KyselyOrderRepository

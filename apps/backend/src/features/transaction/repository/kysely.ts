@@ -6,7 +6,7 @@ import type { KyselyClient } from '@/features/database/kysely'
 import type TransactionRepository from './interface'
 import type { TransactionRepositoryError } from './interface'
 
-class TransactionKyselyRepository implements TransactionRepository {
+class KyselyTransactionRepository implements TransactionRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
@@ -48,4 +48,4 @@ class TransactionKyselyRepository implements TransactionRepository {
   }
 }
 
-export default TransactionKyselyRepository
+export default KyselyTransactionRepository
