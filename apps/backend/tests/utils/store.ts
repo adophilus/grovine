@@ -48,6 +48,13 @@ const storeStage006 = z.object({
   })
 })
 
+const storeStage007 = z.object({
+  stage: z.literal('007'),
+  recipe: z.object({
+    id: z.string()
+  })
+})
+
 type TStoreStage000 = z.infer<typeof storeStage000>
 type TStoreStage001 = z.infer<typeof storeStage001>
 type TStoreStage002 = z.infer<typeof storeStage002>
@@ -55,6 +62,7 @@ type TStoreStage003 = z.infer<typeof storeStage003>
 type TStoreStage004 = z.infer<typeof storeStage004>
 type TStoreStage005 = z.infer<typeof storeStage005>
 type TStoreStage006 = z.infer<typeof storeStage006>
+type TStoreStage007 = z.infer<typeof storeStage007>
 
 type TStoreStage =
   | TStoreStage000
@@ -64,6 +72,7 @@ type TStoreStage =
   | TStoreStage004
   | TStoreStage005
   | TStoreStage006
+  | TStoreStage007
 
 const storeStage000Progressive = storeStage000
 const storeStage001Progressive = storeStage001.extend(
@@ -84,6 +93,9 @@ const storeStage005Progressive = storeStage005.extend(
 const storeStage006Progressive = storeStage006.extend(
   storeStage005Progressive.omit({ stage: true }).shape
 )
+const storeStage007Progressive = storeStage007.extend(
+  storeStage006Progressive.omit({ stage: true }).shape
+)
 
 export const storeSchema = z.discriminatedUnion('stage', [
   storeStage000Progressive,
@@ -92,7 +104,8 @@ export const storeSchema = z.discriminatedUnion('stage', [
   storeStage003Progressive,
   storeStage004Progressive,
   storeStage005Progressive,
-  storeStage006Progressive
+  storeStage006Progressive,
+  storeStage007Progressive
 ])
 
 export type TStoreState = z.infer<typeof storeSchema>
@@ -114,7 +127,9 @@ function precursorStage<Stage extends TStoreStage['stage']>(
             ? '004'
             : Stage extends '006'
               ? '005'
-              : never
+              : Stage extends '007'
+                ? '006'
+                : never
 
 function precursorStage(stage: unknown): unknown {
   switch (stage) {
@@ -132,6 +147,8 @@ function precursorStage(stage: unknown): unknown {
       return '004'
     case '006':
       return '005'
+    case '007':
+      return '006'
     default:
       throw new Error(`Invalid stage: ${stage}`)
   }
