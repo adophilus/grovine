@@ -1,6 +1,6 @@
 import type { Adverts } from '@/types'
 import { Result, type Unit } from 'true-myth'
-import type { Pagination } from '@/features/pagination'
+import { Pagination } from '@/features/pagination'
 import type AdvertRepository from './interface'
 import type { AdvertRepositoryError } from './interface'
 import type { KyselyClient } from '@/features/database/kysely/interface'
@@ -77,7 +77,9 @@ class KyselyAdvertRepository implements AdvertRepository {
 
   async list(
     payload: Pagination.Options
-  ): Promise<Result<Adverts.Selectable[], AdvertRepositoryError>> {
+  ): Promise<
+    Result<Pagination.Paginated<Adverts.Selectable>, AdvertRepositoryError>
+  > {
     try {
       const adverts = await this.client
         .selectFrom('adverts')
@@ -85,7 +87,18 @@ class KyselyAdvertRepository implements AdvertRepository {
         .limit(payload.per_page)
         .offset(payload.per_page)
         .execute()
-      return Result.ok(adverts)
+
+      const { total } = await this.client
+        .selectFrom('adverts')
+        .select((eb) => eb.fn.countAll().as('total'))
+        .executeTakeFirstOrThrow()
+
+      const paginatedAdverts = Pagination.paginate(adverts, {
+        ...payload,
+        total: Number(total)
+      })
+
+      return Result.ok(paginatedAdverts)
     } catch (err) {
       this.logger.error('failed to list adverts:', err)
       return Result.err('ERR_UNEXPECTED')

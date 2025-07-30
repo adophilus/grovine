@@ -78,14 +78,14 @@ class KyselyChefRepository implements ChefRepository {
 
       const { total } = await this.client
         .selectFrom('chefs')
-        .select((eb) => eb.fn.count<number>('id').as('total'))
+        .select((eb) => eb.fn.count('id').as('total'))
         .executeTakeFirstOrThrow()
 
       this.logger.debug(total)
 
       const paginatedData = Pagination.paginate(items, {
         ...options,
-        total
+        total: Number(total)
       })
 
       return Result.ok(paginatedData)

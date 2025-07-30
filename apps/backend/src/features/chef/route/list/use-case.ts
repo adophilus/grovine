@@ -8,7 +8,7 @@ class ListChefUseCase {
   async execute(
     payload: Request.Query
   ): Promise<Result<Response.Success, Response.Error>> {
-    const findChefsResult = await this.chefRepository.findMany(payload)
+    const findChefsResult = await this.chefRepository.list(payload)
 
     if (findChefsResult.isErr) {
       return Result.err({

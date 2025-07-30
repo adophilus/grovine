@@ -52,6 +52,13 @@ export namespace FoodItem {
   export type Updateable = T['Updateable']
 }
 
+export namespace FoodRecipe {
+  type T = GenerateTypes<KyselyDatabaseTables['food_recipes']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export namespace Wallet {
   type T = GenerateTypes<KyselyDatabaseTables['wallets']>
   export type Selectable = T['Selectable']

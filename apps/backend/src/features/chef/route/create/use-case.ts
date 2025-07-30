@@ -4,7 +4,7 @@ import type { ChefRepository } from '../../repository'
 import type { User } from '@/types'
 import { ulid } from 'ulidx'
 
-class CreateChefUseCase {
+class CreateRecipeUseCase {
   constructor(private chefRepository: ChefRepository) {}
 
   async execute(
@@ -33,4 +33,4 @@ class CreateChefUseCase {
   }
 }
 
-export default CreateChefUseCase
+export default CreateRecipeUseCase

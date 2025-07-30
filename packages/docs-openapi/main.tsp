@@ -41,6 +41,10 @@ namespace Api {
   @example("12345")
   scalar Otp extends string;
 
+  model VideoFile extends File {
+    contentType: "video/mp4" | "video/webm" | "video/ogg";
+  }
+
   model ImageFile extends File {
     contentType: "image/jpeg" | "image/png" | "image/webp";
   }
@@ -91,6 +95,12 @@ namespace Api {
   model UserNotVerifiedError {
     @statusCode _code: 401;
     code: "ERR_USER_NOT_VERIFIED";
+  }
+
+  @error
+  model ChefAccountNotCreatedError {
+    @statusCode _code: 401;
+    code: "ERR_CHEF_ACCOUNT_NOT_CREATED";
   }
 
   @error
@@ -1002,6 +1012,195 @@ namespace Api {
         op getRegions(): Response.Response;
       }
     }
+
+    @tag("Recipe")
+    @route("/recipes")
+    namespace Recipe {
+      model Recipe {
+        id: Id;
+        title: string;
+        description: string;
+        ingredients: {
+          quantity: numeric;
+          id: string;
+        }[];
+        instructions: {
+          title: string;
+          content: string;
+        }[];
+        video: Media;
+        cover_image: Media;
+        chef_id: Id;
+        created_at: DateTime;
+        updated_at: DateTime | null;
+      }
+
+      namespace Create {
+        namespace Request {
+          model Headers {
+            @header
+            contentType: "multipart/form-data";
+          }
+
+          model Body {
+            title: HttpPart<string>;
+            description: HttpPart<string>;
+            ingredients: HttpPart<{
+              quantity: numeric;
+              id: string;
+            }[]>;
+            instructions: HttpPart<{
+              title: string;
+              content: string;
+            }[]>;
+            video: HttpPart<VideoFile>;
+            cover_image: HttpPart<ImageFile>;
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 201;
+                code: "RECIPE_CREATED";
+              }
+            }
+
+            namespace Error {
+              alias Error = ChefAccountNotCreatedError | BadRequestError | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @post
+          @doc("Create a new recipe")
+          op createRecipe(
+            ...Request.Headers,
+            @multipartBody body: Request.Body,
+          ): Response.Response;
+        }
+
+        namespace List {
+          namespace Response {
+            namespace Success {
+              model Success {
+                code: "LIST";
+                data: Pagination.Paginated<Recipe>;
+              }
+            }
+
+            namespace Error {
+              alias Error = UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @get
+          @doc("List recipes")
+          op listRecipes(...Pagination.Query): Response.Response;
+        }
+
+        @route("/{id}")
+        namespace ById {
+          namespace Get {
+            namespace Request {
+              model Path {
+                @path
+                id: Id;
+              }
+            }
+
+            namespace Response {
+              namespace Success {
+                model Success {
+                  @statusCode _code: 200;
+                  code: "RECIPE_FOUND";
+                  data: Recipe;
+                }
+              }
+
+              namespace Error {
+                alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
+              }
+
+              alias Response = Success.Success | Error.Error;
+            }
+
+            @get
+            @doc("Get a recipe by ID")
+            op getRecipeById(...Request.Path): Response.Response;
+          }
+
+          namespace Update {
+            namespace Request {
+              model Headers {
+                @header
+                contentType: "multipart/form-data";
+              }
+
+              model Path {
+                @path
+                id: Id;
+              }
+
+              model Body extends OptionalProperties<Create.Request.Body> {}
+            }
+
+            namespace Response {
+              namespace Success {
+                model Success {
+                  @statusCode _code: 200;
+                  code: "RECIPE_UPDATED";
+                }
+              }
+
+              namespace Error {
+                alias Error = NotFoundError<"RECIPE"> | BadRequestError | UnexpectedError;
+              }
+
+              alias Response = Success.Success | Error.Error;
+            }
+
+            @patch(#{ implicitOptionality: false })
+            @doc("Update a recipe by ID")
+            op updateRecipeById(
+              ...Request.Headers,
+              ...Request.Path,
+              @multipartBody body: Request.Body,
+            ): Response.Response;
+          }
+
+          namespace Delete {
+            namespace Request {
+              model Path {
+                @path
+                id: Id;
+              }
+            }
+
+            namespace Response {
+              namespace Success {
+                model Success {
+                  @statusCode _code: 200;
+                  code: "RECIPE_DELETED";
+                }
+              }
+
+              namespace Error {
+                alias Error = NotFoundError<"RECIPE"> | BadRequestError | UnexpectedError;
+              }
+
+              alias Response = Success.Success | Error.Error;
+            }
+
+            @delete
+            @doc("Delete a recipe by ID")
+            op deleteRecipeById(...Request.Path): Response.Response;
+          }
+        }
+      }
+    }
   }
 
   @tag("Advertisement")
@@ -1057,7 +1256,10 @@ namespace Api {
 
       namespace Response {
         namespace Success {
-          alias Success = Pagination.Paginated<Advertisement>;
+          model Success {
+            code: "LIST";
+            data: Pagination.Paginated<Advertisement>;
+          }
         }
 
         namespace Error {
@@ -1172,7 +1374,10 @@ namespace Api {
 
       namespace Response {
         namespace Success {
-          alias Success = Pagination.Paginated<Transaction>;
+          model Success {
+            code: "LIST";
+            data: Pagination.Paginated<Transaction>;
+          }
         }
 
         namespace Error {
@@ -1435,7 +1640,10 @@ namespace Api {
 
       namespace Response {
         namespace Success {
-          alias Success = Pagination.Paginated<Chef>;
+          model Success {
+            code: "LIST";
+            data: Pagination.Paginated<Chef>;
+          }
         }
 
         namespace Error {
@@ -1482,41 +1690,40 @@ namespace Api {
       }
     }
   }
-}
 
-model Media {
-  @example("h93suhw7mzyujf9tbugy")
-  public_id: string;
+  model Media {
+    @example("h93suhw7mzyujf9tbugy")
+    public_id: string;
 
-  @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
-  url: string;
-}
-
-namespace Pagination {
-  model Options {
-    page: int64;
-    per_page: int64;
+    @example("https://res.cloudinary.com/dyirc2dvg/image/upload/v1747581547/foodhut/h93suhw7mzyujf9tbugy.jpg")
+    url: string;
   }
 
-  model Meta {
-    ...Options;
-    total: int64;
-  }
+  namespace Pagination {
+    model Options {
+      page: int64;
+      per_page: int64;
+    }
 
-  model Paginated<T> {
-    code: "LIST";
-    data: T[];
-    meta: Meta;
-  }
+    model Meta {
+      ...Options;
+      total: int64;
+    }
 
-  model Query {
-    @query
-    @minValue(1)
-    page?: integer;
+    model Paginated<T> {
+      data: T[];
+      meta: Meta;
+    }
 
-    @query
-    @minValue(10)
-    @maxValue(100)
-    per_page?: integer;
+    model Query {
+      @query
+      @minValue(1)
+      page?: integer;
+
+      @query
+      @minValue(10)
+      @maxValue(100)
+      per_page?: integer;
+    }
   }
 }
