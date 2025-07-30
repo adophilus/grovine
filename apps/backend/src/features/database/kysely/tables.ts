@@ -17,6 +17,14 @@ type UsersTable = TimestampModel & {
   phone_number: string
   referral_code: string | null
   verified_at: string | null
+  role: 'USER' | 'ADMIN' | 'CHEF'
+}
+
+type ReferralsTable = TimestampModel & {
+  id: string
+  code: string
+  referrer_id: string
+  referred_id: string
 }
 
 type TokensTable = TimestampModel & {
@@ -141,4 +149,5 @@ export type KyselyDatabaseTables = {
   transactions: TransactionsTable
   adverts: AdvertsTable
   chefs: ChefTable
+  referrals: ReferralsTable
 }

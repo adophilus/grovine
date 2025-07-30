@@ -87,6 +87,10 @@ import {
   ListChefUseCase,
   UpdateActiveChefProfileUseCase
 } from '@/features/chef/use-case'
+import {
+  ReferralRepository,
+  KyselyReferralRepository
+} from '@/features/referral/repository'
 
 export const bootstrap = async () => {
   // Logger
@@ -113,6 +117,9 @@ export const bootstrap = async () => {
     paymentService
   )
   const withdrawWalletUseCase = new WithdrawWalletUseCase()
+
+  // Referral DI
+  const referralRepository = new KyselyReferralRepository(kyselyClient, logger)
 
   // Auth DI
   const authUserRepository = new AuthUserKyselyRepository(kyselyClient, logger)
@@ -143,6 +150,7 @@ export const bootstrap = async () => {
       authUserRepository,
       authTokenRepository,
       walletRepository,
+      referralRepository,
       mailer
     )
   const resendSignUpVerificationEmailUseCase =
@@ -255,6 +263,9 @@ export const bootstrap = async () => {
   Container.set(GetWalletUseCase, getWalletUseCase)
   Container.set(TopupWalletUseCase, topupWalletUseCase)
   Container.set(WithdrawWalletUseCase, withdrawWalletUseCase)
+
+  // Referral DI
+  Container.set(ReferralRepository, referralRepository)
 
   // Auth DI
   Container.set(AuthUserRepository, authUserRepository)
