@@ -1,5 +1,5 @@
 import type { User } from '@/types'
-import { Result } from 'true-myth'
+import type { Result } from 'true-myth'
 
 export type AuthUserRepositoryError = 'ERR_UNEXPECTED'
 

@@ -1,23 +1,25 @@
 import { Result } from 'true-myth'
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import { Mailer } from '@/features/mailer'
+import type { Mailer } from '@/features/mailer'
 import SignUpVerificationMail from './mail/sign-up-verification'
 import { ulid } from 'ulidx'
 import { config } from '@/features/config'
 import { addSeconds } from 'date-fns'
 import type { Request, Response } from './types'
 import { generateToken } from '@/features/auth/utils/token'
-import { WalletRepository } from '@/features/wallet/repository'
+import type { WalletRepository } from '@/features/wallet/repository'
 import type {
   AuthTokenRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
+import type { ReferralRepository } from '@/features/referral/repository'
 
 class SendSignUpVerificationEmailUseCase {
   constructor(
     private authUserRepository: AuthUserRepository,
     private authTokenRepository: AuthTokenRepository,
     private walletRepository: WalletRepository,
+    private referralRepository: ReferralRepository,
     private mailer: Mailer
   ) {}
 
@@ -39,9 +41,24 @@ class SendSignUpVerificationEmailUseCase {
         code: 'ERR_EMAIL_ALREADY_IN_USE'
       })
 
+    const userId = ulid()
+
+    const referralResult = await this.handleReferral(
+      userId,
+      payload.referral_code
+    )
+
+    if (referralResult.isErr) {
+      return Result.err({ code: 'ERR_UNEXPECTED' })
+    }
+
+    const referralCode = referralResult.value
+
     const userCreationResult = await this.authUserRepository.create({
       ...payload,
-      id: ulid()
+      role: 'USER',
+      referral_code: referralCode,
+      id: userId
     })
 
     if (userCreationResult.isErr)
@@ -96,6 +113,59 @@ class SendSignUpVerificationEmailUseCase {
     return Result.ok({
       code: 'VERIFICATION_EMAIL_SENT'
     })
+  }
+
+  private async handleReferral(
+    referredUserId: string,
+    referralCode?: string
+  ): Promise<Result<string, Response.Error>> {
+    const newReferralCode = ulid()
+
+    if (!referralCode) return Result.ok(newReferralCode)
+
+    const findReferralResult =
+      await this.referralRepository.findByCode(referralCode)
+    if (findReferralResult.isErr) {
+      return Result.err({ code: 'ERR_UNEXPECTED' })
+    }
+
+    const referral = findReferralResult.value
+
+    if (!referral) {
+      return Result.ok(newReferralCode)
+    }
+
+    const findReferringUserResult = await this.authUserRepository.findById(
+      referral.referrer_id
+    )
+    if (findReferringUserResult.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
+
+    const referringUser = findReferringUserResult.value
+
+    if (!referringUser) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
+
+    const newReferral = await this.referralRepository.create({
+      id: ulid(),
+      code: referralCode,
+      referrer_id: referringUser.id,
+      referred_id: referredUserId
+    })
+
+    if (newReferral.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
+
+    return Result.ok(newReferralCode)
   }
 }
 

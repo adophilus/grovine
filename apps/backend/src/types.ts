@@ -108,5 +108,12 @@ export namespace Chef {
   export type Updateable = T['Updateable']
 }
 
+export namespace Referral {
+  type T = GenerateTypes<KyselyDatabaseTables['referrals']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export const SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_UP_VERIFICATION'
 export const SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY = 'SIGN_IN_VERIFICATION'
