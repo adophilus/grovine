@@ -23,7 +23,7 @@ const CreateFoodRecipeRoute = new Hono().post(
     if (result.isErr) {
       response = result.error
       switch (result.error.code) {
-        case 'ERR_CHEF_ACCOUNT_NOT_CREATED': {
+        case 'ERR_UNAUTHORIZED': {
           statusCode = StatusCodes.UNAUTHORIZED
           break
         }

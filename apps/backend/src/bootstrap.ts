@@ -96,6 +96,15 @@ import {
   ReferralRepository,
   KyselyReferralRepository
 } from '@/features/referral/repository'
+import {
+  FoodRecipeRepository,
+  KyselyFoodRecipeRepository
+} from '@/features/food/recipe/repository'
+import CreateFoodRecipeUseCase from '@/features/food/recipe/route/create/use-case'
+import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-case'
+import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
+import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
+import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
 
 export const bootstrap = async () => {
   // Logger
@@ -243,6 +252,28 @@ export const bootstrap = async () => {
     storageService
   )
 
+  // Food Recipe DI
+  const foodRecipeRepository = new KyselyFoodRecipeRepository(
+    kyselyClient,
+    logger
+  )
+  const createFoodRecipeUseCase = new CreateFoodRecipeUseCase(
+    foodRecipeRepository,
+    chefRepository,
+    storageService
+  )
+  const listFoodRecipeUseCase = new ListFoodRecipeUseCase(foodRecipeRepository)
+  const getFoodRecipeUseCase = new GetFoodRecipeUseCase(foodRecipeRepository)
+  const updateFoodRecipeUseCase = new UpdateFoodRecipeUseCase(
+    foodRecipeRepository,
+    chefRepository,
+    storageService
+  )
+  const deleteFoodRecipeUseCase = new DeleteFoodRecipeUseCase(
+    foodRecipeRepository,
+    chefRepository
+  )
+
   const app = new HonoApp(logger)
 
   // Logger
@@ -340,6 +371,14 @@ export const bootstrap = async () => {
   Container.set(ListChefUseCase, listChefUseCase)
   Container.set(GetActiveChefProfileUseCase, getActiveChefProfileUseCase)
   Container.set(UpdateActiveChefProfileUseCase, updateActiveChefProfileUseCase)
+
+  // Food Recipe DI
+  Container.set(FoodRecipeRepository, foodRecipeRepository)
+  Container.set(CreateFoodRecipeUseCase, createFoodRecipeUseCase)
+  Container.set(ListFoodRecipeUseCase, listFoodRecipeUseCase)
+  Container.set(GetFoodRecipeUseCase, getFoodRecipeUseCase)
+  Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
+  Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
 
   return { app, logger, config }
 }

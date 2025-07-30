@@ -28,7 +28,7 @@ class CreateFoodRecipeUseCase {
 
     if (!chef) {
       return Result.err({
-        code: 'ERR_CHEF_ACCOUNT_NOT_CREATED'
+        code: 'ERR_UNAUTHORIZED'
       })
     }
 
