@@ -1,3 +1,4 @@
+import { Pagination } from '@/features/pagination'
 import type { TransactionRepository } from '../../repository'
 import { serializeTransaction } from '../../utils'
 import type { Request, Response } from './types'
@@ -15,16 +16,16 @@ class ListTransactionsUseCase {
       return Result.err({ code: 'ERR_UNEXPECTED' })
     }
 
-    const transactions = listTransactionsResult.value
+    const paginatedTransactions = listTransactionsResult.value
+    const transactions = paginatedTransactions.data
+    const serializedTransactions = transactions.map(serializeTransaction)
 
     return Result.ok({
       code: 'LIST',
-      data: transactions.map(serializeTransaction),
-      meta: {
-        page: query.page,
-        per_page: query.per_page,
-        total: transactions.length
-      }
+      data: Pagination.paginate(
+        serializedTransactions,
+        paginatedTransactions.meta
+      )
     })
   }
 }

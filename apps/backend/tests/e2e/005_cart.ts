@@ -1,7 +1,6 @@
-import { describe, test, before } from 'node:test'
-import assert from 'node:assert'
+import { assert, describe, test } from 'vitest'
 import { ulid } from 'ulidx'
-import { client, getStore, logger, useApp, useAuth } from '../utils'
+import { client, getStore, logger } from '../utils'
 import { faker } from '@faker-js/faker'
 import { Container } from '@n8n/di'
 import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
@@ -15,35 +14,26 @@ describe('cart', async () => {
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
 
-  let itemId: string
+  assert(store.state.stage === '003', 'Should be in stage 003')
 
-  before(async () => {
-    assert(store.state.stage === '003', 'Should be in stage 003')
-    useAuth(client, store.state.auth)
-    useApp(client)
+  const res = await createFoodItemUseCase.execute({
+    price: 1000,
+    video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    image,
+    name: faker.commerce.productName()
+  })
 
-    const res = await createFoodItemUseCase.execute({
-      price: 1000,
-      video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      image,
-      name: faker.commerce.productName()
-    })
+  assert(res.isOk, 'Should create food item successfully')
 
-    if (res.isErr) {
-      logger.error(res.error)
-      throw new Error(res.error.code)
+  const item = res.value
+
+  const itemId = item.data.id
+
+  await store.setStage('004', {
+    ...store.state,
+    item: {
+      id: itemId
     }
-
-    const item = res.value
-
-    itemId = item.data.id
-
-    await store.setStage('004', {
-      ...store.state,
-      item: {
-        id: itemId
-      }
-    })
   })
 
   test('set item in cart', async () => {

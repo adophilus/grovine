@@ -1,19 +1,12 @@
-import { describe, test, before } from 'node:test'
-import assert from 'node:assert'
-import { client, useAuth, getStore, useApp } from '../utils'
+import { describe, test, beforeAll, assert } from 'vitest'
+import { client, getStore } from '../utils'
 
 describe('order', async () => {
   const store = await getStore()
-  let orderId: string
 
-  before(() => {
-    assert(store.state.stage === '006', 'Should be in 006 stage')
+  assert(store.state.stage === '006', 'Should be in 006 stage')
 
-    useAuth(client, store.state.auth)
-    useApp(client)
-
-    orderId = store.state.order.id
-  })
+  const orderId = store.state.order.id
 
   test('list ongoing orders', async () => {
     const res = await client.GET('/foods/orders', {
@@ -26,9 +19,12 @@ describe('order', async () => {
 
     assert(!res.error, `List orders should not return an error: ${res.error}`)
     assert(res.data.code === 'LIST', 'Response should have LIST code')
-    assert(Array.isArray(res.data.data), 'Response data should be an array')
+
+    const orders = res.data.data.data
+
+    assert(Array.isArray(orders), 'Response data should be an array')
     assert(
-      res.data.data.some((order) => order.id === orderId),
+      orders.some((order) => order.id === orderId),
       'Response should contain the created order'
     )
   })
@@ -44,7 +40,8 @@ describe('order', async () => {
 
     assert(!res.error, `List orders should not return an error: ${res.error}`)
     assert(res.data.code === 'LIST', 'Response should have LIST code')
-    assert(Array.isArray(res.data.data), 'Response data should be an array')
+    const orders = res.data.data.data
+    assert(Array.isArray(orders), 'Response data should be an array')
   })
 
   test('list cancelled orders', async () => {
@@ -58,7 +55,8 @@ describe('order', async () => {
 
     assert(!res.error, `List orders should not return an error: ${res.error}`)
     assert(res.data.code === 'LIST', 'Response should have LIST code')
-    assert(Array.isArray(res.data.data), 'Response data should be an array')
+    const orders = res.data.data.data
+    assert(Array.isArray(orders), 'Response data should be an array')
   })
 
   test('get order by id', async () => {

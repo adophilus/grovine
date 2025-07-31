@@ -1,6 +1,6 @@
 import type { Transaction } from '@/types'
 import { Result } from 'true-myth'
-import type { Pagination } from '@/features/pagination'
+import { Pagination } from '@/features/pagination'
 import type { Logger } from '@/features/logger'
 import type { KyselyClient } from '@/features/database/kysely'
 import type TransactionRepository from './interface'
@@ -13,16 +13,32 @@ class KyselyTransactionRepository implements TransactionRepository {
   ) {}
 
   async list(
-    payload: Pagination.Options
-  ): Promise<Result<Transaction.Selectable[], TransactionRepositoryError>> {
+    options: Pagination.Options
+  ): Promise<
+    Result<
+      Pagination.Paginated<Transaction.Selectable>,
+      TransactionRepositoryError
+    >
+  > {
     try {
       const transactions = await this.client
         .selectFrom('transactions')
         .selectAll()
-        .limit(payload.per_page)
-        .offset(payload.page)
+        .limit(options.per_page)
+        .offset(options.page)
         .execute()
-      return Result.ok(transactions)
+
+      const { total } = await this.client
+        .selectFrom('transactions')
+        .select((eb) => eb.fn.countAll().as('total'))
+        .executeTakeFirstOrThrow()
+
+      const paginatedTransactions = Pagination.paginate(transactions, {
+        ...options,
+        total: Number(total)
+      })
+
+      return Result.ok(paginatedTransactions)
     } catch (err) {
       this.logger.error('failed to get transactions')
       return Result.err('ERR_UNEXPECTED')

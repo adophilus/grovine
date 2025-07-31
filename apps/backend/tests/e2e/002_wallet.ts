@@ -1,15 +1,8 @@
-import { describe, test, before } from 'node:test'
-import assert from 'node:assert'
-import { app, client, getStoreAtStage, useApp, useAuth } from '../utils'
+import { describe, test, assert } from 'vitest'
+import { app, client, getStoreAtStage } from '../utils'
 
 describe('wallet', async () => {
   const store = await getStoreAtStage('001')
-  const accessToken = store.state.auth.access_token
-
-  before(async () => {
-    useAuth(client, store.state.auth)
-    useApp(client)
-  })
 
   test('get user wallet', async () => {
     const res = await client.GET('/wallets')

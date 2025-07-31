@@ -14,8 +14,10 @@ abstract class AdvertRepository {
   ): Promise<Result<Adverts.Selectable | null, AdvertRepositoryError>>
 
   abstract list(
-    payload: Pagination.Options
-  ): Promise<Result<Adverts.Selectable[], AdvertRepositoryError>>
+    options: Pagination.Options
+  ): Promise<
+    Result<Pagination.Paginated<Adverts.Selectable>, AdvertRepositoryError>
+  >
 
   abstract updateById(
     id: string,

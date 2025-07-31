@@ -1,6 +1,5 @@
-import { describe, test, before } from 'node:test'
-import assert from 'node:assert'
-import { client, useAuth, getStore, useApp, bodySerializer } from '../utils'
+import { describe, test, assert } from 'vitest'
+import { client, getStore, bodySerializer } from '../utils'
 import { faker } from '@faker-js/faker'
 
 const mockChefDetails = (fullName: string) => ({
@@ -13,19 +12,13 @@ const mockChefDetails = (fullName: string) => ({
 
 describe('chef', async () => {
   const store = await getStore()
-  let userFullName: string
+  assert(store.state.stage === '002', 'Should be in stage 002')
+  const userFullName = store.state.user.full_name
 
   const imageBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII'
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
-
-  before(() => {
-    assert(store.state.stage === '002', 'Should be in stage 002')
-    userFullName = store.state.user.full_name
-    useAuth(client, store.state.auth)
-    useApp(client)
-  })
 
   test('create chef profile', async () => {
     const res = await client.POST('/chefs', {

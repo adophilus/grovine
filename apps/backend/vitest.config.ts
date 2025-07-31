@@ -1,4 +1,9 @@
 import { defineConfig } from 'vitest/config'
+import {
+  BaseSequencer,
+  TestSpecification,
+  type Vitest as VitestFromVitestNode
+} from 'vitest/node'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
@@ -9,19 +14,29 @@ export default defineConfig({
   //   }
   // },
   test: {
+    cache: false,
     bail: 1,
-    testTimeout: 20000,
-    hookTimeout: 20000,
-    teardownTimeout: 20000,
-    sequence: {
-      shuffle: false,
-      concurrent: false
-    },
-    include: ['tests/integration/*.ts'],
-    // Disable test reordering based on status and file size
-    retry: 0,
+    include: ['tests/e2e/*.ts'],
     maxConcurrency: 1,
-    maxWorkers: 1,
+    sequence: {
+      sequencer: class Seqencer extends BaseSequencer {
+        protected ctx: VitestFromVitestNode
+
+        constructor(ctx: VitestFromVitestNode) {
+          super(ctx)
+          this.ctx = ctx
+        }
+
+        async shard(files: TestSpecification[]) {
+          return files
+        }
+
+        async sort(files: TestSpecification[]) {
+          return files
+        }
+      }
+    },
+    // maxWorkers: 1,
     // Force alphabetical file order
     fileParallelism: false,
     // Disable test isolation to ensure strict order

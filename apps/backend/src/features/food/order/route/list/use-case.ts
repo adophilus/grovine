@@ -3,6 +3,7 @@ import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import { serializeOrderWithItems } from '../../utils'
 import type { OrderRepository } from '../../repository'
+import { Pagination } from '@/features/pagination'
 
 class ListOrdersUseCase {
   constructor(private orderRepository: OrderRepository) {}
@@ -20,16 +21,12 @@ class ListOrdersUseCase {
       return Result.err({ code: 'ERR_UNEXPECTED' })
     }
 
-    const items = listItemsResult.value
+    const paginatedItems = listItemsResult.value
+    const serializedItems = paginatedItems.data.map(serializeOrderWithItems)
 
     return Result.ok({
       code: 'LIST',
-      data: items.map(serializeOrderWithItems),
-      meta: {
-        page: query.page,
-        per_page: query.per_page,
-        total: items.length
-      }
+      data: Pagination.paginate(serializedItems, paginatedItems.meta)
     })
   }
 }

@@ -6,8 +6,13 @@ export type TransactionRepositoryError = 'ERR_UNEXPECTED'
 
 abstract class TransactionRepository {
   abstract list(
-    payload: Pagination.Options
-  ): Promise<Result<Transaction.Selectable[], TransactionRepositoryError>>
+    options: Pagination.Options
+  ): Promise<
+    Result<
+      Pagination.Paginated<Transaction.Selectable>,
+      TransactionRepositoryError
+    >
+  >
 
   abstract findById(
     id: string

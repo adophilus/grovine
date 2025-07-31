@@ -8,6 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('email', 'varchar', (col) => col.notNull())
     .addColumn('phone_number', 'varchar', (col) => col.notNull())
     .addColumn('referral_code', 'varchar')
+    .addColumn('role', 'varchar', (col) => col.notNull())
     .addColumn('verified_at', 'timestamptz')
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`NOW()`).notNull()

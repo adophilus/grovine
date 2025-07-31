@@ -18,7 +18,7 @@ class ListChefUseCase {
 
     return Result.ok({
       code: 'LIST',
-      ...findChefsResult.value
+      data: findChefsResult.value
     })
   }
 }

@@ -1,4 +1,4 @@
-import { AdvertRepository } from '../../repository'
+import type { AdvertRepository } from '../../repository'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 
@@ -20,12 +20,7 @@ class ListAdvertUseCase {
 
     return Result.ok({
       code: 'LIST',
-      data: adverts,
-      meta: {
-        page: query.page,
-        per_page: query.per_page,
-        total: adverts.length
-      }
+      data: adverts
     })
   }
 }

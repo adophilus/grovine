@@ -50,6 +50,23 @@ type FoodItemsTable = TimestampModel & {
   image: Media
 }
 
+type FoodRecipesTable = TimestampModel & {
+  id: string
+  title: string
+  description: string
+  ingredients: {
+    quantity: number
+    id: string
+  }[]
+  instructions: {
+    title: string
+    content: string
+  }[]
+  video: Media
+  cover_image: Media
+  chef_id: string
+}
+
 type WalletsTable = TimestampModel & {
   id: string
   balance: string
@@ -140,6 +157,7 @@ export type KyselyDatabaseTables = {
   tokens: TokensTable
   user_preferences: UserPreferencesTable
   food_items: FoodItemsTable
+  food_recipes: FoodRecipesTable
   wallets: WalletsTable
   cart_items: CartItemsTable
   carts: CartsTable
