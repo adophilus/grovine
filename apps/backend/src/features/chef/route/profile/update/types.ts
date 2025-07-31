@@ -1,24 +1,6 @@
 import { z } from 'zod'
 import { schema as apiSchema, type types } from '@grovine/api'
 
-const formDataJsonArraySchema = z
-  .string()
-  .default('[]')
-  .transform((val, ctx) => {
-    try {
-      const parsed = JSON.parse(val)
-      if (!Array.isArray(parsed)) {
-        return [parsed]
-      }
-      return parsed
-    } catch (err) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Invalid JSON string'
-      })
-    }
-  })
-
 export namespace Request {
   export const body =
     apiSchema.schemas.Api_Chef_Profile_Update_Request_Body.omit({
@@ -26,9 +8,10 @@ export namespace Request {
       niches: true
     }).extend({
       profile_picture: z.instanceof(File).optional(),
-      niches: formDataJsonArraySchema.pipe(
+      niches:
         apiSchema.schemas.Api_Chef_Profile_Update_Request_Body.shape.niches
-      )
+          .default([])
+          .optional()
     })
   export type Body = z.infer<typeof body>
 }
