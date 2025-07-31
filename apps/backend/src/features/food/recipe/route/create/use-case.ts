@@ -32,8 +32,6 @@ class CreateFoodRecipeUseCase {
       })
     }
 
-    console.log('creating recipe with chef id:', chef.id)
-
     const { cover_image, video, ..._payload } = payload
 
     const uploadResult = await this.storageService.upload([cover_image, video])

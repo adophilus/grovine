@@ -1,4 +1,3 @@
-// console.log(process.env)
 import '../../src/env'
 import { defineConfig } from 'vitepress'
 

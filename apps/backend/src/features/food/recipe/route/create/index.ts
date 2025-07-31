@@ -17,11 +17,6 @@ const CreateFoodRecipeRoute = new Hono().post(
     const payload = c.req.valid('form')
     const user = c.get('user')
 
-    console.log(
-      'Creating recipe with payload:',
-      JSON.stringify(payload, null, 2)
-    )
-
     const useCase = Container.get(CreateRecipeUseCase)
     const result = await useCase.execute(payload, user)
 
