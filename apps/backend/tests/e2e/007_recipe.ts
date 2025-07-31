@@ -1,7 +1,6 @@
-import { before, describe, test } from 'node:test'
-import assert from 'node:assert'
+import { assert, describe, test } from 'vitest'
 import { ulid } from 'ulidx'
-import { client, bodySerializer, useApp, getStore } from '../utils'
+import { client, bodySerializer, getStore } from '../utils'
 import { FoodRecipeRepository } from '@/features/food/recipe/repository'
 import { Container } from '@n8n/di'
 
@@ -13,19 +12,16 @@ describe('food recipes', async () => {
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
   const video = new File([imageBuffer], 'test.mp4', { type: 'video/mp4' })
-  let recipeId: string
 
-  before(async () => {
-    useApp(client)
-  })
+  let recipeId: string
 
   test('create recipe', async () => {
     const res = await client.POST('/foods/recipes', {
       body: {
         title: 'Test Recipe',
         description: 'Test Description',
-        ingredients: [],
-        instructions: [],
+        ingredients: [{ id: 'test', quantity: 1 }],
+        instructions: [{ title: 'Boil', content: 'Boil over a stove' }],
         cover_image: image,
         video
       },
@@ -41,25 +37,18 @@ describe('food recipes', async () => {
       'Response should have RECIPE_CREATED code'
     )
 
-    const recipes = await foodRecipeRepository.findMany({
-      page: 1,
-      per_page: 10
-    })
-    assert(recipes.isOk, 'Should be able to fetch recipes')
-    assert(recipes.value.data.length > 0, 'Should have at least one recipe')
-    recipeId = recipes.value.data[0].id
+    recipeId = res.data.data.id
   })
 
   test('create recipe with invalid data', async () => {
     const res = await client.POST('/foods/recipes', {
       body: {
         title: 'Test Recipe',
-        description: 'Test Description',
         ingredients: [],
         instructions: [],
         cover_image: image,
         video
-      },
+      } as any,
       bodySerializer
     })
 

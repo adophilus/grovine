@@ -4,7 +4,7 @@ import type { ChefRepository } from '../../repository'
 import type { User } from '@/types'
 import { ulid } from 'ulidx'
 
-class CreateRecipeUseCase {
+class CreateChefUseCase {
   constructor(private chefRepository: ChefRepository) {}
 
   async execute(
@@ -13,10 +13,10 @@ class CreateRecipeUseCase {
   ): Promise<Result<Response.Success, Response.Error>> {
     const _payload = {
       ...payload,
-      user_id: user.id,
       is_verified: true,
       is_banned: true,
       rating: 0,
+      user_id: user.id,
       id: ulid()
     }
     const createChefResult = await this.chefRepository.create(_payload)
@@ -33,4 +33,4 @@ class CreateRecipeUseCase {
   }
 }
 
-export default CreateRecipeUseCase
+export default CreateChefUseCase

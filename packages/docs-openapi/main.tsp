@@ -1063,6 +1063,7 @@ namespace Api {
             model Success {
               @statusCode _code: 201;
               code: "RECIPE_CREATED";
+              data: Recipe;
             }
           }
 

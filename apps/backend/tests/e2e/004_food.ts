@@ -1,7 +1,6 @@
-import { before, describe, test } from 'node:test'
-import assert from 'node:assert'
+import { assert, describe, test } from 'vitest'
 import { ulid } from 'ulidx'
-import { client, bodySerializer, useApp } from '../utils'
+import { client, bodySerializer } from '../utils'
 import { FoodItemRepository } from '@/features/food/item/repository'
 import { Container } from '@n8n/di'
 
@@ -13,10 +12,6 @@ describe('food items', async () => {
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
   let itemId: string
-
-  before(async () => {
-    useApp(client)
-  })
 
   test('create item', async () => {
     const res = await client.POST('/foods/items', {

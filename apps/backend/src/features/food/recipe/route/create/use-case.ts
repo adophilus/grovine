@@ -1,4 +1,4 @@
-import type { StorageService, UploadedData } from '@/features/storage/service'
+import type { StorageService } from '@/features/storage/service'
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import type { FoodRecipeRepository } from '../../repository'
@@ -32,6 +32,8 @@ class CreateFoodRecipeUseCase {
       })
     }
 
+    console.log('creating recipe with chef id:', chef.id)
+
     const { cover_image, video, ..._payload } = payload
 
     const uploadResult = await this.storageService.upload([cover_image, video])
@@ -58,7 +60,8 @@ class CreateFoodRecipeUseCase {
     }
 
     return Result.ok({
-      code: 'RECIPE_CREATED'
+      code: 'RECIPE_CREATED',
+      data: createRecipeResult.value
     })
   }
 }
