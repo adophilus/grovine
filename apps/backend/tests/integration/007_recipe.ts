@@ -41,8 +41,11 @@ describe('food recipes', async () => {
       'Response should have RECIPE_CREATED code'
     )
 
-    const recipes = await foodRecipeRepository.findMany({ page: 1, per_page: 10 })
-    assert(recipes.isOk(), 'Should be able to fetch recipes')
+    const recipes = await foodRecipeRepository.findMany({
+      page: 1,
+      per_page: 10
+    })
+    assert(recipes.isOk, 'Should be able to fetch recipes')
     assert(recipes.value.data.length > 0, 'Should have at least one recipe')
     recipeId = recipes.value.data[0].id
   })

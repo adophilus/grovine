@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Run migrations
-pnpm kysely migrate:latest
-
 # Run setup
 echo "Running setup..."
 tsx ./tests/setup.ts
