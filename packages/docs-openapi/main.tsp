@@ -578,7 +578,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = BadRequestError | UnexpectedError;
+            alias Error = BadRequestError | UnexpectedError | UnauthorizedError;
           }
 
           alias Response = Success.Success | Error.Error;
@@ -633,7 +633,7 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError| UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -672,7 +672,7 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError| UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -704,7 +704,7 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError | UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
