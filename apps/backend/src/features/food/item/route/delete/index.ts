@@ -3,11 +3,15 @@ import { Container } from '@n8n/di'
 import DeleteFoodItemUseCase from './use-case'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
+import AuthMiddleware from '@/features/auth/middleware'
 
-const DeleteFoodItemRoute = new Hono().delete('/:id', async (c) => {
+const DeleteFoodItemRoute = new Hono().delete('/:id',AuthMiddleware.middleware, async (c) => {
   const id = c.req.param('id')
+  const user = c.get('user')
+
   const useCase = Container.get(DeleteFoodItemUseCase)
-  const result = await useCase.execute(id)
+  const result = await useCase.execute(id, user)
+
   let response: Response.Response
   let statusCode: StatusCodes
 
