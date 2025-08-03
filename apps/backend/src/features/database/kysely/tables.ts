@@ -5,6 +5,10 @@ type TimestampModel = {
   updated_at: ColumnType<string, never, string>
 }
 
+type TimestampWithDeletedAtModel = TimestampModel & {
+  deleted_at: ColumnType<string | null, string, never>
+}
+
 export type Media = {
   public_id: string
   url: string
@@ -42,7 +46,7 @@ type UserPreferencesTable = TimestampModel & {
   user_id: string
 }
 
-type FoodItemsTable = TimestampModel & {
+type FoodItemsTable = TimestampWithDeletedAtModel & {
   id: string
   name: string
   video_url: string

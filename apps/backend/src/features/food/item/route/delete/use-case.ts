@@ -16,6 +16,10 @@ class DeleteFoodItemUseCase {
       return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
     }
 
+    if (findItemResult.value.deleted_at !== null) {
+      return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
+    }
+
     const result = await this.foodItemRepository.deleteById(id)
 
     if (result.isErr) {

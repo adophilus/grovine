@@ -4,7 +4,7 @@ import { Pagination } from '@/features/pagination'
 import type FoodItemRepository from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
-import type { FoodItemRepositoryError } from './interface'
+import type { FindManyOptions, FoodItemRepositoryError } from './interface'
 
 class KyselyFoodItemRepository implements FoodItemRepository {
   constructor(
@@ -29,17 +29,26 @@ class KyselyFoodItemRepository implements FoodItemRepository {
   }
 
   public async findMany(
-    options: Pagination.Options
+    options: FindManyOptions
   ): Promise<
     Result<Pagination.Paginated<FoodItem.Selectable>, FoodItemRepositoryError>
   > {
     try {
-      const items = await this.client
+      let itemsQuery = this.client
         .selectFrom('food_items')
         .selectAll()
         .limit(options.per_page)
         .offset(options.page)
-        .execute()
+
+      if (options.is_deleted !== undefined) {
+        if (options.is_deleted) {
+          itemsQuery = itemsQuery.where('deleted_at', 'is not', null)
+        } else {
+          itemsQuery = itemsQuery.where('deleted_at', 'is', null)
+        }
+      }
+
+      const items = await itemsQuery.execute()
 
       const { total } = await this.client
         .selectFrom('food_items')

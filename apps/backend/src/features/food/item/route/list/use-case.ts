@@ -10,7 +10,10 @@ class ListFoodItemsUseCase {
   async execute(
     query: Request.Query
   ): Promise<Result<Response.Success, Response.Error>> {
-    const listItemsResult = await this.foodItemRepository.findMany(query)
+    const listItemsResult = await this.foodItemRepository.findMany({
+      ...query,
+      is_deleted: false
+    })
 
     if (listItemsResult.isErr) {
       return Result.err({
