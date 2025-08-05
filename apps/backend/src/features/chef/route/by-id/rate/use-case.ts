@@ -11,11 +11,11 @@ class RateChefProfileByIdUseCase {
   ) {}
 
   async execute(
+    id: string,
     payload: Request.Body,
-    user: User.Selectable,
-    path: Request.Path
+    user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
-    const findChefProfile = await this.chefRepository.findById(path.id)
+    const findChefProfile = await this.chefRepository.findById(id)
 
     if (findChefProfile.isErr) {
       return Result.err({

@@ -6,7 +6,7 @@ type TimestampModel = {
 }
 
 type TimestampWithDeletedAtModel = TimestampModel & {
-  deleted_at: ColumnType<string | null, string, never>
+  deleted_at: ColumnType<string | null, string | undefined, string | null>
 }
 
 export type Media = {

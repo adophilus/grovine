@@ -16,6 +16,8 @@ class CreateChefUseCase {
       is_verified: true,
       is_banned: true,
       rating: 0,
+      likes: 0,
+      dislikes: 0,
       user_id: user.id,
       id: ulid()
     }

@@ -15,7 +15,7 @@ const DislikeChefProfileByIdRoute = new Hono().put(
     let statusCode: StatusCodes
 
     const user = c.get('user')
-    const payload = c.get('path')
+    const payload = c.req.valid('param')
 
     const useCase = Container.get(DislikeChefProfileByIdUseCase)
     const result = await useCase.execute(payload, user)

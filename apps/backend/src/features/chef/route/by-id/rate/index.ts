@@ -1,4 +1,3 @@
-
 import AuthMiddleware from '@/features/auth/middleware'
 import { Hono } from 'hono'
 import type { Response } from './types'
@@ -10,17 +9,17 @@ import middleware from './middleware'
 const RateChefProfileByIdRoute = new Hono().put(
   '/',
   AuthMiddleware.middleware,
-  middleware,
+  ...middleware,
   async (c) => {
     let response: Response.Response
     let statusCode: StatusCodes
 
     const user = c.get('user')
-    const payload = c.get('body')
-    const path = c.get('param')
+    const param = c.req.valid('param')
+    const payload = c.req.valid('json')
 
     const useCase = Container.get(RateChefProfileByIdUseCase)
-    const result = await useCase.execute(payload, user, path)
+    const result = await useCase.execute(param.id, payload, user)
 
     if (result.isErr) {
       response = result.error

@@ -1541,6 +1541,8 @@ namespace Api {
       niches: string[];
       profile_picture: Media | null;
       rating: numeric;
+      likes: numeric;
+      dislikes: numeric;
       is_verified: boolean;
       is_banned: boolean;
       user_id: Id;

@@ -5,6 +5,7 @@ import { Result, type Unit } from 'true-myth'
 import type { ChefUserLike } from '@/types'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
+import { ulid } from 'ulidx'
 
 class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
   constructor(
@@ -158,7 +159,13 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
       } else {
         await this.db
           .insertInto('chef_user_likes')
-          .values({ chef_id: chefId, user_id: userId, is_liked: true, is_disliked: false })
+          .values({
+            id: ulid(),
+            chef_id: chefId,
+            user_id: userId,
+            is_liked: true,
+            is_disliked: false
+          })
           .execute()
       }
 
@@ -190,7 +197,13 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
       } else {
         await this.db
           .insertInto('chef_user_likes')
-          .values({ chef_id: chefId, user_id: userId, is_disliked: true, is_liked: false })
+          .values({
+            id: ulid(),
+            chef_id: chefId,
+            user_id: userId,
+            is_disliked: true,
+            is_liked: false
+          })
           .execute()
       }
 

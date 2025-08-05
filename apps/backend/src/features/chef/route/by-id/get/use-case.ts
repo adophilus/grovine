@@ -1,6 +1,6 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefRepository } from '../../repository'
+import type { ChefRepository } from '../../../repository'
 
 class GetChefUseCase {
   constructor(private chefRepository: ChefRepository) {}

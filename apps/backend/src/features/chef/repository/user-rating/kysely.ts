@@ -5,6 +5,7 @@ import { Result, type Unit } from 'true-myth'
 import type { ChefUserRating } from '@/types'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
+import { ulid } from 'ulidx'
 
 class KyselyChefUserRatingRepository implements ChefUserRatingRepository {
   constructor(
@@ -159,7 +160,12 @@ class KyselyChefUserRatingRepository implements ChefUserRatingRepository {
       } else {
         await this.db
           .insertInto('chef_user_ratings')
-          .values({ chef_id: chefId, user_id: userId, rating: rating })
+          .values({
+            chef_id: chefId,
+            user_id: userId,
+            rating: rating,
+            id: ulid()
+          })
           .execute()
       }
 
