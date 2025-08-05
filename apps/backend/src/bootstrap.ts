@@ -81,17 +81,8 @@ import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
 import GetFoodItemUseCase from './features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
 import { createKyselyPgClient } from './features/database/kysely/pg'
-import {
-  ChefRepository,
-  KyselyChefRepository
-} from '@/features/chef/repository'
-import {
-  CreateChefUseCase,
-  GetActiveChefProfileUseCase,
-  GetChefUseCase,
-  ListChefUseCase,
-  UpdateActiveChefProfileUseCase
-} from '@/features/chef/use-case'
+import { ChefRepository, KyselyChefRepository, ChefUserLikeRepository, KyselyChefUserLikeRepository, ChefUserRatingRepository, KyselyChefUserRatingRepository } from '@/features/chef/repository'
+import { CreateChefUseCase, GetActiveChefProfileUseCase, GetChefUseCase, ListChefUseCase, UpdateActiveChefProfileUseCase, LikeChefProfileByIdUseCase, DislikeChefProfileByIdUseCase, RateChefProfileByIdUseCase } from '@/features/chef/use-case'
 import {
   ReferralRepository,
   KyselyReferralRepository
@@ -240,6 +231,8 @@ export const bootstrap = async () => {
 
   // Chef DI
   const chefRepository = new KyselyChefRepository(kyselyClient, logger)
+  const chefUserLikeRepository = new KyselyChefUserLikeRepository(kyselyClient, logger)
+  const chefUserRatingRepository = new KyselyChefUserRatingRepository(kyselyClient, logger)
   const createChefUseCase = new CreateChefUseCase(chefRepository)
   const getChefUseCase = new GetChefUseCase(chefRepository)
   const listChefUseCase = new ListChefUseCase(chefRepository)
@@ -251,6 +244,9 @@ export const bootstrap = async () => {
     chefRepository,
     storageService
   )
+  const likeChefProfileByIdUseCase = new LikeChefProfileByIdUseCase(chefRepository, chefUserLikeRepository)
+  const dislikeChefProfileByIdUseCase = new DislikeChefProfileByIdUseCase(chefRepository, chefUserLikeRepository)
+  const rateChefProfileByIdUseCase = new RateChefProfileByIdUseCase(chefRepository, chefUserRatingRepository)
 
   // Food Recipe DI
   const foodRecipeRepository = new KyselyFoodRecipeRepository(
@@ -366,11 +362,16 @@ export const bootstrap = async () => {
 
   // Chef DI
   Container.set(ChefRepository, chefRepository)
+  Container.set(ChefUserLikeRepository, chefUserLikeRepository)
+  Container.set(ChefUserRatingRepository, chefUserRatingRepository)
   Container.set(CreateChefUseCase, createChefUseCase)
   Container.set(GetChefUseCase, getChefUseCase)
   Container.set(ListChefUseCase, listChefUseCase)
   Container.set(GetActiveChefProfileUseCase, getActiveChefProfileUseCase)
   Container.set(UpdateActiveChefProfileUseCase, updateActiveChefProfileUseCase)
+  Container.set(LikeChefProfileByIdUseCase, likeChefProfileByIdUseCase)
+  Container.set(DislikeChefProfileByIdUseCase, dislikeChefProfileByIdUseCase)
+  Container.set(RateChefProfileByIdUseCase, rateChefProfileByIdUseCase)
 
   // Food Recipe DI
   Container.set(FoodRecipeRepository, foodRecipeRepository)

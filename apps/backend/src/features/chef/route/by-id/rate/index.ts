@@ -12,7 +12,7 @@ const RateChefProfileByIdRoute = new Hono().put(
   AuthMiddleware.middleware,
   middleware,
   async (c) => {
-    let response: Response.Success | Response.Error
+    let response: Response.Response
     let statusCode: StatusCodes
 
     const user = c.get('user')
