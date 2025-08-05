@@ -52,6 +52,7 @@ type FoodItemsTable = TimestampWithDeletedAtModel & {
   video_url: string
   price: string
   image: Media
+  deleted_at?: ColumnType<string | null, string | undefined, string | null>
 }
 
 type FoodRecipesTable = TimestampModel & {
