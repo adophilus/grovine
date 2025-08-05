@@ -122,6 +122,13 @@ export namespace ChefUserLike {
   export type Updateable = T['Updateable']
 }
 
+export namespace ChefUserRating {
+  type T = GenerateTypes<KyselyDatabaseTables['chef_user_ratings']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export namespace Referral {
   type T = GenerateTypes<KyselyDatabaseTables['referrals']>
   export type Selectable = T['Selectable']

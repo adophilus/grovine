@@ -1,13 +1,6 @@
 import ChefRepository from './interface'
 import KyselyChefRepository from './kysely'
-import {
-  ChefUserLikeRepository,
-  KyselyChefUserLikeRepository
-} from './user-like'
+export * from './user-like'
+export * from './user-rating'
 
-export {
-  ChefRepository,
-  KyselyChefRepository,
-  ChefUserLikeRepository,
-  KyselyChefUserLikeRepository
-}
+export { ChefRepository, KyselyChefRepository }

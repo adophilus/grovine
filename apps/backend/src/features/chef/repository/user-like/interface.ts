@@ -33,6 +33,16 @@ abstract class ChefUserLikeRepository {
   public abstract deleteById(
     id: string
   ): Promise<Result<Unit, ChefRepositoryError>>
+
+  public abstract toggleLikeById(
+    chefId: string,
+    userId: string
+  ): Promise<Result<Unit, ChefRepositoryError>>
+
+  public abstract toggleDislikeById(
+    chefId: string,
+    userId: string
+  ): Promise<Result<Unit, ChefRepositoryError>>
 }
 
 export default ChefUserLikeRepository

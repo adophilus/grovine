@@ -1,47 +1,47 @@
 import type { KyselyClient } from '@/features/database/kysely'
-import type ChefUserLikeRepository from './interface'
+import type ChefUserRatingRepository from './interface'
 import type { ChefRepositoryError } from './interface'
 import { Result, type Unit } from 'true-myth'
-import type { ChefUserLike } from '@/types'
+import type { ChefUserRating } from '@/types'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
 
-class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
+class KyselyChefUserRatingRepository implements ChefUserRatingRepository {
   constructor(
     private readonly db: KyselyClient,
     private readonly logger: Logger
   ) {}
 
   public async create(
-    payload: ChefUserLike.Insertable
-  ): Promise<Result<ChefUserLike.Selectable, ChefRepositoryError>> {
+    payload: ChefUserRating.Insertable
+  ): Promise<Result<ChefUserRating.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.db
-        .insertInto('chef_user_likes')
+        .insertInto('chef_user_ratings')
         .values(payload)
         .returningAll()
         .executeTakeFirstOrThrow()
 
       return Result.ok(result)
     } catch (error) {
-      this.logger.error('Error creating chef user like', error)
+      this.logger.error('Error creating chef user rating', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
   public async findById(
     id: string
-  ): Promise<Result<ChefUserLike.Selectable, ChefRepositoryError>> {
+  ): Promise<Result<ChefUserRating.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.db
-        .selectFrom('chef_user_likes')
+        .selectFrom('chef_user_ratings')
         .selectAll()
         .where('id', '=', id)
         .executeTakeFirstOrThrow()
 
       return Result.ok(result)
     } catch (error) {
-      this.logger.error('Error finding chef user like by id', error)
+      this.logger.error('Error finding chef user rating by id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -49,10 +49,10 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
   public async findByChefIdAndUserId(
     chefId: string,
     userId: string
-  ): Promise<Result<ChefUserLike.Selectable, ChefRepositoryError>> {
+  ): Promise<Result<ChefUserRating.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.db
-        .selectFrom('chef_user_likes')
+        .selectFrom('chef_user_ratings')
         .selectAll()
         .where('chef_id', '=', chefId)
         .where('user_id', '=', userId)
@@ -61,7 +61,7 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
       return Result.ok(result)
     } catch (error) {
       this.logger.error(
-        'Error finding chef user like by chefId and userId',
+        'Error finding chef user rating by chefId and userId',
         error
       )
       return Result.err('ERR_UNEXPECTED')
@@ -72,11 +72,11 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
     userId: string,
     options: Pagination.Options
   ): Promise<
-    Result<Pagination.Paginated<ChefUserLike.Selectable>, ChefRepositoryError>
+    Result<Pagination.Paginated<ChefUserRating.Selectable>, ChefRepositoryError>
   > {
     try {
       const query = this.db
-        .selectFrom('chef_user_likes')
+        .selectFrom('chef_user_ratings')
         .selectAll()
         .where('user_id', '=', userId)
         .limit(options.per_page)
@@ -85,7 +85,7 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
       const items = await query.execute()
 
       const { count } = await this.db
-        .selectFrom('chef_user_likes')
+        .selectFrom('chef_user_ratings')
         .select((qb) => qb.fn.count('id').as('count'))
         .where('user_id', '=', userId)
         .executeTakeFirstOrThrow()
@@ -97,18 +97,18 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
 
       return Result.ok(paginatedItems)
     } catch (error) {
-      this.logger.error('Error finding many chef user likes by userId', error)
+      this.logger.error('Error finding many chef user ratings by userId', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
   public async updateById(
     id: string,
-    payload: ChefUserLike.Updateable
-  ): Promise<Result<ChefUserLike.Selectable, ChefRepositoryError>> {
+    payload: ChefUserRating.Updateable
+  ): Promise<Result<ChefUserRating.Selectable, ChefRepositoryError>> {
     try {
       const result = await this.db
-        .updateTable('chef_user_likes')
+        .updateTable('chef_user_ratings')
         .set(payload)
         .where('id', '=', id)
         .returningAll()
@@ -116,7 +116,7 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
 
       return Result.ok(result)
     } catch (error) {
-      this.logger.error('Error updating chef user like by id', error)
+      this.logger.error('Error updating chef user rating by id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -126,80 +126,49 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
   ): Promise<Result<Unit, ChefRepositoryError>> {
     try {
       await this.db
-        .deleteFrom('chef_user_likes')
+        .deleteFrom('chef_user_ratings')
         .where('id', '=', id)
         .executeTakeFirstOrThrow()
 
       return Result.ok()
     } catch (error) {
-      this.logger.error('Error deleting chef user like by id', error)
+      this.logger.error('Error deleting chef user rating by id', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 
-  public async toggleLikeById(
+  public async rateById(
     chefId: string,
-    userId: string
+    userId: string,
+    rating: number
   ): Promise<Result<Unit, ChefRepositoryError>> {
     try {
-      const existingLike = await this.db
-        .selectFrom('chef_user_likes')
+      const existingRating = await this.db
+        .selectFrom('chef_user_ratings')
         .selectAll()
         .where('chef_id', '=', chefId)
         .where('user_id', '=', userId)
         .executeTakeFirst()
 
-      if (existingLike) {
+      if (existingRating) {
         await this.db
-          .updateTable('chef_user_likes')
-          .set({ is_liked: !existingLike.is_liked, is_disliked: false })
-          .where('id', '=', existingLike.id)
+          .updateTable('chef_user_ratings')
+          .set({ rating: rating })
+          .where('id', '=', existingRating.id)
           .execute()
       } else {
         await this.db
-          .insertInto('chef_user_likes')
-          .values({ chef_id: chefId, user_id: userId, is_liked: true, is_disliked: false })
+          .insertInto('chef_user_ratings')
+          .values({ chef_id: chefId, user_id: userId, rating: rating })
           .execute()
       }
 
       return Result.ok()
     } catch (error) {
-      this.logger.error('Error toggling chef user like', error)
-      return Result.err('ERR_UNEXPECTED')
-    }
-  }
-
-  public async toggleDislikeById(
-    chefId: string,
-    userId: string
-  ): Promise<Result<Unit, ChefRepositoryError>> {
-    try {
-      const existingLike = await this.db
-        .selectFrom('chef_user_likes')
-        .selectAll()
-        .where('chef_id', '=', chefId)
-        .where('user_id', '=', userId)
-        .executeTakeFirst()
-
-      if (existingLike) {
-        await this.db
-          .updateTable('chef_user_likes')
-          .set({ is_disliked: !existingLike.is_disliked, is_liked: false })
-          .where('id', '=', existingLike.id)
-          .execute()
-      } else {
-        await this.db
-          .insertInto('chef_user_likes')
-          .values({ chef_id: chefId, user_id: userId, is_disliked: true, is_liked: false })
-          .execute()
-      }
-
-      return Result.ok()
-    } catch (error) {
-      this.logger.error('Error toggling chef user dislike', error)
+      this.logger.error('Error rating chef', error)
       return Result.err('ERR_UNEXPECTED')
     }
   }
 }
 
-export default KyselyChefUserLikeRepository
+export default KyselyChefUserRatingRepository

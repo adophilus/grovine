@@ -3,10 +3,10 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import LikeChefProfileByIdUseCase from './use-case'
+import DislikeChefProfileByIdUseCase from './use-case'
 import middleware from './middleware'
 
-const LikeChefProfileByIdRoute = new Hono().patch(
+const DislikeChefProfileByIdRoute = new Hono().put(
   '/',
   AuthMiddleware.middleware,
   middleware,
@@ -15,8 +15,9 @@ const LikeChefProfileByIdRoute = new Hono().patch(
     let statusCode: StatusCodes
 
     const user = c.get('user')
+    const payload = c.get('path')
 
-    const useCase = Container.get(LikeChefProfileByIdUseCase)
+    const useCase = Container.get(DislikeChefProfileByIdUseCase)
     const result = await useCase.execute(payload, user)
 
     if (result.isErr) {
@@ -40,4 +41,4 @@ const LikeChefProfileByIdRoute = new Hono().patch(
   }
 )
 
-export default LikeChefProfileByIdRoute
+export default DislikeChefProfileByIdRoute

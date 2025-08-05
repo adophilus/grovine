@@ -164,6 +164,13 @@ type ChefUserLikeTable = TimestampModel & {
   is_disliked: boolean
 }
 
+type ChefUserRatingTable = TimestampModel & {
+  id: string
+  chef_id: string
+  user_id: string
+  rating: number
+}
+
 export type KyselyDatabaseTables = {
   users: UsersTable
   tokens: TokensTable
@@ -180,5 +187,6 @@ export type KyselyDatabaseTables = {
   adverts: AdvertsTable
   chefs: ChefsTable
   chef_user_likes: ChefUserLikeTable
+  chef_user_ratings: ChefUserRatingTable
   referrals: ReferralsTable
 }
