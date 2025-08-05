@@ -1767,6 +1767,12 @@ namespace Api {
             @path
             id: Id;
           }
+
+          model Body {
+            @minValue(1)
+            @maxValue(5)
+            rating: integer;
+          }
         }
 
         namespace Response {
@@ -1786,7 +1792,10 @@ namespace Api {
 
         @put
         @doc("Rate a chef profile by ID")
-        op rateChefById(...Request.Path): Response.Response;
+        op rateChefById(
+          ...Request.Path,
+          @body body: Request.Body,
+        ): Response.Response;
       }
     }
   }
