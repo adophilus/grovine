@@ -145,7 +145,7 @@ type OrderTable = TimestampModel & {
       }
   )
 
-type ChefTable = TimestampModel & {
+type ChefsTable = TimestampModel & {
   id: string
   name: string
   niches: string[]
@@ -154,6 +154,14 @@ type ChefTable = TimestampModel & {
   is_verified: boolean
   is_banned: boolean
   user_id: string
+}
+
+type ChefUserLikeTable = TimestampModel & {
+  id: string
+  chef_id: string
+  user_id: string
+  is_liked: boolean
+  is_disliked: boolean
 }
 
 export type KyselyDatabaseTables = {
@@ -170,6 +178,7 @@ export type KyselyDatabaseTables = {
   orders: OrderTable
   transactions: TransactionsTable
   adverts: AdvertsTable
-  chefs: ChefTable
+  chefs: ChefsTable
+  chef_user_likes: ChefUserLikeTable
   referrals: ReferralsTable
 }

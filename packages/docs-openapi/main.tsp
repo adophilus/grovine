@@ -1699,6 +1699,93 @@ namespace Api {
         @doc("Get a chef profile by ID")
         op getChefById(...Request.Path): Response.Response;
       }
+
+      @route("/like")
+      namespace Like {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_LIKED";
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @put
+        @doc("Like a chef profile by ID")
+        op likeChefById(...Request.Path): Response.Response;
+      }
+
+      @route("/dislike")
+      namespace Dislike {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_DISLIKED";
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @put
+        @doc("Dislike a chef profile by ID")
+        op dislikeChefById(...Request.Path): Response.Response;
+      }
+
+      @route("/rate")
+      namespace Rate {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "CHEF_PROFILE_RATED";
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"CHEF_PROFILE"> | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @put
+        @doc("Rate a chef profile by ID")
+        op rateChefById(...Request.Path): Response.Response;
+      }
     }
   }
 
