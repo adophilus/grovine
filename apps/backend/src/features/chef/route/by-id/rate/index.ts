@@ -15,11 +15,11 @@ const RateChefProfileByIdRoute = new Hono().put(
     let statusCode: StatusCodes
 
     const user = c.get('user')
-    const param = c.req.valid('param')
-    const payload = c.req.valid('json')
+    const param: Request.Path = c.req.valid('param')
+    const payload: Request.Body = c.req.valid('json')
 
     const useCase = Container.get(RateChefProfileByIdUseCase)
-    const result = await useCase.execute(param.id, payload, user)
+    const result = await useCase.execute(payload, user, param)
 
     if (result.isErr) {
       response = result.error

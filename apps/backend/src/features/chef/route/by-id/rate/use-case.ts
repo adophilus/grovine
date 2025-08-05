@@ -1,42 +1,23 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefRepository } from '../../../repository'
-import type { ChefUserRatingRepository } from '../../../repository/user-rating'
+import type { ChefService } from '../../../service'
 import type { User } from '@/types'
 
 class RateChefProfileByIdUseCase {
-  constructor(
-    private chefRepository: ChefRepository,
-    private chefUserRatingRepository: ChefUserRatingRepository
-  ) {}
+  constructor(private chefService: ChefService) {}
 
   async execute(
-    id: string,
     payload: Request.Body,
-    user: User.Selectable
+    user: User.Selectable,
+    path: Request.Path
   ): Promise<Result<Response.Success, Response.Error>> {
-    const findChefProfile = await this.chefRepository.findById(id)
-
-    if (findChefProfile.isErr) {
-      return Result.err({
-        code: 'ERR_UNEXPECTED'
-      })
-    }
-
-    const chefProfile = findChefProfile.value
-    if (!chefProfile) {
-      return Result.err({
-        code: 'ERR_CHEF_PROFILE_NOT_FOUND'
-      })
-    }
-
-    const rateChefResult = await this.chefUserRatingRepository.rateById(
-      chefProfile.id,
+    const result = await this.chefService.handleRating(
+      path.id,
       user.id,
       payload.rating
     )
 
-    if (rateChefResult.isErr) {
+    if (result.isErr) {
       return Result.err({
         code: 'ERR_UNEXPECTED'
       })
