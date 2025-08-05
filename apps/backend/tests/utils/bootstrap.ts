@@ -415,7 +415,11 @@ export const bootstrap = async () => {
   Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
   Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
 
-  await kyselyMigrator.migrateToLatest()
+  const migrationResult = await kyselyMigrator.migrateToLatest()
+  if (migrationResult.error) {
+    logger.error('Failed to run migrations', migrationResult.error)
+    throw migrationResult.error
+  }
 
   return { app, logger, config }
 }
