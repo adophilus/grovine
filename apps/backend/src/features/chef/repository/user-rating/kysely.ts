@@ -169,6 +169,57 @@ class KyselyChefUserRatingRepository implements ChefUserRatingRepository {
       return Result.err('ERR_UNEXPECTED')
     }
   }
+
+  public async findManyByChefId(
+    chefId: string
+  ): Promise<Result<ChefUserRating.Selectable[], ChefRepositoryError>> {
+    try {
+      const result = await this.db
+        .selectFrom('chef_user_ratings')
+        .selectAll()
+        .where('chef_id', '=', chefId)
+        .execute()
+
+      return Result.ok(result)
+    } catch (error) {
+      this.logger.error('Error finding many chef user ratings by chefId', error)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  public async getAverageRatingByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>> {
+    try {
+      const { avg } = await this.db
+        .selectFrom('chef_user_ratings')
+        .select((qb) => qb.fn.avg('rating').as('avg'))
+        .where('chef_id', '=', chefId)
+        .executeTakeFirstOrThrow()
+
+      return Result.ok(Number(avg))
+    } catch (error) {
+      this.logger.error('Error getting average rating by chefId', error)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  public async countRatingsByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>> {
+    try {
+      const { count } = await this.db
+        .selectFrom('chef_user_ratings')
+        .select((qb) => qb.fn.count('id').as('count'))
+        .where('chef_id', '=', chefId)
+        .executeTakeFirstOrThrow()
+
+      return Result.ok(Number(count))
+    } catch (error) {
+      this.logger.error('Error counting ratings by chefId', error)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
 }
 
 export default KyselyChefUserRatingRepository

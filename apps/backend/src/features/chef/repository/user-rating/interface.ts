@@ -40,6 +40,18 @@ abstract class ChefUserRatingRepository {
     userId: string,
     rating: number
   ): Promise<Result<Unit, ChefRepositoryError>>
+
+  public abstract findManyByChefId(
+    chefId: string
+  ): Promise<Result<ChefUserRating.Selectable[], ChefRepositoryError>>
+
+  public abstract getAverageRatingByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>>
+
+  public abstract countRatingsByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>>
 }
 
 export default ChefUserRatingRepository

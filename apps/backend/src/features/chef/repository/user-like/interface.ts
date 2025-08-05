@@ -43,6 +43,18 @@ abstract class ChefUserLikeRepository {
     chefId: string,
     userId: string
   ): Promise<Result<Unit, ChefRepositoryError>>
+
+  public abstract findManyByChefId(
+    chefId: string
+  ): Promise<Result<ChefUserLike.Selectable[], ChefRepositoryError>>
+
+  public abstract countLikesByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>>
+
+  public abstract countDislikesByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>>
 }
 
 export default ChefUserLikeRepository

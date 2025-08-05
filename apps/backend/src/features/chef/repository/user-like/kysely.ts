@@ -200,6 +200,59 @@ class KyselyChefUserLikeRepository implements ChefUserLikeRepository {
       return Result.err('ERR_UNEXPECTED')
     }
   }
+
+  public async findManyByChefId(
+    chefId: string
+  ): Promise<Result<ChefUserLike.Selectable[], ChefRepositoryError>> {
+    try {
+      const result = await this.db
+        .selectFrom('chef_user_likes')
+        .selectAll()
+        .where('chef_id', '=', chefId)
+        .execute()
+
+      return Result.ok(result)
+    } catch (error) {
+      this.logger.error('Error finding many chef user likes by chefId', error)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  public async countLikesByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>> {
+    try {
+      const { count } = await this.db
+        .selectFrom('chef_user_likes')
+        .select((qb) => qb.fn.count('id').as('count'))
+        .where('chef_id', '=', chefId)
+        .where('is_liked', '=', true)
+        .executeTakeFirstOrThrow()
+
+      return Result.ok(Number(count))
+    } catch (error) {
+      this.logger.error('Error counting likes by chefId', error)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  public async countDislikesByChefId(
+    chefId: string
+  ): Promise<Result<number, ChefRepositoryError>> {
+    try {
+      const { count } = await this.db
+        .selectFrom('chef_user_likes')
+        .select((qb) => qb.fn.count('id').as('count'))
+        .where('chef_id', '=', chefId)
+        .where('is_disliked', '=', true)
+        .executeTakeFirstOrThrow()
+
+      return Result.ok(Number(count))
+    } catch (error) {
+      this.logger.error('Error counting dislikes by chefId', error)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
 }
 
 export default KyselyChefUserLikeRepository
