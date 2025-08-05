@@ -268,18 +268,11 @@ export const bootstrap = async () => {
     chefRepository,
     storageService
   )
-  const likeChefProfileByIdUseCase = new LikeChefProfileByIdUseCase(
-    chefRepository,
-    chefUserLikeRepository
-  )
+  const likeChefProfileByIdUseCase = new LikeChefProfileByIdUseCase(chefService)
   const dislikeChefProfileByIdUseCase = new DislikeChefProfileByIdUseCase(
-    chefRepository,
-    chefUserLikeRepository
+    chefService
   )
-  const rateChefProfileByIdUseCase = new RateChefProfileByIdUseCase(
-    chefRepository,
-    chefUserRatingRepository
-  )
+  const rateChefProfileByIdUseCase = new RateChefProfileByIdUseCase(chefService)
 
   // Food Recipe DI
   const foodRecipeRepository = new KyselyFoodRecipeRepository(
