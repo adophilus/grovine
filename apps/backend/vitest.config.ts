@@ -14,6 +14,9 @@ export default defineConfig({
   //   }
   // },
   test: {
+    alias: {
+      '@/': new URL('./src/', import.meta.url).pathname
+    },
     cache: false,
     bail: 1,
     include: ['tests/e2e/*.ts'],

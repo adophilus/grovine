@@ -75,7 +75,6 @@ import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
 import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
-import { createKyselyMigrator } from '@/features/database/kysely/migrator'
 import {
   ChefRepository,
   KyselyChefRepository,
@@ -112,11 +111,9 @@ import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-cas
 export const bootstrap = async () => {
   // Logger
   const logger = new Logger({ name: 'App' })
-  const migrationFolder = new URL('../../migrations', import.meta.url).pathname
 
   // Database
   const kyselyClient = await createKyselyPgLiteClient()
-  const kyselyMigrator = createKyselyMigrator(kyselyClient, migrationFolder)
 
   // Storage DI
   const storageService = new MockStorageService()
@@ -407,12 +404,6 @@ export const bootstrap = async () => {
   Container.set(GetFoodRecipeUseCase, getFoodRecipeUseCase)
   Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
   Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
-
-  const migrationResult = await kyselyMigrator.migrateToLatest()
-  if (migrationResult.error) {
-    logger.error('Failed to run migrations', migrationResult.error)
-    throw migrationResult.error
-  }
 
   return { app, logger, config }
 }
