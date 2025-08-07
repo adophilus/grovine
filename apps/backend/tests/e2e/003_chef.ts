@@ -156,7 +156,7 @@ describe('chef', async () => {
     )
   })
 
-  test('chef profile should have a rating', async () => {
+  test(`chef profile should have a rating of ${chefRating}`, async () => {
     const res = await client.GET('/chefs/{id}', {
       params: { path: { id: chefId } }
     })
@@ -165,7 +165,10 @@ describe('chef', async () => {
       !res.error,
       `Get chef profile should not return an error: ${res.error?.code}`
     )
-    assert(res.data.data.rating === 5, 'Chef should have a rating of 5')
+    assert(
+      res.data.data.rating === chefRating,
+      `Chef should have a rating of ${chefRating}`
+    )
   })
 
   test('update rating', async () => {

@@ -151,9 +151,9 @@ type ChefsTable = TimestampModel & {
   name: string
   niches: string[]
   profile_picture: Media | null
-  rating: number
-  likes: number
-  dislikes: number
+  rating: string
+  likes: string
+  dislikes: string
   is_verified: boolean
   is_banned: boolean
   user_id: string
