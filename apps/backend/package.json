@@ -9,7 +9,7 @@
     "lint": "tsc",
     "test": "./scripts/test.sh",
     "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
-    "db:migration": "tsx ./scripts/migrate.ts"
+    "db": "kysely"
   },
   "exports": {
     ".": "./src/index.ts"
@@ -19,11 +19,9 @@
     "@grovine/api": "workspace:^",
     "@grovine/backend": "workspace:^",
     "@grovine/media-server": "workspace:^",
-    "@hono/node-server": "^1.14.4",
     "@n8n/di": "^0.2.0",
     "@tanstack/store": "^0.7.1",
     "date-fns": "^4.1.0",
-    "hono": "^4.7.11",
     "jose": "^6.0.11",
     "jsx-email": "^2.7.2",
     "kysely": "^0.28.3",

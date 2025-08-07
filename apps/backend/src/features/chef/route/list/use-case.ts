@@ -1,6 +1,8 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import type { ChefRepository } from '../../repository'
+import { serializeChef } from '../../utils'
+import { Pagination } from '@/features/pagination'
 
 class ListChefUseCase {
   constructor(private chefRepository: ChefRepository) {}
@@ -16,9 +18,15 @@ class ListChefUseCase {
       })
     }
 
+    const paginatedChefs = findChefsResult.value
+    const chefs = paginatedChefs.data
+    const serializedChefs = chefs.map(serializeChef)
+
+    const returnData = Pagination.paginate(serializedChefs, paginatedChefs.meta)
+
     return Result.ok({
       code: 'LIST',
-      data: findChefsResult.value
+      data: returnData
     })
   }
 }

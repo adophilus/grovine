@@ -1,4 +1,4 @@
-declare module "*.yaml?raw" {
-  var _: string;
-  export default _;
+declare module '*.yaml?raw' {
+  var _: string
+  export default _
 }

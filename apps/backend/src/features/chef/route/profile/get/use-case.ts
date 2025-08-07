@@ -3,6 +3,7 @@ import { Result } from 'true-myth'
 import type { ChefRepository } from '../../../repository'
 import type { User } from '@/types'
 import type { Logger } from '@/features/logger'
+import { serializeChef } from '@/features/chef/utils'
 
 class GetActiveChefProfileUseCase {
   constructor(
@@ -28,9 +29,11 @@ class GetActiveChefProfileUseCase {
       })
     }
 
+    const serializedChef = serializeChef(chef)
+
     return Result.ok({
       code: 'CHEF_PROFILE_FOUND',
-      data: chef
+      data: serializedChef
     })
   }
 }

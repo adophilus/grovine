@@ -8,12 +8,10 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
-  // resolve: {
-  //   alias: {
-  //     '@': './src'
-  //   }
-  // },
   test: {
+    alias: {
+      '@/': new URL('./src/', import.meta.url).pathname
+    },
     cache: false,
     bail: 1,
     include: ['tests/e2e/*.ts'],

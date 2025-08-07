@@ -6,7 +6,7 @@ type TimestampModel = {
 }
 
 type TimestampWithDeletedAtModel = TimestampModel & {
-  deleted_at: ColumnType<string | null, string, never>
+  deleted_at: ColumnType<string | null, string | undefined, string | null>
 }
 
 export type Media = {
@@ -52,6 +52,7 @@ type FoodItemsTable = TimestampWithDeletedAtModel & {
   video_url: string
   price: string
   image: Media
+  deleted_at?: ColumnType<string | null, string | undefined, string | null>
 }
 
 type FoodRecipesTable = TimestampModel & {
@@ -145,15 +146,32 @@ type OrderTable = TimestampModel & {
       }
   )
 
-type ChefTable = TimestampModel & {
+type ChefsTable = TimestampModel & {
   id: string
   name: string
   niches: string[]
   profile_picture: Media | null
-  rating: number
+  rating: ColumnType<string, string | number, string | number | undefined>
+  likes: ColumnType<string, string | number, string | number | undefined>
+  dislikes: ColumnType<string, string | number, string | number | undefined>
   is_verified: boolean
   is_banned: boolean
   user_id: string
+}
+
+type ChefUserLikeTable = TimestampModel & {
+  id: string
+  chef_id: string
+  user_id: string
+  is_liked: boolean
+  is_disliked: boolean
+}
+
+type ChefUserRatingTable = TimestampModel & {
+  id: string
+  chef_id: string
+  user_id: string
+  rating: number
 }
 
 export type KyselyDatabaseTables = {
@@ -170,6 +188,8 @@ export type KyselyDatabaseTables = {
   orders: OrderTable
   transactions: TransactionsTable
   adverts: AdvertsTable
-  chefs: ChefTable
+  chefs: ChefsTable
+  chef_user_likes: ChefUserLikeTable
+  chef_user_ratings: ChefUserRatingTable
   referrals: ReferralsTable
 }
