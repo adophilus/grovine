@@ -1,30 +1,46 @@
 import opentelemetry from '@opentelemetry/sdk-node'
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
+// import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http'
 import type OpenTelemetryService from './interface'
-import OtelConfig from '@/features/config/configs/otel'
-
-const config = OtelConfig
+import { config } from '@/features/config'
 
 class OpenTelemetryServiceImplementation implements OpenTelemetryService {
-  private declare sdk: opentelemetry.NodeSDK
+  private declare readonly sdk: opentelemetry.NodeSDK
+  private declare readonly traceExporter: OTLPTraceExporter
+  private declare readonly logExporter: OTLPLogExporter
 
-  public initialize() {
-    // For troubleshooting, set the log level to DiagLogLevel.DEBUG
-    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG)
+  constructor() {
+    const otelConfig = {
+      url: config.otel.endpoint,
+      headers: {
+        Authorization: `Basic ${config.otel.api.key}`
+      }
+    }
+
+    this.logExporter = new OTLPLogExporter(otelConfig)
+
+    this.traceExporter = new OTLPTraceExporter(otelConfig)
+
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO)
 
     this.sdk = new opentelemetry.NodeSDK({
-      traceExporter: new OTLPTraceExporter({
-        url: config.endpoint,
-        headers: {
-          Authorization: config.api.key
-        }
-      }),
-      instrumentations: [getNodeAutoInstrumentations()],
-      serviceName: config.service.name
+      traceExporter: this.traceExporter,
+      serviceName: config.otel.service.name
+      // instrumentations: [getNodeAutoInstrumentations()],
     })
+  }
 
+  public getLogExporter() {
+    return this.logExporter
+  }
+
+  public getTraceExporter() {
+    return this.traceExporter
+  }
+
+  public initialize() {
     this.sdk.start()
   }
 

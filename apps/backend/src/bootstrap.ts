@@ -117,13 +117,16 @@ import {
   OpenTelemetryService,
   OpenTelemetryServiceImplementation
 } from '@/features/otel/service'
+import { OpenTelemetryLogger } from '@/features/otel/logger'
 
 export const bootstrap = async () => {
-  // Logger
-  const logger = new Logger({ name: 'App' })
-
   // OpenTelemetry DI
   const openTelemetryService = new OpenTelemetryServiceImplementation()
+  const openTelemetryLogger = new OpenTelemetryLogger(openTelemetryService, {
+    name: 'App'
+  })
+
+  const logger = openTelemetryLogger
 
   // Database
   const kyselyClient = await createKyselyPgClient()
@@ -310,9 +313,6 @@ export const bootstrap = async () => {
 
   const app = new HonoApp(logger)
 
-  // Logger
-  Container.set(Logger, logger)
-
   // Database
   Container.set(KyselyClient, kyselyClient)
 
@@ -324,6 +324,7 @@ export const bootstrap = async () => {
 
   // OpenTelemetry DI
   Container.set(OpenTelemetryService, openTelemetryService)
+  Container.set(Logger, openTelemetryLogger)
 
   // Mailer DI
   Container.set(Mailer, mailer)
