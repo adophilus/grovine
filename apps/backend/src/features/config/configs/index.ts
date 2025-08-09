@@ -6,6 +6,7 @@ import UploadConfig from './upload'
 import StorageConfig from './storage'
 import AuthConfig from './auth'
 import PaymentConfig from './payment'
+import OtelConfig from './otel'
 
 export default {
   auth: AuthConfig,
@@ -15,5 +16,6 @@ export default {
   payment: PaymentConfig,
   upload: UploadConfig,
   server: ServerConfig,
-  storage: StorageConfig
+  storage: StorageConfig,
+  otel: OtelConfig
 }
