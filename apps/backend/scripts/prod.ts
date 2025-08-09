@@ -1,7 +1,8 @@
 import { handle } from 'hono/vercel'
 import { bootstrap } from '@grovine/backend'
 
-const { app } = await bootstrap()
+const { app, openTelemetryService } = await bootstrap()
+openTelemetryService.initialize()
 
 const handler = handle(app.create())
 

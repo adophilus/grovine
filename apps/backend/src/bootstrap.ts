@@ -113,10 +113,17 @@ import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-cas
 import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
 import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
 import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
+import {
+  OpenTelemetryService,
+  OpenTelemetryServiceImplementation
+} from '@/features/otel/service'
 
 export const bootstrap = async () => {
   // Logger
   const logger = new Logger({ name: 'App' })
+
+  // OpenTelemetry DI
+  const openTelemetryService = new OpenTelemetryServiceImplementation()
 
   // Database
   const kyselyClient = await createKyselyPgClient()
@@ -315,6 +322,9 @@ export const bootstrap = async () => {
   // Storage DI
   Container.set(StorageService, storageService)
 
+  // OpenTelemetry DI
+  Container.set(OpenTelemetryService, openTelemetryService)
+
   // Mailer DI
   Container.set(Mailer, mailer)
 
@@ -413,5 +423,5 @@ export const bootstrap = async () => {
   Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
   Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
 
-  return { app, logger, config }
+  return { app, logger, config, openTelemetryService }
 }
