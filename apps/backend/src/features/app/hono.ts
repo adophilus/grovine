@@ -34,10 +34,7 @@ class HonoApp implements App {
         .use(cors())
         .use(honoLogger())
         .route('/', ApiRouter)
-        .get('/', (c) => {
-          this.logger.info('Health', 'check')
-          return c.json({ message: 'Welcome to Grovine API' })
-        })
+        .get('/', (c) => c.json({ message: 'Welcome to Grovine API' }))
         .notFound((c) => c.json({ error: 'NOT_FOUND' }, StatusCodes.NOT_FOUND))
         .onError((err, c) => {
           this.logger.error('An unexpected error occurred:', err)
