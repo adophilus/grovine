@@ -1,4 +1,3 @@
-import '@/features/config'
 import { Command, Options } from '@effect/cli'
 import { Effect, Option } from 'effect'
 import { NodeContext, NodeRuntime } from '@effect/platform-node'
