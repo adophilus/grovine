@@ -85,6 +85,5 @@ jobs:
           context: .
           file: ./Dockerfile.backend
           push: true
-          tags: |
-            adophilus/grovine:staging
+          tags: adophilus/grovine:staging
           platforms: linux/amd64
