@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.3",
-    "@infisical/cli": "^0.41.97",
     "@nx/vite": "20.8.0",
     "@nx/web": "20.8.0",
     "@vitest/ui": "^3.2.3",
