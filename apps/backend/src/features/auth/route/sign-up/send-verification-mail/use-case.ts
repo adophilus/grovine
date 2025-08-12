@@ -21,7 +21,7 @@ class SendSignUpVerificationEmailUseCase {
     private walletRepository: WalletRepository,
     private referralRepository: ReferralRepository,
     private mailer: Mailer
-  ) {}
+  ) { }
 
   async execute(
     payload: Request.Body
@@ -123,33 +123,16 @@ class SendSignUpVerificationEmailUseCase {
 
     if (!referralCode) return Result.ok(newReferralCode)
 
-    const findReferralResult =
-      await this.referralRepository.findByCode(referralCode)
-    if (findReferralResult.isErr) {
+    const findUserByReferralCodeResult =
+      await this.authUserRepository.findByReferralCode(referralCode)
+    if (findUserByReferralCodeResult.isErr) {
       return Result.err({ code: 'ERR_UNEXPECTED' })
     }
 
-    const referral = findReferralResult.value
-
-    if (!referral) {
-      return Result.ok(newReferralCode)
-    }
-
-    const findReferringUserResult = await this.authUserRepository.findById(
-      referral.referrer_id
-    )
-    if (findReferringUserResult.isErr) {
-      return Result.err({
-        code: 'ERR_UNEXPECTED'
-      })
-    }
-
-    const referringUser = findReferringUserResult.value
+    const referringUser = findUserByReferralCodeResult.value
 
     if (!referringUser) {
-      return Result.err({
-        code: 'ERR_UNEXPECTED'
-      })
+      return Result.ok(newReferralCode)
     }
 
     const newReferral = await this.referralRepository.create({
