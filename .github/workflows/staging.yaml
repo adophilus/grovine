@@ -76,7 +76,9 @@ jobs:
           file: ./Dockerfile.docs
           push: true
           tags: adophilus/grovine-docs:staging
-          secrets: VITE_NODE_ENV=$VITE_NODE_ENV, VITE_BACKEND_URL=$VITE_BACKEND_URL
+          secrets: |
+            "VITE_NODE_ENV=$VITE_NODE_ENV"
+            "VITE_BACKEND_URL=$VITE_BACKEND_URL"
           platforms: linux/amd64
 
       - name: Build and push backend Docker image
