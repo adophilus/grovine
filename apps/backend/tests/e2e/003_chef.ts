@@ -62,6 +62,9 @@ describe('chef', async () => {
       bodySerializer
     })
 
+    const json = await res.response.json()
+    console.log(json)
+
     assert(
       !res.error,
       `Update chef profile should not return an error: ${res.error?.code}`
