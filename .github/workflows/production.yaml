@@ -29,31 +29,30 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Load docs secrets
+        uses: Infisical/secrets-action@v1.0.9
+        with:
+          method: universal
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          domain: ${{ secrets.INFISICAL_DOMAIN }}
+          env-slug: production
+          project-slug: grovine-docs
+          export-type: env
+
+      - name: Load backend secrets
+        uses: Infisical/secrets-action@v1.0.9
+        with:
+          method: universal
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          domain: ${{ secrets.INFISICAL_DOMAIN }}
+          env-slug: production
+          project-slug: grovine-backend
+          export-type: env
+
       - name: Install dependencies
         run: pnpm install
-
-      - name: Load .env file
-        run: |
-          DOCS_ENV_FILE="$(mktemp)"
-          BACKEND_ENV_FILE="$(mktemp)"
-
-          VERCEL_ENVIRONMENT="production"
-
-          export VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}
-          export VERCEL_TOKEN=${{ secrets.VERCEL_TOKEN }}
-
-          export VERCEL_PROJECT_ID=${{ secrets.VERCEL_DOCS_PROJECT_ID }}
-          pnpm vercel env pull "$DOCS_ENV_FILE" --yes --environment "$VERCEL_ENVIRONMENT" --token "$VERCEL_TOKEN"
-
-          export VERCEL_PROJECT_ID=${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-          pnpm vercel env pull "$BACKEND_ENV_FILE" --yes --environment "$VERCEL_ENVIRONMENT"  --token "$VERCEL_TOKEN"
-
-          cat "$DOCS_ENV_FILE" >> .env
-          cat "$BACKEND_ENV_FILE" >> .env
-          echo VERCEL_TOKEN="$VERCEL_TOKEN" >> .env
-          echo VERCEL_ENVIRONMENT="$VERCEL_ENVIRONMENT" >> .env
-
-          cat .env | grep -v '^#' | sed -E 's/^(.*)?="(.*)"/\1=\2/' >> "$GITHUB_ENV"
 
       - name: Build stack
         run: pnpm build
@@ -74,6 +73,10 @@ jobs:
           file: ./Dockerfile.docs
           push: true
           tags: adophilus/grovine-docs:production
+          build-args: |
+            "NODE_ENV=${{ env.NODE_ENV }}"
+            "VITE_NODE_ENV=${{ env.VITE_NODE_ENV }}"
+            "VITE_BACKEND_URL=${{ env.VITE_BACKEND_URL }}"
           platforms: linux/amd64
 
       - name: Build and push backend Docker image
@@ -83,4 +86,6 @@ jobs:
           file: ./Dockerfile.backend
           push: true
           tags: adophilus/grovine-backend:production
+          build-args: |
+            "NODE_ENV=${{ env.NODE_ENV }}"
           platforms: linux/amd64
