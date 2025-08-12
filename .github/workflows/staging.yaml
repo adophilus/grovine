@@ -51,6 +51,9 @@ jobs:
           project-slug: grovine-backend
           export-type: env
 
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Build stack
         run: pnpm build
 
