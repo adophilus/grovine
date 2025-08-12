@@ -57,8 +57,12 @@ describe('chef', async () => {
   })
 
   test('update chef profile', async () => {
+    const body = { ...mockChefDetails(userFullName), profile_picture: image }
+
+    console.log('body:', JSON.stringify(body))
+
     const res = await client.PATCH('/chefs/profile', {
-      body: { ...mockChefDetails(userFullName), profile_picture: image },
+      body,
       bodySerializer
     })
 
