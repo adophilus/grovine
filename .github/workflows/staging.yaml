@@ -61,23 +61,21 @@ jobs:
       - name: Test stack
         run: pnpm test
 
-      - name: Deploy docs
-        run: pnpm --filter @grovine/docs run deploy --target "$VERCEL_ENVIRONMENT"
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}
-
-      - name: Deploy backend
-        run: pnpm --filter @grovine/backend run deploy --target "$VERCEL_ENVIRONMENT"
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push docs Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile.docs
+          push: true
+          tags: adophilus/grovine-docs:staging
+          platforms: linux/amd64
+
 
       - name: Build and push backend Docker image
         uses: docker/build-push-action@v4

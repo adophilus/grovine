@@ -4,6 +4,7 @@
     "dev": "nx run-many -t dev --parallel 9",
     "build": "nx run-many -t build",
     "build:backend": "nx run-many -t build -p @grovine/backend",
+    "build:docs": "nx run-many -t build -p @grovine/docs",
     "lint": "nx run-many -t lint",
     "test": "nx run-many -t test"
   },

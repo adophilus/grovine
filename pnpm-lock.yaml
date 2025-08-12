@@ -3536,6 +3536,7 @@ packages:
   '@scalar/use-tooltip@1.1.0':
     resolution: {integrity: sha512-KJConD/JDyGP8GPGpD+TXA6FEcKT9bmHQb/JyBmME+tJoJGHGtNcGy7kcezFakaKCqfKyY7cgPzL1ctUaGIRag==}
     engines: {node: '>=20'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@scalar/workspace-store@0.4.1':
     resolution: {integrity: sha512-tfw6lFntlGkmEGsDyfSP/NIiXatN9piy7SoWI35M7+26+VDwVfw7hvPOgOgF320lGy99gtWgxYb7oEcBH3jA0Q==}
@@ -12825,7 +12826,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.14
       tinyrainbow: 2.0.0
-      vitest: 3.2.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@20.19.0)(@vitest/ui@3.2.3)(jiti@2.4.2)(terser@5.42.0)(tsx@4.20.3)(yaml@2.8.0)
+      vitest: 3.2.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@16.18.11)(@vitest/ui@3.2.3)(jiti@2.4.2)(terser@5.42.0)(tsx@4.20.3)(yaml@2.8.0)
 
   '@vitest/utils@3.2.3':
     dependencies:

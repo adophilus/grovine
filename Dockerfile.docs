@@ -14,15 +14,11 @@ WORKDIR /app
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN pnpm run build:backend
+RUN pnpm run build:docs
  
 
 FROM base AS deploy
 
 WORKDIR /app
 
-COPY --from=build /app/apps/backend/build/server.mjs ./
- 
-EXPOSE $PORT
-
-CMD ["bun", "./server.mjs"]
+COPY --from=build /app/apps/docs/docs/.vitepress/dist ./
