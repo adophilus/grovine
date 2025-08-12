@@ -1,14 +1,15 @@
-import { handle } from 'hono/vercel'
+import { serve } from '@hono/node-server'
 import { bootstrap } from '@grovine/backend'
 
-const { app, openTelemetryService } = await bootstrap()
+const { app, logger, config, openTelemetryService } = await bootstrap()
 openTelemetryService.initialize()
 
-const handler = handle(app.create())
-
-export const GET = handler
-export const POST = handler
-export const PUT = handler
-export const OPTIONS = handler
-export const PATCH = handler
-export const DELETE = handler
+serve(
+  {
+    fetch: app.create().fetch,
+    port: config.server.port
+  },
+  (info) => {
+    logger.info(`Server is running on http://${info.address}:${info.port}`)
+  }
+)
