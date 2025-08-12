@@ -74,9 +74,9 @@ jobs:
           push: true
           tags: adophilus/grovine-docs:staging
           build-args: |
-            "NODE_ENV=$NODE_ENV"
-            "VITE_NODE_ENV=$VITE_NODE_ENV"
-            "VITE_BACKEND_URL=$VITE_BACKEND_URL"
+            "NODE_ENV=${{ secrets.NODE_ENV }}"
+            "VITE_NODE_ENV=${{ secrets.VITE_NODE_ENV }}"
+            "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}"
           platforms: linux/amd64
 
       - name: Build and push backend Docker image
