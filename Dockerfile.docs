@@ -4,6 +4,8 @@ ARG NODE_ENV
 ARG VITE_NODE_ENV
 ARG VITE_BACKEND_URL
 
+RUN echo $NODE_ENV $VITE_NODE_ENV $VITE_BACKEND_URL
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN apk add --no-cache python3 make g++ bash curl nodejs
