@@ -66,6 +66,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: debug
+        run: echo $VITE_NODE_ENV $VITE_BACKEND_URL
+
       - name: Build and push docs Docker image
         uses: docker/build-push-action@v4
         with:
