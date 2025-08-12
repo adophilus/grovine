@@ -55,9 +55,7 @@ jobs:
         run: NODE_ENV=development pnpm install
 
       - name: Build stack
-        run: |
-          printenv
-          pnpm build
+        run: pnpm build
 
       - name: Test stack
         run: pnpm test
