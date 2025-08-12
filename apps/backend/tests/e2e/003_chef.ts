@@ -62,6 +62,9 @@ describe('chef', async () => {
       bodySerializer
     })
 
+    console.log('res.error:', JSON.stringify(res.error))
+    console.log('res.data:', JSON.stringify(res.data))
+
     assert(
       !res.error,
       `Update chef profile should not return an error: ${res.error?.code}`
