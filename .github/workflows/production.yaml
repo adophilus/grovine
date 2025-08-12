@@ -52,7 +52,7 @@ jobs:
           export-type: env
 
       - name: Install dependencies
-        run: pnpm install --force
+        run: NODE_ENV=development pnpm install
 
       - name: Build stack
         run: pnpm build
