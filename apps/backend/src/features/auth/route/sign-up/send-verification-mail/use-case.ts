@@ -115,11 +115,22 @@ class SendSignUpVerificationEmailUseCase {
     })
   }
 
+  private async generateReferralCode(): Promise<
+    Result<string, Response.Error>
+  > {
+    return Result.ok(ulid())
+  }
+
   private async handleReferral(
     referredUserId: string,
     referralCode?: string
   ): Promise<Result<string, Response.Error>> {
-    const newReferralCode = ulid()
+    const newReferralCodeResult = await this.generateReferralCode()
+    if (newReferralCodeResult.isErr) {
+      return Result.err({ code: 'ERR_UNEXPECTED' })
+    }
+
+    const newReferralCode = newReferralCodeResult.value
 
     if (!referralCode) return Result.ok(newReferralCode)
 
