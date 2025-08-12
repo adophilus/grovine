@@ -55,7 +55,7 @@ jobs:
         run: pnpm install
 
       - name: debug
-        run: "echo 'vite node env: $VITE_NODE_ENV $VITE_BACKEND_URL ---'"
+        run: "echo \"vite node env: $VITE_NODE_ENV $VITE_BACKEND_URL ---\""
 
       - name: Build stack
         run: pnpm build
