@@ -54,9 +54,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: debug
-        run: printenv
-
       - name: Build stack
         run: pnpm build
 
