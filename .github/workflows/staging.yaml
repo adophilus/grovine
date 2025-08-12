@@ -66,9 +66,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Check if the docs environment variables are set
-        run: echo $VITE_NODE_ENV $VITE_BACKEND_URL
-
       - name: Build and push docs Docker image
         uses: docker/build-push-action@v4
         with:
@@ -76,7 +73,8 @@ jobs:
           file: ./Dockerfile.docs
           push: true
           tags: adophilus/grovine-docs:staging
-          secrets: |
+          build-args: |
+            "NODE_ENV=$NODE_ENV"
             "VITE_NODE_ENV=$VITE_NODE_ENV"
             "VITE_BACKEND_URL=$VITE_BACKEND_URL"
           platforms: linux/amd64
