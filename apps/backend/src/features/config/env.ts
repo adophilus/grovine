@@ -1,6 +1,8 @@
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 
+console.log(process.env)
+
 export const env = createEnv({
   clientPrefix: '',
   client: {},
@@ -22,9 +24,5 @@ export const env = createEnv({
     OTEL_ENDPOINT: z.string().url(),
     OTEL_SERVICE_NAME: z.string()
   },
-  /**
-   * Makes sure you explicitly access **all** environment variables
-   * from `server` and `client` in your `runtimeEnv`.
-   */
   runtimeEnv: process.env
 })
