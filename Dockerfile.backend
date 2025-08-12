@@ -4,7 +4,7 @@ ARG NODE_ENV
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN apk add --no-cache python3 make g++ bash curl nodejs
+RUN apk add --no-cache python3 make g++ bash nodejs
 RUN bun add -g pnpm
 
 
@@ -25,4 +25,4 @@ COPY --from=build /app/apps/backend/build/server.mjs ./
  
 EXPOSE $PORT
 
-CMD ["bun", "./server.mjs"]
+CMD ["node", "./server.mjs"]

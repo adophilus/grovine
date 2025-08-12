@@ -86,4 +86,6 @@ jobs:
           file: ./Dockerfile.backend
           push: true
           tags: adophilus/grovine-backend:staging
+          build-args: |
+            "NODE_ENV=${{ env.NODE_ENV }}"
           platforms: linux/amd64
