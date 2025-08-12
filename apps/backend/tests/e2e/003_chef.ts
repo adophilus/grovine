@@ -62,8 +62,7 @@ describe('chef', async () => {
       bodySerializer
     })
 
-    const json = await res.response.json()
-    console.log(json)
+    console.log(res.error, res.data)
 
     assert(
       !res.error,
