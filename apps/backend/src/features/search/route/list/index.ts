@@ -3,19 +3,16 @@ import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
 import SearchFoodItemsUseCase from './use-case'
+import middleware from './middleware'
 
-const SearchFoodItemsRoute = new Hono().get('/', async (c) => {
+const SearchFoodItemsRoute = new Hono().get('/',middleware, async (c) => {
   let response: Response.Response
   let statusCode: StatusCodes
 
-  const query = c.req.query()
+  const query = c.req.valid("query")
 
   const useCase = Container.get(SearchFoodItemsUseCase)
-  const result = await useCase.execute({
-    page: query.page ? Number(query.page) : 1,
-    per_page: query.per_page ? Number(query.per_page) : 10,
-    q: query.q,
-  })
+  const result = await useCase.execute(query)
 
   if (result.isErr) {
     response = result.error

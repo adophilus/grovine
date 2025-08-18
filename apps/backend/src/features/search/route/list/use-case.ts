@@ -2,6 +2,7 @@ import type { Response, Request } from './types'
 import { Result } from 'true-myth'
 import { SearchRepository } from '../../repository'
 import { serializeItem } from '../../utils'
+import { Pagination } from '@/features/pagination'
 
 class SearchFoodItemsUseCase {
   constructor(private searchRepository: SearchRepository) {}
@@ -21,13 +22,12 @@ class SearchFoodItemsUseCase {
     }
 
     const data = result.value.data
+    const serializedData = data.map(serializeItem)
+    const paginatedData = Pagination.paginate(serializedData, result.value.meta)
 
     return Result.ok({
       code: 'LIST',
-      data: {
-        data: data.map(serializeItem),
-        meta: result.value.meta,
-      },
+      data: paginatedData
     })
   }
 }

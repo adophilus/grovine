@@ -57,7 +57,7 @@ class KyselySearchRepository {
                 })
                 .executeTakeFirstOrThrow()
 
-            const total = Number((totalResult as { total: string | number | bigint }).total ?? 0)
+            const total = Number(totalResult.total)
 
             const paginated = Pagination.paginate(items, {
                 ...options,
