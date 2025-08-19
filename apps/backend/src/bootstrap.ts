@@ -1,24 +1,24 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import { KyselyClient } from '@/features/database/kysely'
-import { AdvertRepository } from '@/features/advert/repository'
-import { KyselyAdvertRepository } from '@/features/advert/repository'
+import { KyselyClient } from './features/database/kysely/index.js'
+import { AdvertRepository } from './features/advert/repository/index.js'
+import { KyselyAdvertRepository } from './features/advert/repository/index.js'
 import {
   CreateAdvertUseCase,
   DeleteAdvertUseCase,
   ListAdvertUseCase,
   UpdateAdvertUseCase
-} from '@/features/advert/use-case'
-import { Logger } from '@/features/logger'
-import { HonoApp } from '@/features/app'
-import { config } from '@/features/config'
+} from './features/advert/use-case.js'
+import { Logger } from './features/logger/index.js'
+import { HonoApp } from './features/app/hono.js'
+import { config } from './features/config/index.js'
 import {
   KyselyAuthTokenRepository,
   AuthTokenRepository,
   KyselyAuthUserRepository,
   AuthUserRepository
-} from '@/features/auth/repository'
+} from './features/auth/repository/index.js'
 import {
   SendSignInVerificationEmailUseCase,
   ResendSignInVerificationEmailUseCase,
@@ -27,97 +27,85 @@ import {
   ResendSignUpVerificationEmailUseCase,
   VerifySignUpVerificationEmailUseCase,
   GetUserProfileUseCase
-} from '@/features/auth/use-case'
+} from './features/auth/use-case.js'
 import {
   WalletKyselyRepository,
   WalletRepository
-} from '@/features/wallet/repository'
-import GetWalletUseCase from '@/features/wallet/route/get/use-case'
-import { Mailer, NodemailerMailer } from '@/features/mailer'
-import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
+} from './features/wallet/repository/index.js'
+import GetWalletUseCase from './features/wallet/route/get/use-case.js'
+import { Mailer, NodemailerMailer } from './features/mailer/index.js'
+import TopupWalletUseCase from './features/wallet/route/topup/use-case.js'
 import {
   PaymentService,
   PaystackPaymentService
-} from '@/features/payment/service'
-import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
+} from './features/payment/service/index.js'
+import WithdrawWalletUseCase from './features/wallet/route/withdraw/use-case.js'
 import {
   FoodItemRepository,
   FoodItemKyselyRepository
-} from '@/features/food/item/repository'
-import UpdateFoodItemUseCase from '@/features/food/item/route/update/use-case'
-import DeleteFoodItemUseCase from '@/features/food/item/route/delete/use-case'
+} from './features/food/item/repository/index.js'
+import UpdateFoodItemUseCase from './features/food/item/route/update/use-case.js'
+import DeleteFoodItemUseCase from './features/food/item/route/delete/use-case.js'
 import {
   OrderRepository,
   OrderKyselyRepository
-} from '@/features/food/order/repository'
+} from './features/food/order/repository/index.js'
 import {
   ListOrdersUseCase,
   GetOrderUseCase,
   UpdateOrderStatusUseCase
-} from '@/features/food/order/use-case'
+} from './features/food/order/use-case.js'
 import {
   TransactionRepository,
   TransactionKyselyRepository
-} from '@/features/transaction/repository'
+} from './features/transaction/repository/index.js'
 import {
   ListTransactionsUseCase,
   GetTransactionUseCase
-} from '@/features/transaction/use-case'
+} from './features/transaction/use-case.js'
 import {
   StorageService,
   CloudinaryStorageService
-} from '@/features/storage/service'
+} from './features/storage/service/index.js'
 import {
   FoodCartRepository,
   FoodCartKyselyRepository
-} from '@/features/food/cart/repository'
+} from './features/food/cart/repository/index.js'
 import {
   CartSetItemUseCase,
   GetCartUseCase,
   CheckoutCartUseCase
-} from '@/features/food/cart/use-case'
-import { WebhookUseCase } from './features/payment/use-case'
-import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
-import GetFoodItemUseCase from './features/food/item/route/get/use-case'
-import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
-import { createKyselyPgClient } from './features/database/kysely/pg'
-import {
-  ChefRepository,
-  KyselyChefRepository,
-  ChefUserLikeRepository,
-  KyselyChefUserLikeRepository,
-  ChefUserRatingRepository,
-  KyselyChefUserRatingRepository
-} from '@/features/chef/repository'
-import { ChefService, ChefServiceImpl } from '@/features/chef/service'
-import {
-  CreateChefUseCase,
-  GetActiveChefProfileUseCase,
-  GetChefUseCase,
-  ListChefUseCase,
-  UpdateActiveChefProfileUseCase,
-  LikeChefProfileByIdUseCase,
-  DislikeChefProfileByIdUseCase,
-  RateChefProfileByIdUseCase
-} from '@/features/chef/use-case'
+} from './features/food/cart/use-case.js'
+import { WebhookUseCase } from './features/payment/use-case.js'
+import CreateFoodItemUseCase from './features/food/item/route/create/use-case.js'
+import GetFoodItemUseCase from './features/food/item/route/get/use-case.js'
+import ListFoodItemsUseCase from './features/food/item/route/list/use-case.js'
+import { createKyselyPgClient } from './features/database/kysely/pg/index.js'
+import { ChefRepository, KyselyChefRepository, ChefUserLikeRepository, KyselyChefUserLikeRepository, ChefUserRatingRepository, KyselyChefUserRatingRepository } from './features/chef/repository/index.js'
+import { ChefService, ChefServiceImpl } from './features/chef/service/implementation.js'
+import { CreateChefUseCase, GetActiveChefProfileUseCase, GetChefUseCase, ListChefUseCase, UpdateActiveChefProfileUseCase, LikeChefProfileByIdUseCase, DislikeChefProfileByIdUseCase, RateChefProfileByIdUseCase } from './features/chef/use-case.js'
 import {
   ReferralRepository,
   KyselyReferralRepository
-} from '@/features/referral/repository'
+} from './features/referral/repository/index.js'
 import {
   FoodRecipeRepository,
-  KyselyFoodRecipeRepository
-} from '@/features/food/recipe/repository'
-import CreateFoodRecipeUseCase from '@/features/food/recipe/route/create/use-case'
-import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-case'
-import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
-import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
-import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
+  KyselyFoodRecipeRepository,
+  RecipeUserLikeRepository,
+  KyselyRecipeUserLikeRepository,
+  RecipeUserRatingRepository,
+  KyselyRecipeUserRatingRepository
+} from './features/food/recipe/repository/index.js'
+import CreateFoodRecipeUseCase from './features/food/recipe/route/create/use-case.js'
+import DeleteFoodRecipeUseCase from './features/food/recipe/route/delete/use-case.js'
+import GetFoodRecipeUseCase from './features/food/recipe/route/get/use-case.js'
+import ListFoodRecipeUseCase from './features/food/recipe/route/list/use-case.js'
+import UpdateFoodRecipeUseCase from './features/food/recipe/route/update/use-case.js'
 import {
   OpenTelemetryService,
   OpenTelemetryServiceImplementation
-} from '@/features/otel/service'
-import { OpenTelemetryLogger } from '@/features/otel/logger'
+} from './features/otel/service/index.js'
+import { OpenTelemetryLogger } from './features/otel/logger/index.js'
 
 export const bootstrap = async () => {
   // OpenTelemetry DI
@@ -294,6 +282,9 @@ export const bootstrap = async () => {
     kyselyClient,
     logger
   )
+  const recipeUserLikeRepository = new KyselyRecipeUserLikeRepository(kyselyClient, logger)
+  const recipeUserRatingRepository = new KyselyRecipeUserRatingRepository(kyselyClient, logger)
+  const recipeService = new RecipeServiceImpl(foodRecipeRepository, recipeUserLikeRepository, recipeUserRatingRepository, logger)
   const createFoodRecipeUseCase = new CreateFoodRecipeUseCase(
     foodRecipeRepository,
     chefRepository,
@@ -310,6 +301,9 @@ export const bootstrap = async () => {
     foodRecipeRepository,
     chefRepository
   )
+  const likeRecipeByIdUseCase = new LikeRecipeByIdUseCase(recipeService)
+  const dislikeRecipeByIdUseCase = new DislikeRecipeByIdUseCase(recipeService)
+  const rateRecipeByIdUseCase = new RateRecipeByIdUseCase(recipeService)
 
   const app = new HonoApp(logger)
 
@@ -418,11 +412,17 @@ export const bootstrap = async () => {
 
   // Food Recipe DI
   Container.set(FoodRecipeRepository, foodRecipeRepository)
+  Container.set(RecipeUserLikeRepository, recipeUserLikeRepository)
+  Container.set(RecipeUserRatingRepository, recipeUserRatingRepository)
+  Container.set(RecipeService, recipeService)
   Container.set(CreateFoodRecipeUseCase, createFoodRecipeUseCase)
   Container.set(ListFoodRecipeUseCase, listFoodRecipeUseCase)
   Container.set(GetFoodRecipeUseCase, getFoodRecipeUseCase)
   Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
   Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
+  Container.set(LikeRecipeByIdUseCase, likeRecipeByIdUseCase)
+  Container.set(DislikeRecipeByIdUseCase, dislikeRecipeByIdUseCase)
+  Container.set(RateRecipeByIdUseCase, rateRecipeByIdUseCase)
 
   return { app, logger, config, openTelemetryService }
 }

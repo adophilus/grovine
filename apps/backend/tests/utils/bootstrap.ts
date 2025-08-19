@@ -100,7 +100,11 @@ import {
 } from '@/features/referral/repository'
 import {
   FoodRecipeRepository,
-  KyselyFoodRecipeRepository
+  KyselyFoodRecipeRepository,
+  RecipeUserLikeRepository,
+  KyselyRecipeUserLikeRepository,
+  RecipeUserRatingRepository,
+  KyselyRecipeUserRatingRepository
 } from '@/features/food/recipe/repository'
 import CreateFoodRecipeUseCase from '@/features/food/recipe/route/create/use-case'
 import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-case'
@@ -276,6 +280,9 @@ export const bootstrap = async () => {
     kyselyClient,
     logger
   )
+  const recipeUserLikeRepository = new KyselyRecipeUserLikeRepository(kyselyClient, logger)
+  const recipeUserRatingRepository = new KyselyRecipeUserRatingRepository(kyselyClient, logger)
+  const recipeService = new RecipeServiceImpl(foodRecipeRepository, recipeUserLikeRepository, recipeUserRatingRepository, logger)
   const createFoodRecipeUseCase = new CreateFoodRecipeUseCase(
     foodRecipeRepository,
     chefRepository,
@@ -292,6 +299,9 @@ export const bootstrap = async () => {
     foodRecipeRepository,
     chefRepository
   )
+  const likeRecipeByIdUseCase = new LikeRecipeByIdUseCase(recipeService)
+  const dislikeRecipeByIdUseCase = new DislikeRecipeByIdUseCase(recipeService)
+  const rateRecipeByIdUseCase = new RateRecipeByIdUseCase(recipeService)
 
   const app = new HonoApp(logger)
 
@@ -399,11 +409,17 @@ export const bootstrap = async () => {
 
   // Food Recipe DI
   Container.set(FoodRecipeRepository, foodRecipeRepository)
+  Container.set(RecipeUserLikeRepository, recipeUserLikeRepository)
+  Container.set(RecipeUserRatingRepository, recipeUserRatingRepository)
+  Container.set(RecipeService, recipeService)
   Container.set(CreateFoodRecipeUseCase, createFoodRecipeUseCase)
   Container.set(ListFoodRecipeUseCase, listFoodRecipeUseCase)
   Container.set(GetFoodRecipeUseCase, getFoodRecipeUseCase)
   Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
   Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
+  Container.set(LikeRecipeByIdUseCase, likeRecipeByIdUseCase)
+  Container.set(DislikeRecipeByIdUseCase, dislikeRecipeByIdUseCase)
+  Container.set(RateRecipeByIdUseCase, rateRecipeByIdUseCase)
 
   return { app, logger, config }
 }

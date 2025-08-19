@@ -60,7 +60,7 @@ type FoodRecipesTable = TimestampModel & {
   title: string
   description: string
   ingredients: {
-    quantity: number
+    quantity: string
     id: string
   }[]
   instructions: {
@@ -70,6 +70,8 @@ type FoodRecipesTable = TimestampModel & {
   video: Media
   cover_image: Media
   chef_id: string
+  likes: ColumnType<string, string | number, string | number | undefined>
+  dislikes: ColumnType<string, string | number, string | number | undefined>
 }
 
 type WalletsTable = TimestampModel & {
@@ -171,7 +173,22 @@ type ChefUserRatingTable = TimestampModel & {
   id: string
   chef_id: string
   user_id: string
-  rating: number
+  rating: ColumnType<string, string | number, string | number | undefined>
+}
+
+type RecipeUserLikeTable = TimestampModel & {
+  id: string
+  recipe_id: string
+  user_id: string
+  is_liked: boolean
+  is_disliked: boolean
+}
+
+type RecipeUserRatingTable = TimestampModel & {
+  id: string
+  recipe_id: string
+  user_id: string
+  rating: ColumnType<string, string | number, string | number | undefined>
 }
 
 export type KyselyDatabaseTables = {
@@ -191,5 +208,7 @@ export type KyselyDatabaseTables = {
   chefs: ChefsTable
   chef_user_likes: ChefUserLikeTable
   chef_user_ratings: ChefUserRatingTable
+  recipe_user_likes: RecipeUserLikeTable
+  recipe_user_ratings: RecipeUserRatingTable
   referrals: ReferralsTable
 }
