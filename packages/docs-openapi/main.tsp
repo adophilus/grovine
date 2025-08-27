@@ -1030,6 +1030,9 @@ namespace Api {
         }[];
         video: Media;
         cover_image: Media;
+        likes: numeric;
+        dislikes: numeric;
+        rating: string;
         chef_id: Id;
         created_at: DateTime;
         updated_at: DateTime | null;

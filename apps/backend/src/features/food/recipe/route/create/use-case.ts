@@ -48,6 +48,9 @@ class CreateFoodRecipeUseCase {
       cover_image: uploadedCoverImage,
       video: uploadedVideo,
       chef_id: chef.id,
+      rating: 0,
+      likes: 0,
+      dislikes: 0,
       id: ulid()
     })
 

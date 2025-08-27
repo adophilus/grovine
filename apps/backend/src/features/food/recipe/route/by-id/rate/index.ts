@@ -9,17 +9,17 @@ import middleware from './middleware'
 const RateRecipeByIdRoute = new Hono().put(
   '/',
   AuthMiddleware.middleware,
-  middleware,
+  ...middleware,
   async (c) => {
     let response: Response.Response
     let statusCode: StatusCodes
 
     const user = c.get('user')
-    const payload = c.req.valid('json')
     const path = c.req.valid('param')
+    const payload = c.req.valid('json')
 
     const useCase = Container.get(RateRecipeByIdUseCase)
-    const result = await useCase.execute(payload, user, path)
+    const result = await useCase.execute({ ...payload, ...path }, user)
 
     if (result.isErr) {
       response = result.error

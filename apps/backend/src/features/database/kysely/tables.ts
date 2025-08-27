@@ -60,7 +60,7 @@ type FoodRecipesTable = TimestampModel & {
   title: string
   description: string
   ingredients: {
-    quantity: string
+    quantity: number
     id: string
   }[]
   instructions: {
@@ -69,9 +69,10 @@ type FoodRecipesTable = TimestampModel & {
   }[]
   video: Media
   cover_image: Media
+  rating: ColumnType<string, string | number, string | number | undefined>
   chef_id: string
-  likes: ColumnType<string, string | number, string | number | undefined>
-  dislikes: ColumnType<string, string | number, string | number | undefined>
+  likes: number
+  dislikes: number
 }
 
 type WalletsTable = TimestampModel & {
@@ -154,8 +155,8 @@ type ChefsTable = TimestampModel & {
   niches: string[]
   profile_picture: Media | null
   rating: ColumnType<string, string | number, string | number | undefined>
-  likes: ColumnType<string, string | number, string | number | undefined>
-  dislikes: ColumnType<string, string | number, string | number | undefined>
+  likes: number
+  dislikes: number
   is_verified: boolean
   is_banned: boolean
   user_id: string

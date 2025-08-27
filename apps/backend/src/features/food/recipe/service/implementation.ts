@@ -35,15 +35,20 @@ class RecipeServiceImpl implements RecipeService {
     }
 
     // Update cached likes count
-    const likesCount = await this.recipeUserLikeRepository.countLikesByRecipeId(recipeId)
+    const likesCount =
+      await this.recipeUserLikeRepository.countLikesByRecipeId(recipeId)
     if (likesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    const dislikesCount = await this.recipeUserLikeRepository.countDislikesByRecipeId(recipeId)
+    const dislikesCount =
+      await this.recipeUserLikeRepository.countDislikesByRecipeId(recipeId)
     if (dislikesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    await this.recipeRepository.updateById(recipeId, { likes: likesCount.value.toString(), dislikes: dislikesCount.value.toString() })
+    await this.recipeRepository.updateById(recipeId, {
+      likes: likesCount.value,
+      dislikes: dislikesCount.value
+    })
 
     return Result.ok(Unit)
   }
@@ -69,15 +74,20 @@ class RecipeServiceImpl implements RecipeService {
     }
 
     // Update cached likes count
-    const likesCount = await this.recipeUserLikeRepository.countLikesByRecipeId(recipeId)
+    const likesCount =
+      await this.recipeUserLikeRepository.countLikesByRecipeId(recipeId)
     if (likesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    const dislikesCount = await this.recipeUserLikeRepository.countDislikesByRecipeId(recipeId)
+    const dislikesCount =
+      await this.recipeUserLikeRepository.countDislikesByRecipeId(recipeId)
     if (dislikesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    await this.recipeRepository.updateById(recipeId, { likes: likesCount.value.toString(), dislikes: dislikesCount.value.toString() })
+    await this.recipeRepository.updateById(recipeId, {
+      likes: likesCount.value,
+      dislikes: dislikesCount.value
+    })
 
     return Result.ok(Unit)
   }
@@ -105,11 +115,14 @@ class RecipeServiceImpl implements RecipeService {
     }
 
     // Update cached average rating
-    const averageRating = await this.recipeUserRatingRepository.getAverageRatingByRecipeId(recipeId)
+    const averageRating =
+      await this.recipeUserRatingRepository.getAverageRatingByRecipeId(recipeId)
     if (averageRating.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    await this.recipeRepository.updateById(recipeId, { rating: averageRating.value.toString() })
+    await this.recipeRepository.updateById(recipeId, {
+      rating: averageRating.value.toString()
+    })
 
     return Result.ok(Unit)
   }

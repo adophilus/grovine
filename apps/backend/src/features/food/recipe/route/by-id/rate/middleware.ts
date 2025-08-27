@@ -1,6 +1,7 @@
 import { zValidator } from '@hono/zod-validator'
 import { Request } from './types'
 
-const middleware = zValidator('json', Request.body)
-
-export default middleware
+export default [
+  zValidator('param', Request.path),
+  zValidator('json', Request.body)
+] as const

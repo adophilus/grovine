@@ -7,12 +7,11 @@ class RateRecipeByIdUseCase {
   constructor(private recipeService: RecipeService) {}
 
   async execute(
-    payload: Request.Body,
-    user: User.Selectable,
-    path: Request.Path
+    payload: Request.Body & Request.Path,
+    user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
     const result = await this.recipeService.handleRating(
-      path.id,
+      payload.id,
       user.id,
       payload.rating
     )

@@ -1,5 +1,5 @@
 import { Result } from 'true-myth'
-import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY, type Token } from '@/types'
+import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY, type Token } from '@/types'
 import type { Mailer } from '@/features/mailer'
 import VerificationMail from './mail/verification'
 import { ulid } from 'ulidx'
