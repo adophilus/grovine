@@ -5,8 +5,12 @@ import { faker } from '@faker-js/faker'
 const mockRecipeDetails = () => ({
   title: faker.lorem.words(3),
   description: faker.lorem.paragraph(),
-  ingredients: [{ id: faker.lorem.word(), quantity: faker.number.int({ min: 1, max: 10 }) }],
-  instructions: [{ title: faker.lorem.words(2), content: faker.lorem.paragraph() }],
+  ingredients: [
+    { id: faker.lorem.word(), quantity: faker.number.int({ min: 1, max: 10 }) }
+  ],
+  instructions: [
+    { title: faker.lorem.words(2), content: faker.lorem.paragraph() }
+  ],
   video: new File([], 'test.mp4', { type: 'video/mp4' }),
   cover_image: new File([], 'test.png', { type: 'image/png' })
 })
@@ -85,7 +89,10 @@ describe('recipe likes and ratings', async () => {
     )
 
     const recipeRes = await client.GET(`/foods/recipes/${recipeId}`)
-    assert(recipeRes.data.data.rating === recipeRating, `Recipe should have a rating of ${recipeRating}`)
+    assert(
+      recipeRes.data.data.rating === recipeRating,
+      `Recipe should have a rating of ${recipeRating}`
+    )
   })
 
   test('update recipe rating', async () => {
@@ -102,7 +109,16 @@ describe('recipe likes and ratings', async () => {
       'Response should have RECIPE_RATED code'
     )
 
-    const recipeRes = await client.GET(`/foods/recipes/${recipeId}`)
-    assert(recipeRes.data.data.rating === updatedRecipeRating, `Recipe should have an updated rating of ${updatedRecipeRating}`)
+    const recipeRes = await client.GET('/foods/recipes/{id}', {
+      params: {
+        path: {
+          id: recipeId
+        }
+      }
+    })
+    assert(
+      recipeRes.data.data.rating === updatedRecipeRating,
+      `Recipe should have an updated rating of ${updatedRecipeRating}`
+    )
   })
 })

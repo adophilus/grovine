@@ -111,6 +111,15 @@ import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-cas
 import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
 import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
 import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
+import {
+  DislikeRecipeByIdUseCase,
+  LikeRecipeByIdUseCase,
+  RateRecipeByIdUseCase
+} from '@/features/food/recipe/use-case'
+import {
+  RecipeService,
+  RecipeServiceImpl
+} from '@/features/food/recipe/service'
 
 export const bootstrap = async () => {
   // Logger
@@ -280,9 +289,20 @@ export const bootstrap = async () => {
     kyselyClient,
     logger
   )
-  const recipeUserLikeRepository = new KyselyRecipeUserLikeRepository(kyselyClient, logger)
-  const recipeUserRatingRepository = new KyselyRecipeUserRatingRepository(kyselyClient, logger)
-  const recipeService = new RecipeServiceImpl(foodRecipeRepository, recipeUserLikeRepository, recipeUserRatingRepository, logger)
+  const recipeUserLikeRepository = new KyselyRecipeUserLikeRepository(
+    kyselyClient,
+    logger
+  )
+  const recipeUserRatingRepository = new KyselyRecipeUserRatingRepository(
+    kyselyClient,
+    logger
+  )
+  const recipeService = new RecipeServiceImpl(
+    foodRecipeRepository,
+    recipeUserLikeRepository,
+    recipeUserRatingRepository,
+    logger
+  )
   const createFoodRecipeUseCase = new CreateFoodRecipeUseCase(
     foodRecipeRepository,
     chefRepository,
