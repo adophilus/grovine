@@ -23,6 +23,7 @@ class KyselyAuthTokenRepository implements AuthTokenRepository {
       return Result.ok(token)
     } catch (err) {
       this.logger.error('failed to create sign up verification token:', err)
+      this.logger.error((err as any).code)
       return Result.err('ERR_UNEXPECTED')
     }
   }
