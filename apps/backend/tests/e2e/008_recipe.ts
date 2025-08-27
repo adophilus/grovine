@@ -33,6 +33,7 @@ describe('recipe likes and ratings', async () => {
       !res.error,
       `Create recipe should not return an error: ${res.error?.code}`
     )
+    assert(res.data, 'Response data should not be undefined')
     assert(
       res.data.code === 'RECIPE_CREATED',
       'Response should have RECIPE_CREATED code'
@@ -41,24 +42,37 @@ describe('recipe likes and ratings', async () => {
   })
 
   test('like recipe', async () => {
-    const res = await client.PUT(`/foods/recipes/${recipeId}/like`)
+    const res = await client.PUT('/foods/recipes/{id}/like', {
+      params: {
+        path: {
+          id: recipeId
+        }
+      }
+    })
 
     assert(
       !res.error,
       `Like recipe should not return an error: ${res.error?.code}`
     )
+    assert(res.data, 'Response data should not be undefined')
     assert(
       res.data.code === 'RECIPE_LIKED',
       'Response should have RECIPE_LIKED code'
     )
 
-    const recipeRes = await client.GET(`/foods/recipes/${recipeId}`)
+    const recipeRes = await client.GET('/foods/recipes/{id}', { params: { path: { id: recipeId } } })
     assert(recipeRes.data.data.likes === 1, 'Recipe should have 1 like')
     assert(recipeRes.data.data.dislikes === 0, 'Recipe should have 0 dislikes')
   })
 
   test('dislike recipe', async () => {
-    const res = await client.PUT(`/foods/recipes/${recipeId}/dislike`)
+    const res = await client.PUT('/foods/recipes/{id}/dislike', {
+      params: {
+        path: {
+          id: recipeId
+        }
+      }
+    })
 
     assert(
       !res.error,
@@ -69,13 +83,14 @@ describe('recipe likes and ratings', async () => {
       'Response should have RECIPE_DISLIKED code'
     )
 
-    const recipeRes = await client.GET(`/foods/recipes/${recipeId}`)
+    const recipeRes = await client.GET('/foods/recipes/{id}', { params: { path: { id: recipeId } } })
     assert(recipeRes.data.data.likes === 0, 'Recipe should have 0 likes')
     assert(recipeRes.data.data.dislikes === 1, 'Recipe should have 1 dislike')
   })
 
   test('rate recipe', async () => {
-    const res = await client.PUT(`/foods/recipes/${recipeId}/rate`, {
+    const res = await client.PUT('/foods/recipes/{id}/rate', {
+      params: { path: { id: recipeId } },
       json: { rating: recipeRating }
     })
 
@@ -88,7 +103,7 @@ describe('recipe likes and ratings', async () => {
       'Response should have RECIPE_RATED code'
     )
 
-    const recipeRes = await client.GET(`/foods/recipes/${recipeId}`)
+    const recipeRes = await client.GET('/foods/recipes/{id}', { params: { path: { id: recipeId } } })
     assert(
       recipeRes.data.data.rating === recipeRating,
       `Recipe should have a rating of ${recipeRating}`
@@ -96,7 +111,8 @@ describe('recipe likes and ratings', async () => {
   })
 
   test('update recipe rating', async () => {
-    const res = await client.PUT(`/foods/recipes/${recipeId}/rate`, {
+    const res = await client.PUT('/foods/recipes/{id}/rate', {
+      params: { path: { id: recipeId } },
       json: { rating: updatedRecipeRating }
     })
 
