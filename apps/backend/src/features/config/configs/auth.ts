@@ -8,6 +8,12 @@ const AuthConfig = {
     },
     refresh: {
       expiry: 60 * 24 * 30 // 30 days
+    },
+    signup: {
+      expiry: env.SIGN_UP_TOKEN_EXPIRY_SECONDS
+    },
+    signin: {
+      expiry: env.SIGN_IN_TOKEN_EXPIRY_SECONDS
     }
   }
 }
