@@ -1,3 +1,3 @@
-import SearchFoodRouteItemsUseCase from './route/search/use-case'
+import SearchFoodItemsUseCase from './route/search/use-case'
 
-export { SearchFoodRouteItemsUseCase }
+export { SearchFoodItemsUseCase }

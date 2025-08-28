@@ -74,6 +74,7 @@ import { WebhookUseCase } from '@/features/payment/use-case'
 import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
+import SearchFoodItemsUseCase from '@/features/food/search/route/search/use-case'
 import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
 import {
   ChefRepository,
@@ -138,12 +139,8 @@ export const bootstrap = async () => {
   const walletRepository = new WalletKyselyRepository(logger, kyselyClient)
   const paymentService = new MockPaymentService(walletRepository)
   const webhookUseCase = new WebhookUseCase(paymentService)
-  const getWalletUseCase = new GetWalletUseCase(walletRepository)
-  const topupWalletUseCase = new TopupWalletUseCase(
-    walletRepository,
-    paymentService
-  )
-  const withdrawWalletUseCase = new WithdrawWalletUseCase()
+  // Wallet DI
+  // Use cases are now imported from ./features/wallet/use-case
 
   // Referral DI
   const referralRepository = new KyselyReferralRepository(kyselyClient, logger)
@@ -345,9 +342,9 @@ export const bootstrap = async () => {
 
   // Wallet DI
   Container.set(WalletRepository, walletRepository)
-  Container.set(GetWalletUseCase, getWalletUseCase)
-  Container.set(TopupWalletUseCase, topupWalletUseCase)
-  Container.set(WithdrawWalletUseCase, withdrawWalletUseCase)
+  Container.set(GetWalletUseCase, GetWalletUseCase)
+  Container.set(TopupWalletUseCase, TopupWalletUseCase)
+  Container.set(WithdrawWalletUseCase, WithdrawWalletUseCase)
 
   // Referral DI
   Container.set(ReferralRepository, referralRepository)

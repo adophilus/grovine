@@ -4,7 +4,7 @@ import type { SearchRepository } from '../../repository'
 import { serializeItem } from '../../utils'
 import { Pagination } from '@/features/pagination'
 
-class SearchFoodRouteItemsUseCase {
+class SearchFoodItemsUseCase {
   constructor(private searchRepository: SearchRepository) {}
 
   async execute(
@@ -34,4 +34,4 @@ class SearchFoodRouteItemsUseCase {
   }
 }
 
-export default SearchFoodRouteItemsUseCase
+export default SearchFoodItemsUseCase

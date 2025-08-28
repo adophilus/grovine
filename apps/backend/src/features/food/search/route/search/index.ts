@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import SearchFoodRouteItemsUseCase from './use-case'
+import SearchFoodItemsUseCase from './use-case'
 import middleware from './middleware'
 
 const SearchFoodItemsRoute = new Hono().get('/', middleware, async (c) => {
@@ -11,7 +11,7 @@ const SearchFoodItemsRoute = new Hono().get('/', middleware, async (c) => {
 
   const query = c.req.valid('query')
 
-  const useCase = Container.get(SearchFoodRouteItemsUseCase)
+  const useCase = Container.get(SearchFoodItemsUseCase)
   const result = await useCase.execute(query)
 
   if (result.isErr) {

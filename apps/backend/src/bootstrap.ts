@@ -32,20 +32,20 @@ import {
   WalletKyselyRepository,
   WalletRepository
 } from './features/wallet/repository'
-import GetWalletUseCase from './features/wallet/route/get/use-case'
 import { Mailer, NodemailerMailer } from './features/mailer'
-import TopupWalletUseCase from './features/wallet/route/topup/use-case'
+import {
+  GetWalletUseCase,
+  TopupWalletUseCase,
+  WithdrawWalletUseCase
+} from './features/wallet/use-case'
 import {
   PaymentService,
   PaystackPaymentService
 } from './features/payment/service'
-import WithdrawWalletUseCase from './features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
   FoodItemKyselyRepository
 } from './features/food/item/repository'
-import UpdateFoodItemUseCase from './features/food/item/route/update/use-case'
-import DeleteFoodItemUseCase from './features/food/item/route/delete/use-case'
 import {
   OrderRepository,
   OrderKyselyRepository
@@ -77,9 +77,14 @@ import {
   CheckoutCartUseCase
 } from './features/food/cart/use-case'
 import { WebhookUseCase } from './features/payment/use-case'
-import CreateFoodItemUseCase from './features/food/item/route/create/use-case'
-import GetFoodItemUseCase from './features/food/item/route/get/use-case'
-import ListFoodItemsUseCase from './features/food/item/route/list/use-case'
+import {
+  CreateFoodItemUseCase,
+  GetFoodItemUseCase,
+  ListFoodItemsUseCase,
+  UpdateFoodItemUseCase,
+  DeleteFoodItemUseCase
+} from './features/food/item/use-case'
+import { SearchFoodItemsUseCase } from './features/food/search/use-case'
 import { createKyselyPgClient } from './features/database/kysely/pg'
 import {
   ChefRepository,
@@ -112,11 +117,13 @@ import {
   RecipeUserRatingRepository,
   KyselyRecipeUserRatingRepository
 } from './features/food/recipe/repository'
-import CreateFoodRecipeUseCase from './features/food/recipe/route/create/use-case'
-import DeleteFoodRecipeUseCase from './features/food/recipe/route/delete/use-case'
-import GetFoodRecipeUseCase from './features/food/recipe/route/get/use-case'
-import ListFoodRecipeUseCase from './features/food/recipe/route/list/use-case'
-import UpdateFoodRecipeUseCase from './features/food/recipe/route/update/use-case'
+import {
+  CreateFoodRecipeUseCase,
+  GetFoodRecipeUseCase,
+  ListFoodRecipeUseCase,
+  UpdateFoodRecipeUseCase,
+  DeleteFoodRecipeUseCase
+} from './features/food/recipe/use-case'
 import {
   OpenTelemetryService,
   OpenTelemetryServiceImplementation
@@ -156,12 +163,8 @@ export const bootstrap = async () => {
   const walletRepository = new WalletKyselyRepository(logger, kyselyClient)
   const paymentService = new PaystackPaymentService(walletRepository, logger)
   const webhookUseCase = new WebhookUseCase(paymentService)
-  const getWalletUseCase = new GetWalletUseCase(walletRepository)
-  const topupWalletUseCase = new TopupWalletUseCase(
-    walletRepository,
-    paymentService
-  )
-  const withdrawWalletUseCase = new WithdrawWalletUseCase()
+  // Wallet DI
+  // Use cases are now imported from ./features/wallet/use-case
 
   // Referral DI
   const referralRepository = new KyselyReferralRepository(kyselyClient, logger)
@@ -367,9 +370,9 @@ export const bootstrap = async () => {
 
   // Wallet DI
   Container.set(WalletRepository, walletRepository)
-  Container.set(GetWalletUseCase, getWalletUseCase)
-  Container.set(TopupWalletUseCase, topupWalletUseCase)
-  Container.set(WithdrawWalletUseCase, withdrawWalletUseCase)
+  Container.set(GetWalletUseCase, GetWalletUseCase)
+  Container.set(TopupWalletUseCase, TopupWalletUseCase)
+  Container.set(WithdrawWalletUseCase, WithdrawWalletUseCase)
 
   // Referral DI
   Container.set(ReferralRepository, referralRepository)

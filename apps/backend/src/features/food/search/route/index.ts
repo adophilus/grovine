@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
-import SearchFoodRoute from './search'
+import SearchFoodItemsRoute from './search'
 
-const FoodSearchRouter = new Hono().route('/', SearchFoodRoute)
+const FoodSearchRouter = new Hono().route('/', SearchFoodItemsRoute)
 
 export default FoodSearchRouter
