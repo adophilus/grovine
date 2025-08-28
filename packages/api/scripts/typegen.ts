@@ -37,7 +37,9 @@ await generateZodClientFromOpenAPI({
   distPath: './src/api/schema.ts',
   options: {
     withAlias: false,
-    shouldExportAllSchemas: true
+    shouldExportAllSchemas: true,
+    withDocs: true,
+    additionalPropertiesDefaultValue: false
   }
 })
 

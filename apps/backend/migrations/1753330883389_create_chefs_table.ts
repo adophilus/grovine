@@ -10,6 +10,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('rating', 'numeric', (col) => col.notNull())
     .addColumn('is_verified', 'boolean', (col) => col.notNull())
     .addColumn('is_banned', 'boolean', (col) => col.notNull())
+    .addColumn('likes', 'integer', (col) => col.notNull().defaultTo(0))
+    .addColumn('dislikes', 'integer', (col) => col.notNull().defaultTo(0))
     .addColumn('user_id', 'varchar', (col) => col.notNull())
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`NOW()`).notNull()
