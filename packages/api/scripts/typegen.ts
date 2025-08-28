@@ -39,7 +39,7 @@ await generateZodClientFromOpenAPI({
     withAlias: false,
     shouldExportAllSchemas: true,
     withDocs: true,
-    additionalPropertiesDefaultValue: false
+    // additionalPropertiesDefaultValue: false
   }
 })
 
