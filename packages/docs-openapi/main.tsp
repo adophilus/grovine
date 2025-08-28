@@ -1030,6 +1030,9 @@ namespace Api {
         }[];
         video: Media;
         cover_image: Media;
+        likes: numeric;
+        dislikes: numeric;
+        rating: string;
         chef_id: Id;
         created_at: DateTime;
         updated_at: DateTime | null;
@@ -1209,6 +1212,102 @@ namespace Api {
           @delete
           @doc("Delete a recipe by ID")
           op deleteRecipeById(...Request.Path): Response.Response;
+        }
+
+        @route("/like")
+        namespace Like {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
+            }
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 200;
+                code: "RECIPE_LIKED";
+              }
+            }
+
+            namespace Error {
+              alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @put
+          @doc("Like a recipe by ID")
+          op likeRecipeById(...Request.Path): Response.Response;
+        }
+
+        @route("/dislike")
+        namespace Dislike {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
+            }
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 200;
+                code: "RECIPE_DISLIKED";
+              }
+            }
+
+            namespace Error {
+              alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @put
+          @doc("Dislike a recipe by ID")
+          op dislikeRecipeById(...Request.Path): Response.Response;
+        }
+
+        @route("/rate")
+        namespace Rate {
+          namespace Request {
+            model Path {
+              @path
+              id: Id;
+            }
+
+            model Body {
+              @minValue(1)
+              @maxValue(5)
+              rating: integer;
+            }
+          }
+
+          namespace Response {
+            namespace Success {
+              model Success {
+                @statusCode _code: 200;
+                code: "RECIPE_RATED";
+              }
+            }
+
+            namespace Error {
+              alias Error = NotFoundError<"RECIPE"> | UnexpectedError;
+            }
+
+            alias Response = Success.Success | Error.Error;
+          }
+
+          @put
+          @doc("Rate a recipe by ID")
+          op rateRecipeById(
+            ...Request.Path,
+            @body body: Request.Body,
+          ): Response.Response;
         }
       }
     }
