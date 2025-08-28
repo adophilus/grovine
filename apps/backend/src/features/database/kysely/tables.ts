@@ -69,7 +69,10 @@ type FoodRecipesTable = TimestampModel & {
   }[]
   video: Media
   cover_image: Media
+  rating: ColumnType<string, string | number, string | number | undefined>
   chef_id: string
+  likes: number
+  dislikes: number
 }
 
 type WalletsTable = TimestampModel & {
@@ -152,8 +155,8 @@ type ChefsTable = TimestampModel & {
   niches: string[]
   profile_picture: Media | null
   rating: ColumnType<string, string | number, string | number | undefined>
-  likes: ColumnType<string, string | number, string | number | undefined>
-  dislikes: ColumnType<string, string | number, string | number | undefined>
+  likes: number
+  dislikes: number
   is_verified: boolean
   is_banned: boolean
   user_id: string
@@ -171,7 +174,22 @@ type ChefUserRatingTable = TimestampModel & {
   id: string
   chef_id: string
   user_id: string
-  rating: number
+  rating: ColumnType<string, string | number, string | number | undefined>
+}
+
+type RecipeUserLikeTable = TimestampModel & {
+  id: string
+  recipe_id: string
+  user_id: string
+  is_liked: boolean
+  is_disliked: boolean
+}
+
+type RecipeUserRatingTable = TimestampModel & {
+  id: string
+  recipe_id: string
+  user_id: string
+  rating: ColumnType<string, string | number, string | number | undefined>
 }
 
 export type KyselyDatabaseTables = {
@@ -191,5 +209,7 @@ export type KyselyDatabaseTables = {
   chefs: ChefsTable
   chef_user_likes: ChefUserLikeTable
   chef_user_ratings: ChefUserRatingTable
+  recipe_user_likes: RecipeUserLikeTable
+  recipe_user_ratings: RecipeUserRatingTable
   referrals: ReferralsTable
 }

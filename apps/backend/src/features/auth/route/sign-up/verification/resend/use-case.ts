@@ -43,11 +43,7 @@ class ResendSignUpVerificationEmailUseCase {
 
     const tokenExpiryTime = addSeconds(
       new Date(),
-      config.environment.PRODUCTION || config.environment.STAGING
-        ? 5 * 60
-        : config.environment.DEVELOPMENT
-          ? 60
-          : 1
+      config.auth.token.signup.expiry
     ).toISOString()
 
     const existingTokenResult =

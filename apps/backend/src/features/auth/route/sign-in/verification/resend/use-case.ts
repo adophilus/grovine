@@ -1,5 +1,5 @@
 import { Result } from 'true-myth'
-import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY, type Token } from '@/types'
+import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY, type Token } from '@/types'
 import type { Mailer } from '@/features/mailer'
 import VerificationMail from './mail/verification'
 import { ulid } from 'ulidx'
@@ -42,17 +42,13 @@ class ResendSignInVerificationEmailUseCase {
 
     const tokenExpiryTime = addSeconds(
       new Date(),
-      config.environment.PRODUCTION || config.environment.STAGING
-        ? 5 * 60
-        : config.environment.DEVELOPMENT
-          ? 60
-          : 1
+      config.auth.token.signin.expiry
     ).toISOString()
 
     const existingTokenResult =
       await this.authTokenRepository.findByUserIdAndPurpose({
         user_id: user.id,
-        purpose: SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY
+        purpose: SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY
       })
 
     if (existingTokenResult.isErr) {
@@ -68,7 +64,7 @@ class ResendSignInVerificationEmailUseCase {
       const tokenCreationResult = await this.authTokenRepository.create({
         id: ulid(),
         token: generateToken(),
-        purpose: SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY,
+        purpose: SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY,
         user_id: user.id,
         expires_at: tokenExpiryTime
       })

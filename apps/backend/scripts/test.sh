@@ -12,16 +12,7 @@ fi
 
 # Run tests with realtime output
 echo "Running tests..."
-# NODE_ENV=test tsx --test --test-concurrency 1 ./tests/e2e/*.ts
 NODE_ENV=test vitest run
-# NODE_ENV=test vitest run \
-#   ./tests/e2e/001_auth.ts \
-#   ./tests/e2e/002_wallet.ts \
-#   ./tests/e2e/003_chef.ts
-  # ./tests/e2e/004_food.ts \
-  # ./tests/e2e/005_cart.ts \
-  # ./tests/e2e/006_order.ts \
-  # ./tests/e2e/007_recipe.ts
 test_code=$?
 
 # Run teardown

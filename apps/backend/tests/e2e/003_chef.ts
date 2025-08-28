@@ -66,6 +66,7 @@ describe('chef', async () => {
       bodySerializer
     })
 
+    // added this lines just because I'm checking something out. It's not normally mean't to be here
     console.log('res.error:', JSON.stringify(res.error))
     console.log('res.data:', JSON.stringify(res.data))
 
