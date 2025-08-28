@@ -1,5 +1,14 @@
 import { env } from '../env'
 
+const expiry =
+  env.NODE_ENV === 'production'
+    ? 3600
+    : env.NODE_ENV === 'staging'
+      ? 3600
+      : env.NODE_ENV === 'development'
+        ? 3600
+        : 1
+
 const AuthConfig = {
   token: {
     secret: env.AUTH_TOKEN_SECRET,
@@ -10,10 +19,10 @@ const AuthConfig = {
       expiry: 60 * 24 * 30 // 30 days
     },
     signup: {
-      expiry: env.SIGN_UP_TOKEN_EXPIRY_SECONDS
+      expiry
     },
     signin: {
-      expiry: env.SIGN_IN_TOKEN_EXPIRY_SECONDS
+      expiry
     }
   }
 }

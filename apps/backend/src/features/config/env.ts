@@ -20,9 +20,7 @@ export const env = createEnv({
     PAYSTACK_SECRET_KEY: z.string(),
     OTEL_API_KEY: z.string(),
     OTEL_ENDPOINT: z.string().url(),
-    OTEL_SERVICE_NAME: z.string(),
-    SIGN_UP_TOKEN_EXPIRY_SECONDS: z.coerce.number(),
-    SIGN_IN_TOKEN_EXPIRY_SECONDS: z.coerce.number()
+    OTEL_SERVICE_NAME: z.string()
   },
   runtimeEnv: process.env
 })

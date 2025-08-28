@@ -98,8 +98,6 @@ describe('auth', async () => {
       }
     })
 
-    console.log(JSON.stringify(config.auth.token))
-
     assert(
       !res.error,
       `Sign in verification should not return an error: ${res.error?.code}`
