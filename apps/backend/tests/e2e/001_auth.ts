@@ -7,6 +7,7 @@ import {
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
 import { getStore, sleep, client, setTokens } from '../utils'
 import { Container } from '@n8n/di'
+import { config } from '@/features/config'
 
 describe('auth', async () => {
   const authUserRepository = Container.get(AuthUserRepository)
@@ -96,6 +97,8 @@ describe('auth', async () => {
         otp: token.token
       }
     })
+
+    console.log(JSON.stringify(config.auth.token))
 
     assert(
       !res.error,
