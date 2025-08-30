@@ -32,11 +32,13 @@ import {
   WalletKyselyRepository,
   WalletRepository
 } from '@/features/wallet/repository'
-import GetWalletUseCase from '@/features/wallet/route/get/use-case'
+import {
+  GetWalletUseCase,
+  TopupWalletUseCase,
+  WithdrawWalletUseCase
+} from '@/features/wallet/use-case'
 import { Mailer, MockMailer } from '@/features/mailer'
-import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
 import { PaymentService, MockPaymentService } from '@/features/payment/service'
-import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
   FoodItemKyselyRepository
@@ -74,6 +76,7 @@ import { WebhookUseCase } from '@/features/payment/use-case'
 import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
+import SearchFoodItemsUseCase from '@/features/food/search/route/search/use-case'
 import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
 import {
   ChefRepository,
@@ -120,6 +123,10 @@ import {
   RecipeService,
   RecipeServiceImpl
 } from '@/features/food/recipe/service'
+import {
+  FoodSearchRepository,
+  KyselyFoodSearchRepository
+} from '@/features/food/search/repository'
 
 export const bootstrap = async () => {
   // Logger
@@ -220,6 +227,13 @@ export const bootstrap = async () => {
     storageService
   )
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
+
+  // Food Search DI
+  const foodSearchRepository = new KyselyFoodSearchRepository(
+    kyselyClient,
+    logger
+  )
+  const searchFoodItemUseCase = new SearchFoodItemsUseCase(foodSearchRepository)
 
   // Food Order DI
   const orderRepository = new OrderKyselyRepository(kyselyClient, logger)
@@ -395,6 +409,10 @@ export const bootstrap = async () => {
   Container.set(ListFoodItemsUseCase, listFoodItemUseCase)
   Container.set(UpdateFoodItemUseCase, updateFoodItemUseCase)
   Container.set(DeleteFoodItemUseCase, deleteFoodItemUseCase)
+
+  // Food Search DI
+  Container.set(FoodSearchRepository, foodSearchRepository)
+  Container.set(SearchFoodItemsUseCase, searchFoodItemUseCase)
 
   // Food Order DI
   Container.set(OrderRepository, orderRepository)

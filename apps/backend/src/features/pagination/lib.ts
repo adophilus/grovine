@@ -1,7 +1,9 @@
 import { z } from 'zod'
+import _ from 'lodash'
 
 namespace Pagination {
   export const fields = ['page', 'per_page'] as const
+  export const paginatedFields = [...fields, 'total'] as const
 
   export const defaults = {
     page: 1,
@@ -44,7 +46,7 @@ namespace Pagination {
   ): Paginated<T> => {
     return {
       data,
-      meta: options
+      meta: _.pick(options, paginatedFields)
     }
   }
 

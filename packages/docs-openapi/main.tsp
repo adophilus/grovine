@@ -1311,6 +1311,30 @@ namespace Api {
         }
       }
     }
+
+    @tag("Food Search")
+    @route("/search")
+    namespace Search {
+      namespace Request {
+        model Query extends Pagination.Query {
+          @query
+          @example("chicken")
+          q?: string;
+        }
+      }
+
+      namespace Error {
+        alias Error = NotFoundError<"ITEM"> | UnexpectedError;
+      }
+
+      namespace Response {
+        alias Response = Api.Food.Item.List.Response.Response;
+      }
+
+      @get
+      @doc("Search and list food items")
+      op searchFoodItems(...Request.Query): Response.Response;
+    }
   }
 
   @tag("Advertisement")
