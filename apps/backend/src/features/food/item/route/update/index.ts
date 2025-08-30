@@ -4,16 +4,18 @@ import type { Response } from './types'
 import { Container } from '@n8n/di'
 import UpdateFoodItemUseCase from './use-case'
 import { StatusCodes } from '@/features/http'
+import AuthMiddleware from '@/features/auth/middleware'
 
-const UpdateFoodItemRoute = new Hono().patch('/:id', middleware, async (c) => {
+const UpdateFoodItemRoute = new Hono().patch('/:id', AuthMiddleware.middleware, middleware, async (c) => {
   let response: Response.Response
   let statusCode: StatusCodes
 
   const id = c.req.param('id')
   const payload = c.req.valid('form')
+  const user = c.get('user')
 
   const useCase = Container.get(UpdateFoodItemUseCase)
-  const result = await useCase.execute(id, payload)
+  const result = await useCase.execute(id, payload, user)
 
   if (result.isErr) {
     switch (result.error.code) {

@@ -3,17 +3,24 @@ import { Result } from 'true-myth'
 import type { StorageService, UploadedData } from '@/features/storage/service'
 import { serializeItem } from '../../utils'
 import type { FoodItemRepository } from '../../repository'
+import type { User } from '@/types'
 
 class UpdateFoodItemUseCase {
   constructor(
     private foodItemRepository: FoodItemRepository,
-    private storage: StorageService
-  ) {}
+    private storage: StorageService,
+  ) { }
 
   async execute(
     id: string,
-    payload: Request.Body
+    payload: Request.Body,
+    user: User.Selectable,
   ): Promise<Result<Response.Success, Response.Error>> {
+    if (user.role !== 'ADMIN') {
+      return Result.err({
+        code: 'ERR_UNAUTHORIZED'
+      }) 
+    }
     const findItemResult = await this.foodItemRepository.findById(id)
 
     if (findItemResult.isErr) {

@@ -4,16 +4,23 @@ import { Result } from 'true-myth'
 import type { StorageService } from '@/features/storage/service'
 import { serializeItem } from '../../utils'
 import type { FoodItemRepository } from '../../repository'
+import type { User } from '@/types'
 
 class CreateFoodItemUseCase {
   constructor(
     private foodItemRepository: FoodItemRepository,
-    private storage: StorageService
+    private storage: StorageService,
   ) {}
 
   async execute(
-    payload: Request.Body
+    payload: Request.Body,
+    user: User.Selectable,
   ): Promise<Result<Response.Success, Response.Error>> {
+    if (user.role !== 'ADMIN'){
+      return Result.err({
+        code: 'ERR_UNAUTHORIZED'
+      })
+    }
     const { image, ..._payload } = payload
 
     const uploadImageResult = await this.storage.upload(image)
