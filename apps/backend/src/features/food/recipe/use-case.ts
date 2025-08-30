@@ -1,4 +1,4 @@
-import CreateFoodRecipeUseCase from './route/create/use-case' './route/create/use-case'
+import CreateFoodRecipeUseCase from './route/create/use-case'
 import GetFoodRecipeUseCase from './route/get/use-case'
 import ListFoodRecipeUseCase from './route/list/use-case'
 import UpdateFoodRecipeUseCase from './route/update/use-case'
