@@ -32,11 +32,13 @@ import {
   WalletKyselyRepository,
   WalletRepository
 } from '@/features/wallet/repository'
-import GetWalletUseCase from '@/features/wallet/route/get/use-case'
+import {
+  GetWalletUseCase,
+  TopupWalletUseCase,
+  WithdrawWalletUseCase
+} from '@/features/wallet/use-case'
 import { Mailer, MockMailer } from '@/features/mailer'
-import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
 import { PaymentService, MockPaymentService } from '@/features/payment/service'
-import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
   FoodItemKyselyRepository
@@ -121,6 +123,10 @@ import {
   RecipeService,
   RecipeServiceImpl
 } from '@/features/food/recipe/service'
+import {
+  FoodSearchRepository,
+  KyselyFoodSearchRepository
+} from '@/features/food/search/repository'
 
 export const bootstrap = async () => {
   // Logger
@@ -139,8 +145,12 @@ export const bootstrap = async () => {
   const walletRepository = new WalletKyselyRepository(logger, kyselyClient)
   const paymentService = new MockPaymentService(walletRepository)
   const webhookUseCase = new WebhookUseCase(paymentService)
-  // Wallet DI
-  // Use cases are now imported from ./features/wallet/use-case
+  const getWalletUseCase = new GetWalletUseCase(walletRepository)
+  const topupWalletUseCase = new TopupWalletUseCase(
+    walletRepository,
+    paymentService
+  )
+  const withdrawWalletUseCase = new WithdrawWalletUseCase()
 
   // Referral DI
   const referralRepository = new KyselyReferralRepository(kyselyClient, logger)
@@ -217,6 +227,13 @@ export const bootstrap = async () => {
     storageService
   )
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
+
+  // Food Search DI
+  const foodSearchRepository = new KyselyFoodSearchRepository(
+    kyselyClient,
+    logger
+  )
+  const searchFoodItemUseCase = new SearchFoodItemsUseCase(foodSearchRepository)
 
   // Food Order DI
   const orderRepository = new OrderKyselyRepository(kyselyClient, logger)
@@ -342,9 +359,9 @@ export const bootstrap = async () => {
 
   // Wallet DI
   Container.set(WalletRepository, walletRepository)
-  Container.set(GetWalletUseCase, GetWalletUseCase)
-  Container.set(TopupWalletUseCase, TopupWalletUseCase)
-  Container.set(WithdrawWalletUseCase, WithdrawWalletUseCase)
+  Container.set(GetWalletUseCase, getWalletUseCase)
+  Container.set(TopupWalletUseCase, topupWalletUseCase)
+  Container.set(WithdrawWalletUseCase, withdrawWalletUseCase)
 
   // Referral DI
   Container.set(ReferralRepository, referralRepository)
@@ -392,6 +409,10 @@ export const bootstrap = async () => {
   Container.set(ListFoodItemsUseCase, listFoodItemUseCase)
   Container.set(UpdateFoodItemUseCase, updateFoodItemUseCase)
   Container.set(DeleteFoodItemUseCase, deleteFoodItemUseCase)
+
+  // Food Search DI
+  Container.set(FoodSearchRepository, foodSearchRepository)
+  Container.set(SearchFoodItemsUseCase, searchFoodItemUseCase)
 
   // Food Order DI
   Container.set(OrderRepository, orderRepository)

@@ -6,11 +6,11 @@ export namespace Request {
   export const query = Pagination.schema.extend({
     q: z.string().optional()
   })
-  export type Query = types.paths['/search']['get']['parameters']['query']
+  export type Query = types.paths['/foods/search']['get']['parameters']['query']
 }
 
 export namespace Response {
-  type Endpoint = '/search'
+  type Endpoint = '/foods/search'
 
   export type Response =
     types.paths[Endpoint]['get']['responses'][keyof types.paths[Endpoint]['get']['responses']]['content']['application/json']

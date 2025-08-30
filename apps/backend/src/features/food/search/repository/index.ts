@@ -1,4 +1,4 @@
-import SearchRepository from './interface'
-import KyselySearchRepository from './kysely'
+import FoodSearchRepository from './interface'
+import KyselyFoodSearchRepository from './kysely'
 
-export { SearchRepository, KyselySearchRepository }
+export { FoodSearchRepository, KyselyFoodSearchRepository }

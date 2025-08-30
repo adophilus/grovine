@@ -1,11 +1,11 @@
 import type { Response, Request } from './types'
 import { Result } from 'true-myth'
-import type { SearchRepository } from '../../repository'
+import type { FoodSearchRepository } from '../../repository'
 import { serializeItem } from '../../utils'
 import { Pagination } from '@/features/pagination'
 
 class SearchFoodItemsUseCase {
-  constructor(private searchRepository: SearchRepository) {}
+  constructor(private searchRepository: FoodSearchRepository) {}
 
   async execute(
     query?: Request.Query
