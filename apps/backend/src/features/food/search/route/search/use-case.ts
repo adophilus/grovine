@@ -8,14 +8,10 @@ class SearchFoodItemsUseCase {
   constructor(private searchRepository: FoodSearchRepository) {}
 
   async execute(
-    query?: Request.Query
+    query: Request.Query
   ): Promise<Result<Response.Success, Response.Error>> {
-    const q = query ?? {}
-
     const result = await this.searchRepository.searchFoodItems({
-      page: q.page ?? 1,
-      per_page: q.per_page ?? 10,
-      q: q.q,
+      ...query,
       is_deleted: false
     })
 
