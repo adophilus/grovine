@@ -1,6 +1,7 @@
 import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefRepository } from '../../repository'
+import type { ChefRepository } from '../../../repository'
+import { serializeChef } from '@/features/chef/utils'
 
 class GetChefUseCase {
   constructor(private chefRepository: ChefRepository) {}
@@ -23,9 +24,11 @@ class GetChefUseCase {
       })
     }
 
+    const serializedChef = serializeChef(chef)
+
     return Result.ok({
       code: 'CHEF_PROFILE_FOUND',
-      data: chef
+      data: serializedChef
     })
   }
 }

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import { config } from '../config'
 import { Result, type Unit } from 'true-myth'
-import { render } from 'jsx-email'
+import { render, renderPlainText } from 'jsx-email'
 import type { Logger } from '@/features/logger'
 import type { MailerError } from './interface'
 
@@ -26,7 +26,7 @@ class NodemailerMailer {
   }): Promise<Result<Unit, MailerError>> {
     const recipients = payload.recipients.join(', ')
     try {
-      const plainText = await render(payload.email)
+      const plainText = await renderPlainText(payload.email)
       const htmlText = await render(payload.email)
 
       await this.transporter.sendMail({

@@ -32,11 +32,13 @@ import {
   WalletKyselyRepository,
   WalletRepository
 } from '@/features/wallet/repository'
-import GetWalletUseCase from '@/features/wallet/route/get/use-case'
+import {
+  GetWalletUseCase,
+  TopupWalletUseCase,
+  WithdrawWalletUseCase
+} from '@/features/wallet/use-case'
 import { Mailer, MockMailer } from '@/features/mailer'
-import TopupWalletUseCase from '@/features/wallet/route/topup/use-case'
 import { PaymentService, MockPaymentService } from '@/features/payment/service'
-import WithdrawWalletUseCase from '@/features/wallet/route/withdraw/use-case'
 import {
   FoodItemRepository,
   FoodItemKyselyRepository
@@ -74,18 +76,26 @@ import { WebhookUseCase } from '@/features/payment/use-case'
 import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
 import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
+import SearchFoodItemsUseCase from '@/features/food/search/route/search/use-case'
 import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
-import { createKyselyMigrator } from '@/features/database/kysely/migrator'
 import {
   ChefRepository,
-  KyselyChefRepository
+  KyselyChefRepository,
+  ChefUserLikeRepository,
+  KyselyChefUserLikeRepository,
+  ChefUserRatingRepository,
+  KyselyChefUserRatingRepository
 } from '@/features/chef/repository'
+import { ChefService, ChefServiceImpl } from '@/features/chef/service'
 import {
   CreateChefUseCase,
   GetActiveChefProfileUseCase,
   GetChefUseCase,
   ListChefUseCase,
-  UpdateActiveChefProfileUseCase
+  UpdateActiveChefProfileUseCase,
+  LikeChefProfileByIdUseCase,
+  DislikeChefProfileByIdUseCase,
+  RateChefProfileByIdUseCase
 } from '@/features/chef/use-case'
 import {
   ReferralRepository,
@@ -93,22 +103,37 @@ import {
 } from '@/features/referral/repository'
 import {
   FoodRecipeRepository,
-  KyselyFoodRecipeRepository
+  KyselyFoodRecipeRepository,
+  RecipeUserLikeRepository,
+  KyselyRecipeUserLikeRepository,
+  RecipeUserRatingRepository,
+  KyselyRecipeUserRatingRepository
 } from '@/features/food/recipe/repository'
 import CreateFoodRecipeUseCase from '@/features/food/recipe/route/create/use-case'
 import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-case'
 import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
 import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
 import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
+import {
+  DislikeRecipeByIdUseCase,
+  LikeRecipeByIdUseCase,
+  RateRecipeByIdUseCase
+} from '@/features/food/recipe/use-case'
+import {
+  RecipeService,
+  RecipeServiceImpl
+} from '@/features/food/recipe/service'
+import {
+  FoodSearchRepository,
+  KyselyFoodSearchRepository
+} from '@/features/food/search/repository'
 
 export const bootstrap = async () => {
   // Logger
   const logger = new Logger({ name: 'App' })
-  const migrationFolder = new URL('../../migrations', import.meta.url).pathname
 
   // Database
   const kyselyClient = await createKyselyPgLiteClient()
-  const kyselyMigrator = createKyselyMigrator(kyselyClient, migrationFolder)
 
   // Storage DI
   const storageService = new MockStorageService()
@@ -203,6 +228,13 @@ export const bootstrap = async () => {
   )
   const deleteFoodItemUseCase = new DeleteFoodItemUseCase(foodItemRepository)
 
+  // Food Search DI
+  const foodSearchRepository = new KyselyFoodSearchRepository(
+    kyselyClient,
+    logger
+  )
+  const searchFoodItemUseCase = new SearchFoodItemsUseCase(foodSearchRepository)
+
   // Food Order DI
   const orderRepository = new OrderKyselyRepository(kyselyClient, logger)
   const listOrdersUseCase = new ListOrdersUseCase(orderRepository)
@@ -235,6 +267,20 @@ export const bootstrap = async () => {
 
   // Chef DI
   const chefRepository = new KyselyChefRepository(kyselyClient, logger)
+  const chefUserLikeRepository = new KyselyChefUserLikeRepository(
+    kyselyClient,
+    logger
+  )
+  const chefUserRatingRepository = new KyselyChefUserRatingRepository(
+    kyselyClient,
+    logger
+  )
+  const chefService = new ChefServiceImpl(
+    chefRepository,
+    chefUserLikeRepository,
+    chefUserRatingRepository,
+    logger
+  )
   const createChefUseCase = new CreateChefUseCase(chefRepository)
   const getChefUseCase = new GetChefUseCase(chefRepository)
   const listChefUseCase = new ListChefUseCase(chefRepository)
@@ -246,10 +292,29 @@ export const bootstrap = async () => {
     chefRepository,
     storageService
   )
+  const likeChefProfileByIdUseCase = new LikeChefProfileByIdUseCase(chefService)
+  const dislikeChefProfileByIdUseCase = new DislikeChefProfileByIdUseCase(
+    chefService
+  )
+  const rateChefProfileByIdUseCase = new RateChefProfileByIdUseCase(chefService)
 
   // Food Recipe DI
   const foodRecipeRepository = new KyselyFoodRecipeRepository(
     kyselyClient,
+    logger
+  )
+  const recipeUserLikeRepository = new KyselyRecipeUserLikeRepository(
+    kyselyClient,
+    logger
+  )
+  const recipeUserRatingRepository = new KyselyRecipeUserRatingRepository(
+    kyselyClient,
+    logger
+  )
+  const recipeService = new RecipeServiceImpl(
+    foodRecipeRepository,
+    recipeUserLikeRepository,
+    recipeUserRatingRepository,
     logger
   )
   const createFoodRecipeUseCase = new CreateFoodRecipeUseCase(
@@ -268,6 +333,9 @@ export const bootstrap = async () => {
     foodRecipeRepository,
     chefRepository
   )
+  const likeRecipeByIdUseCase = new LikeRecipeByIdUseCase(recipeService)
+  const dislikeRecipeByIdUseCase = new DislikeRecipeByIdUseCase(recipeService)
+  const rateRecipeByIdUseCase = new RateRecipeByIdUseCase(recipeService)
 
   const app = new HonoApp(logger)
 
@@ -342,6 +410,10 @@ export const bootstrap = async () => {
   Container.set(UpdateFoodItemUseCase, updateFoodItemUseCase)
   Container.set(DeleteFoodItemUseCase, deleteFoodItemUseCase)
 
+  // Food Search DI
+  Container.set(FoodSearchRepository, foodSearchRepository)
+  Container.set(SearchFoodItemsUseCase, searchFoodItemUseCase)
+
   // Food Order DI
   Container.set(OrderRepository, orderRepository)
   Container.set(ListOrdersUseCase, listOrdersUseCase)
@@ -361,21 +433,31 @@ export const bootstrap = async () => {
 
   // Chef DI
   Container.set(ChefRepository, chefRepository)
+  Container.set(ChefUserLikeRepository, chefUserLikeRepository)
+  Container.set(ChefUserRatingRepository, chefUserRatingRepository)
+  Container.set(ChefService, chefService)
   Container.set(CreateChefUseCase, createChefUseCase)
   Container.set(GetChefUseCase, getChefUseCase)
   Container.set(ListChefUseCase, listChefUseCase)
   Container.set(GetActiveChefProfileUseCase, getActiveChefProfileUseCase)
   Container.set(UpdateActiveChefProfileUseCase, updateActiveChefProfileUseCase)
+  Container.set(LikeChefProfileByIdUseCase, likeChefProfileByIdUseCase)
+  Container.set(DislikeChefProfileByIdUseCase, dislikeChefProfileByIdUseCase)
+  Container.set(RateChefProfileByIdUseCase, rateChefProfileByIdUseCase)
 
   // Food Recipe DI
   Container.set(FoodRecipeRepository, foodRecipeRepository)
+  Container.set(RecipeUserLikeRepository, recipeUserLikeRepository)
+  Container.set(RecipeUserRatingRepository, recipeUserRatingRepository)
+  Container.set(RecipeService, recipeService)
   Container.set(CreateFoodRecipeUseCase, createFoodRecipeUseCase)
   Container.set(ListFoodRecipeUseCase, listFoodRecipeUseCase)
   Container.set(GetFoodRecipeUseCase, getFoodRecipeUseCase)
   Container.set(UpdateFoodRecipeUseCase, updateFoodRecipeUseCase)
   Container.set(DeleteFoodRecipeUseCase, deleteFoodRecipeUseCase)
-
-  await kyselyMigrator.migrateToLatest()
+  Container.set(LikeRecipeByIdUseCase, likeRecipeByIdUseCase)
+  Container.set(DislikeRecipeByIdUseCase, dislikeRecipeByIdUseCase)
+  Container.set(RateRecipeByIdUseCase, rateRecipeByIdUseCase)
 
   return { app, logger, config }
 }

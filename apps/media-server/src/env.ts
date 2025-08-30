@@ -1,12 +1,12 @@
-import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-core'
+import { z } from 'zod'
 
 export const env = createEnv({
-  clientPrefix: "",
+  clientPrefix: '',
   client: {},
   server: {
-    NODE_ENV: z.enum(["production", "development", "test"]),
-    MEDIA_SERVER_URL: z.string().url(),
+    NODE_ENV: z.enum(['production', 'development', 'test']),
+    MEDIA_SERVER_URL: z.string().url()
   },
   /**
    * Makes sure you explicitly access **all** environment variables
@@ -14,6 +14,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    MEDIA_SERVER_URL: process.env.MEDIA_SERVER_URL,
-  },
-});
+    MEDIA_SERVER_URL: process.env.MEDIA_SERVER_URL
+  }
+})

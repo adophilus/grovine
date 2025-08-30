@@ -3,6 +3,7 @@ import { Result } from 'true-myth'
 import type { ChefRepository } from '../../../repository'
 import type { StorageService, UploadedData } from '@/features/storage/service'
 import type { User } from '@/types'
+import { serializeChef } from '@/features/chef/utils'
 
 class UpdateActiveChefProfileUseCase {
   constructor(
@@ -56,9 +57,12 @@ class UpdateActiveChefProfileUseCase {
       })
     }
 
+    const updatedChefProfile = updateChefResult.value
+    const serializedChefProfile = serializeChef(updatedChefProfile)
+
     return Result.ok({
       code: 'CHEF_PROFILE_UPDATED',
-      data: updateChefResult.value
+      data: serializedChefProfile
     })
   }
 }

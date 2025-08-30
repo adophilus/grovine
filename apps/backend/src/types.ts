@@ -115,6 +115,34 @@ export namespace Chef {
   export type Updateable = T['Updateable']
 }
 
+export namespace ChefUserLike {
+  type T = GenerateTypes<KyselyDatabaseTables['chef_user_likes']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace ChefUserRating {
+  type T = GenerateTypes<KyselyDatabaseTables['chef_user_ratings']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace RecipeUserLike {
+  type T = GenerateTypes<KyselyDatabaseTables['recipe_user_likes']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
+export namespace RecipeUserRating {
+  type T = GenerateTypes<KyselyDatabaseTables['recipe_user_ratings']>
+  export type Selectable = T['Selectable']
+  export type Insertable = T['Insertable']
+  export type Updateable = T['Updateable']
+}
+
 export namespace Referral {
   type T = GenerateTypes<KyselyDatabaseTables['referrals']>
   export type Selectable = T['Selectable']

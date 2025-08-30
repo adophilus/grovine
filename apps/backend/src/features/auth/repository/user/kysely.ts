@@ -9,7 +9,7 @@ class KyselyAuthUserRepository implements AuthUserRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
-  ) {}
+  ) { }
 
   public async create(
     payload: User.Insertable
@@ -39,6 +39,22 @@ class KyselyAuthUserRepository implements AuthUserRepository {
       return Result.ok(user ?? null)
     } catch (err) {
       this.logger.error('failed to find user by email:', err)
+      return Result.err('ERR_UNEXPECTED')
+    }
+  }
+
+  public async findByReferralCode(
+    referral_code: string
+  ): Promise<Result<User.Selectable | null, AuthUserRepositoryError>> {
+    try {
+      const user = await this.client
+        .selectFrom('users')
+        .selectAll()
+        .where('referral_code', '=', referral_code)
+        .executeTakeFirst()
+      return Result.ok(user ?? null)
+    } catch (err) {
+      this.logger.error('failed to find user by refferral code:', err)
       return Result.err('ERR_UNEXPECTED')
     }
   }

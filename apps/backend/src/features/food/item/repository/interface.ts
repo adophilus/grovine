@@ -4,13 +4,17 @@ import type { Pagination } from '@/features/pagination'
 
 export type FoodItemRepositoryError = 'ERR_UNEXPECTED'
 
+export type FindManyOptions = Pagination.Options & {
+  is_deleted?: boolean
+}
+
 abstract class FoodItemRepository {
   public abstract create(
     payload: FoodItem.Insertable
   ): Promise<Result<FoodItem.Selectable, FoodItemRepositoryError>>
 
   public abstract findMany(
-    options: Pagination.Options
+    options: FindManyOptions
   ): Promise<
     Result<Pagination.Paginated<FoodItem.Selectable>, FoodItemRepositoryError>
   >

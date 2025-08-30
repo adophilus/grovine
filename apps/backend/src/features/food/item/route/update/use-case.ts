@@ -31,6 +31,10 @@ class UpdateFoodItemUseCase {
       return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
     }
 
+    if (findItemResult.value.deleted_at !== null) {
+      return Result.err({ code: 'ERR_ITEM_NOT_FOUND' })
+    }
+
     const { image, ..._payload } = payload
 
     let updatedImage: UploadedData | undefined

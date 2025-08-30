@@ -12,6 +12,10 @@ abstract class AuthUserRepository {
     email: string
   ): Promise<Result<User.Selectable | null, AuthUserRepositoryError>>
 
+  public abstract findByReferralCode(
+    referral_code: string
+  ): Promise<Result<User.Selectable | null, AuthUserRepositoryError>>
+
   public abstract findById(
     id: string
   ): Promise<Result<User.Selectable | null, AuthUserRepositoryError>>

@@ -5,6 +5,10 @@ type TimestampModel = {
   updated_at: ColumnType<string, never, string>
 }
 
+type TimestampWithDeletedAtModel = TimestampModel & {
+  deleted_at: ColumnType<string | null, string | undefined, string | null>
+}
+
 export type Media = {
   public_id: string
   url: string
@@ -42,12 +46,13 @@ type UserPreferencesTable = TimestampModel & {
   user_id: string
 }
 
-type FoodItemsTable = TimestampModel & {
+type FoodItemsTable = TimestampWithDeletedAtModel & {
   id: string
   name: string
   video_url: string
   price: string
   image: Media
+  deleted_at?: ColumnType<string | null, string | undefined, string | null>
 }
 
 type FoodRecipesTable = TimestampModel & {
@@ -64,7 +69,10 @@ type FoodRecipesTable = TimestampModel & {
   }[]
   video: Media
   cover_image: Media
+  rating: ColumnType<string, string | number, string | number | undefined>
   chef_id: string
+  likes: number
+  dislikes: number
 }
 
 type WalletsTable = TimestampModel & {
@@ -141,15 +149,47 @@ type OrderTable = TimestampModel & {
       }
   )
 
-type ChefTable = TimestampModel & {
+type ChefsTable = TimestampModel & {
   id: string
   name: string
   niches: string[]
   profile_picture: Media | null
-  rating: number
+  rating: ColumnType<string, string | number, string | number | undefined>
+  likes: number
+  dislikes: number
   is_verified: boolean
   is_banned: boolean
   user_id: string
+}
+
+type ChefUserLikeTable = TimestampModel & {
+  id: string
+  chef_id: string
+  user_id: string
+  is_liked: boolean
+  is_disliked: boolean
+}
+
+type ChefUserRatingTable = TimestampModel & {
+  id: string
+  chef_id: string
+  user_id: string
+  rating: ColumnType<string, string | number, string | number | undefined>
+}
+
+type RecipeUserLikeTable = TimestampModel & {
+  id: string
+  recipe_id: string
+  user_id: string
+  is_liked: boolean
+  is_disliked: boolean
+}
+
+type RecipeUserRatingTable = TimestampModel & {
+  id: string
+  recipe_id: string
+  user_id: string
+  rating: ColumnType<string, string | number, string | number | undefined>
 }
 
 export type KyselyDatabaseTables = {
@@ -166,6 +206,10 @@ export type KyselyDatabaseTables = {
   orders: OrderTable
   transactions: TransactionsTable
   adverts: AdvertsTable
-  chefs: ChefTable
+  chefs: ChefsTable
+  chef_user_likes: ChefUserLikeTable
+  chef_user_ratings: ChefUserRatingTable
+  recipe_user_likes: RecipeUserLikeTable
+  recipe_user_ratings: RecipeUserRatingTable
   referrals: ReferralsTable
 }
