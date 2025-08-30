@@ -1318,6 +1318,7 @@ namespace Api {
       namespace Request {
         model Query extends Pagination.Query {
           @query
+          @example("chicken")
           q?: string;
         }
       }
@@ -1958,4 +1959,3 @@ namespace Api {
     }
   }
 }
-

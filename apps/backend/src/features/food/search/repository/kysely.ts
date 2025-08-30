@@ -27,6 +27,7 @@ class KyselyFoodSearchRepository {
         .limit(options.per_page)
         .offset((options.page - 1) * options.per_page)
 
+      console.log(options)
       if (options.q) {
         query = query.where('name', 'ilike', `%${options.q}%`)
       }
@@ -39,6 +40,7 @@ class KyselyFoodSearchRepository {
         }
       }
 
+      console.log(query.compile().sql)
       const items = await query.execute()
 
       const totalResult = await this.client

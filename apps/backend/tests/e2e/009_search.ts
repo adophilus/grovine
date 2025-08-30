@@ -15,6 +15,9 @@ describe('search food items', async () => {
   let item2Id: string
   let item3Id: string
 
+  const chickenIds: string[] = []
+  const vegetableIds: string[] = []
+
   beforeAll(async () => {
     const res1 = await client.POST('/foods/items', {
       body: {
@@ -27,6 +30,7 @@ describe('search food items', async () => {
     })
     assert(!res1.error, `Failed to create item 1: ${res1.error?.code}`)
     item1Id = res1.data.data.id
+    chickenIds.push(item1Id)
 
     const res2 = await client.POST('/foods/items', {
       body: {
@@ -39,6 +43,7 @@ describe('search food items', async () => {
     })
     assert(!res2.error, `Failed to create item 2: ${res2.error?.code}`)
     item2Id = res2.data.data.id
+    vegetableIds.push(item2Id)
 
     const res3 = await client.POST('/foods/items', {
       body: {
@@ -51,6 +56,7 @@ describe('search food items', async () => {
     })
     assert(!res3.error, `Failed to create item 3: ${res3.error?.code}`)
     item3Id = res3.data.data.id
+    chickenIds.push(item3Id)
   })
 
   afterAll(async () => {
@@ -66,39 +72,44 @@ describe('search food items', async () => {
 
   test('search by name returns correct items', async () => {
     const res = await client.GET('/foods/search', {
-      query: {
-        q: 'chicken',
-        page: 1,
-        per_page: 10
+      params: {
+        query: {
+          q: 'chicken'
+        }
       }
     })
 
     assert(!res.error, `Search should not return an error: ${res.error?.code}`)
-    assert(res.data?.code === 'LIST', 'Response should have LIST code')
-    assert(res.data?.data.data.length === 2, 'Should return 2 items')
+    assert(res.data.code === 'LIST', 'Response should have LIST code')
+
+    const foundChichkenIds = res.data.data.data.filter((item) =>
+      chickenIds.includes(item.id)
+    )
+
+    assert(foundChichkenIds.length === 2, 'Should return 2 items')
     assert(
-      res.data?.data.data.some((item) => item.id === item1Id),
+      res.data.data.data.some((item) => item.id === item1Id),
       'Should contain Spicy Chicken Noodles'
     )
     assert(
-      res.data?.data.data.some((item) => item.id === item3Id),
+      res.data.data.data.some((item) => item.id === item3Id),
       'Should contain Chicken Curry'
     )
-    assert(res.data?.data.meta.total === 2, 'Total should be 2')
+    assert(res.data.data.meta.total === 2, 'Total should be 2')
   })
 
   test('search by non-existent name returns empty list', async () => {
     const res = await client.GET('/foods/search', {
-      query: {
-        q: 'nonexistentfood',
-        page: 1,
-        per_page: 10
+      params: {
+        query: {
+          q: 'nonexistentfood'
+        }
       }
     })
 
     assert(!res.error, `Search should not return an error: ${res.error?.code}`)
-    assert(res.data?.code === 'LIST', 'Response should have LIST code')
-    assert(res.data?.data.data.length === 0, 'Should return 0 items')
-    assert(res.data?.data.meta.total === 0, 'Total should be 0')
+    assert(res.data.code === 'LIST', 'Response should have LIST code')
+    assert(res.data.data.data.length === 0, 'Should return 0 items')
+    assert(res.data.data.meta.total === 0, 'Total should be 0')
   })
 })

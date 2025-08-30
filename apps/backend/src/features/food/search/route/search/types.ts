@@ -6,7 +6,7 @@ export namespace Request {
   export const query = Pagination.schema.extend({
     q: z.string().optional()
   })
-  export type Query = types.paths['/foods/search']['get']['parameters']['query']
+  export type Query = z.infer<typeof query>
 }
 
 export namespace Response {
