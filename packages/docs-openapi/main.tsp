@@ -1933,10 +1933,15 @@ namespace Api {
   namespace Dev {
     @route("/users")
     namespace Users {
-      namespace MakeAdmin {
+      namespace UpdateRole {
         namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+
           model Body {
-            user_id: Id;
+            role: Role;
           }
         }
 
@@ -1955,9 +1960,12 @@ namespace Api {
           alias Response = Success.Success | Error.Error;
         }
 
-        @post
-        @doc("Make a user an admin (development only)")
-        op makeUserAdmin(@body body: Request.Body): Response.Response;
+        @patch(#{ implicitOptionality: false })
+        @doc("Update a user's role (development only)")
+        op updateUserRole(
+          ...Request.Path,
+          @body body: Request.Body,
+        ): Response.Response;
       }
     }
   }

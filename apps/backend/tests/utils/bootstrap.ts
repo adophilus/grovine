@@ -127,6 +127,7 @@ import {
   FoodSearchRepository,
   KyselyFoodSearchRepository
 } from '@/features/food/search/repository'
+import { UpdateUserRoleUseCase } from '@/features/dev/users/use-case'
 
 export const bootstrap = async () => {
   // Logger
@@ -298,6 +299,9 @@ export const bootstrap = async () => {
   )
   const rateChefProfileByIdUseCase = new RateChefProfileByIdUseCase(chefService)
 
+  // Dev DI
+  const updateUserRoleUseCase = new UpdateUserRoleUseCase(authUserRepository)
+
   // Food Recipe DI
   const foodRecipeRepository = new KyselyFoodRecipeRepository(
     kyselyClient,
@@ -444,6 +448,9 @@ export const bootstrap = async () => {
   Container.set(LikeChefProfileByIdUseCase, likeChefProfileByIdUseCase)
   Container.set(DislikeChefProfileByIdUseCase, dislikeChefProfileByIdUseCase)
   Container.set(RateChefProfileByIdUseCase, rateChefProfileByIdUseCase)
+
+  // Dev DI
+  Container.set(UpdateUserRoleUseCase, updateUserRoleUseCase)
 
   // Food Recipe DI
   Container.set(FoodRecipeRepository, foodRecipeRepository)

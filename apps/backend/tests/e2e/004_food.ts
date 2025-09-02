@@ -1,10 +1,16 @@
-import { assert, describe, test } from 'vitest'
+import { assert, beforeAll, afterAll, describe, test } from 'vitest'
 import { ulid } from 'ulidx'
-import { client, bodySerializer } from '../utils'
+import { client, bodySerializer, getStore } from '../utils'
 import { FoodItemRepository } from '@/features/food/item/repository'
 import { Container } from '@n8n/di'
 
 describe('food items', async () => {
+  const store = await getStore()
+
+  assert(store.state.stage === '003', 'Invalid stage')
+
+  const userId = store.state.user.id
+
   const foodItemRepository = Container.get(FoodItemRepository)
 
   const imageBase64 =
@@ -12,6 +18,36 @@ describe('food items', async () => {
   const imageBuffer = Buffer.from(imageBase64, 'base64')
   const image = new File([imageBuffer], 'test.png', { type: 'image/png' })
   let itemId: string
+
+  beforeAll(async () => {
+    const res = await client.PATCH('/dev/users/{id}', {
+      params: {
+        path: {
+          id: userId
+        }
+      },
+      body: {
+        role: 'ADMIN'
+      }
+    })
+
+    assert(!res.error, 'Request should not return an error')
+  })
+
+  // afterAll(async () => {
+  //   const res = await client.PATCH('/dev/users/{id}', {
+  //     params: {
+  //       path: {
+  //         id: userId
+  //       }
+  //     },
+  //     body: {
+  //       role: 'CHEF'
+  //     }
+  //   })
+  //
+  //   assert(!res.error, 'Request should not return an error')
+  // })
 
   test('create item', async () => {
     const res = await client.POST('/foods/items', {

@@ -142,7 +142,7 @@ import {
   FoodSearchRepository,
   KyselyFoodSearchRepository
 } from '@/features/food/search/repository'
-import MakeUserAdminUseCase from '@/features/dev/users/route/make-admin/use-case'
+import { UpdateUserRoleUseCase } from '@/features/dev/users/use-case'
 
 export const bootstrap = async () => {
   // OpenTelemetry DI
@@ -322,10 +322,7 @@ export const bootstrap = async () => {
   const rateChefProfileByIdUseCase = new RateChefProfileByIdUseCase(chefService)
 
   // Dev DI
-  const makeUserAdminUseCase = new MakeUserAdminUseCase(
-    authUserRepository,
-    logger
-  )
+  const updateUserRoleUseCase = new UpdateUserRoleUseCase(authUserRepository)
 
   // Food Recipe DI
   const foodRecipeRepository = new KyselyFoodRecipeRepository(
@@ -479,7 +476,7 @@ export const bootstrap = async () => {
   Container.set(RateChefProfileByIdUseCase, rateChefProfileByIdUseCase)
 
   // Dev DI
-  Container.set(MakeUserAdminUseCase, makeUserAdminUseCase)
+  Container.set(UpdateUserRoleUseCase, updateUserRoleUseCase)
 
   // Food Recipe DI
   Container.set(FoodRecipeRepository, foodRecipeRepository)

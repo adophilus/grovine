@@ -2,17 +2,18 @@ import { Hono } from 'hono'
 import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import MakeUserAdminUseCase from './use-case'
+import UpdateUserRoleUseCase from './use-case'
 import middleware from './middleware'
 
-const MakeAdminRoute = new Hono().post('/', middleware, async (c) => {
+const UpdateUserRoute = new Hono().patch('/:id', ...middleware, async (c) => {
   let response: Response.Response
   let statusCode: StatusCodes
 
-  const { user_id } = c.req.valid('json')
+  const { id } = c.req.valid('param')
+  const { role } = c.req.valid('json')
 
-  const useCase = Container.get(MakeUserAdminUseCase)
-  const makeAdminResult = await useCase.execute(user_id)
+  const useCase = Container.get(UpdateUserRoleUseCase)
+  const makeAdminResult = await useCase.execute({ id, role })
 
   if (makeAdminResult.isErr) {
     response = makeAdminResult.error
@@ -25,4 +26,4 @@ const MakeAdminRoute = new Hono().post('/', middleware, async (c) => {
   return c.json(response, statusCode)
 })
 
-export default MakeAdminRoute
+export default UpdateUserRoute

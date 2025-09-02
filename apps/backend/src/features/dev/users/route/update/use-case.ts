@@ -1,16 +1,19 @@
+import type { AuthUserRepository } from '@/features/auth/repository'
 import { Result } from 'true-myth'
-import type { Response } from './types'
-import { AuthUserRepository } from '@/features/auth/repository'
+import type { Response, Request } from './types'
 
-export default class MakeUserAdminUseCase {
+export default class UpdateUserRoleUseCase {
   constructor(private authUserRepository: AuthUserRepository) {}
 
   public async execute(
-    userId: string
+    payload: Request.Path & Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
-    const updateUserResult = await this.authUserRepository.updateById(userId, {
-      role: 'ADMIN'
-    })
+    const { id, ..._payload } = payload
+
+    const updateUserResult = await this.authUserRepository.updateById(
+      id,
+      _payload
+    )
 
     if (updateUserResult.isErr) {
       return Result.err({

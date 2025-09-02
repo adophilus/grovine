@@ -1,7 +1,6 @@
 import { Hono } from 'hono'
-import MakeAdminRoute from './make-admin'
+import UpdateUserRoleRoute from './update'
 
-const UsersRouter = new Hono()
-  .route('/make-admin', MakeAdminRoute)
+const UsersRouter = new Hono().route('/', UpdateUserRoleRoute)
 
 export default UsersRouter

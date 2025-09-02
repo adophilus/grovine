@@ -13,6 +13,7 @@ const storeStage001 = z.object({
     refresh_token: z.string()
   }),
   user: z.object({
+    id: z.string(),
     full_name: z.string(),
     email: z.string().email()
   })
