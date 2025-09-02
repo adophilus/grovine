@@ -82,11 +82,11 @@ describe('search food items', async () => {
     assert(!res.error, `Search should not return an error: ${res.error?.code}`)
     assert(res.data.code === 'LIST', 'Response should have LIST code')
 
-    const foundChichkenIds = res.data.data.data.filter((item) =>
+    const foundChickenIds = res.data.data.data.filter((item) =>
       chickenIds.includes(item.id)
     )
 
-    assert(foundChichkenIds.length === 2, 'Should return 2 items')
+    assert(foundChickenIds.length === 2, 'Should return 2 items')
     assert(
       res.data.data.data.some((item) => item.id === item1Id),
       'Should contain Spicy Chicken Noodles'

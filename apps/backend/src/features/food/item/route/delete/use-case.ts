@@ -1,11 +1,20 @@
 import type { Response } from './types'
 import { Result } from 'true-myth'
 import type { FoodItemRepository } from '../../repository'
+import type { User } from '@/types'
 
 class DeleteFoodItemUseCase {
-  constructor(private foodItemRepository: FoodItemRepository) {}
+  constructor(private foodItemRepository: FoodItemRepository) { }
 
-  async execute(id: string): Promise<Result<Response.Success, Response.Error>> {
+  async execute(
+    id: string,
+    user: User.Selectable,
+  ): Promise<Result<Response.Success, Response.Error>> {
+    if (user.role !== 'ADMIN') {
+      return Result.err({
+        code: 'ERR_UNAUTHORIZED'
+      })
+    }
     const findItemResult = await this.foodItemRepository.findById(id)
 
     if (findItemResult.isErr) {

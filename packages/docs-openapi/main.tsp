@@ -56,6 +56,7 @@ namespace Api {
   enum Role {
     ADMIN,
     USER,
+    CHEF,
   }
 
   @example("mary.slessor@mail.com")
@@ -578,7 +579,7 @@ namespace Api {
           }
 
           namespace Error {
-            alias Error = BadRequestError | UnexpectedError;
+            alias Error = BadRequestError | UnexpectedError | UnauthorizedError;
           }
 
           alias Response = Success.Success | Error.Error;
@@ -633,7 +634,7 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError | UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -672,7 +673,11 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError;
+              alias Error =
+                | NotFoundError<"ITEM">
+                | BadRequestError
+                | UnexpectedError
+                | UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -704,7 +709,7 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | UnexpectedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError | UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -1923,6 +1928,48 @@ namespace Api {
     }
   }
 
+  @tag("Dev")
+  @route("/dev")
+  namespace Dev {
+    @route("/users")
+    namespace Users {
+      namespace UpdateRole {
+        namespace Request {
+          model Path {
+            @path
+            id: Id;
+          }
+
+          model Body {
+            role: Role;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "USER_ROLE_UPDATED";
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"USER"> | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @patch(#{ implicitOptionality: false })
+        @doc("Update a user's role (development only)")
+        op updateUserRole(
+          ...Request.Path,
+          @body body: Request.Body,
+        ): Response.Response;
+      }
+    }
+  }
+
   model Media {
     @example("h93suhw7mzyujf9tbugy")
     public_id: string;
@@ -1959,3 +2006,4 @@ namespace Api {
     }
   }
 }
+
