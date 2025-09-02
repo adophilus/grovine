@@ -13,6 +13,7 @@ import WalletRouter from '@/features/wallet/route'
 import PaymentRouter from '@/features/payment/route'
 import FoodRouter from '@/features/food/route'
 import ChefRoute from '@/features/chef/route'
+import DevRouter from '@/features/dev/route'
 
 class HonoApp implements App {
   constructor(private logger: Logger) {}
@@ -26,6 +27,7 @@ class HonoApp implements App {
       .route('/wallets', WalletRouter)
       .route('/payment', PaymentRouter)
       .route('/chefs', ChefRoute)
+      .route('/dev', DevRouter)
 
     return (
       new Hono()

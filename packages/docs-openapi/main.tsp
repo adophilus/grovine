@@ -56,6 +56,7 @@ namespace Api {
   enum Role {
     ADMIN,
     USER,
+    CHEF,
   }
 
   @example("mary.slessor@mail.com")
@@ -633,7 +634,7 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | UnexpectedError| UnauthorizedError;
+              alias Error = NotFoundError<"ITEM"> | UnexpectedError | UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -672,7 +673,11 @@ namespace Api {
             }
 
             namespace Error {
-              alias Error = NotFoundError<"ITEM"> | BadRequestError | UnexpectedError| UnauthorizedError;
+              alias Error =
+                | NotFoundError<"ITEM">
+                | BadRequestError
+                | UnexpectedError
+                | UnauthorizedError;
             }
 
             alias Response = Success.Success | Error.Error;
@@ -1923,6 +1928,40 @@ namespace Api {
     }
   }
 
+  @tag("Dev")
+  @route("/dev")
+  namespace Dev {
+    @route("/users")
+    namespace Users {
+      namespace MakeAdmin {
+        namespace Request {
+          model Body {
+            user_id: Id;
+          }
+        }
+
+        namespace Response {
+          namespace Success {
+            model Success {
+              @statusCode _code: 200;
+              code: "USER_ROLE_UPDATED";
+            }
+          }
+
+          namespace Error {
+            alias Error = NotFoundError<"USER"> | BadRequestError | UnexpectedError;
+          }
+
+          alias Response = Success.Success | Error.Error;
+        }
+
+        @post
+        @doc("Make a user an admin (development only)")
+        op makeUserAdmin(@body body: Request.Body): Response.Response;
+      }
+    }
+  }
+
   model Media {
     @example("h93suhw7mzyujf9tbugy")
     public_id: string;
@@ -1959,3 +1998,4 @@ namespace Api {
     }
   }
 }
+
