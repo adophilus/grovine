@@ -1,12 +1,9 @@
-import { assert, describe, test } from 'vitest'
+import { assert, beforeAll, describe, test } from 'vitest'
 import { ulid } from 'ulidx'
-import { client, getStore, logger } from '../utils'
+import { bodySerializer, client, getStore } from '../utils'
 import { faker } from '@faker-js/faker'
-import { Container } from '@n8n/di'
-import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
 
 describe('cart', async () => {
-  const createFoodItemUseCase = Container.get(CreateFoodItemUseCase)
   const store = await getStore()
 
   const imageBase64 =
@@ -16,24 +13,30 @@ describe('cart', async () => {
 
   assert(store.state.stage === '003', 'Should be in stage 003')
 
-  const res = await createFoodItemUseCase.execute({
-    price: 1000,
-    video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    image,
-    name: faker.commerce.productName()
-  })
+  let itemId: string
 
-  assert(res.isOk, 'Should create food item successfully')
+  beforeAll(async () => {
+    const res = await client.POST('/foods/items', {
+      body: {
+        price: 1000,
+        video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        image,
+        name: faker.commerce.productName()
+      },
+      bodySerializer
+    })
 
-  const item = res.value
+    assert(!res.error, 'Should create food item successfully')
 
-  const itemId = item.data.id
+    const item = res.data.data
+    itemId = item.id
 
-  await store.setStage('004', {
-    ...store.state,
-    item: {
-      id: itemId
-    }
+    await store.setStage('004', {
+      ...store.state,
+      item: {
+        id: itemId
+      }
+    })
   })
 
   test('set item in cart', async () => {

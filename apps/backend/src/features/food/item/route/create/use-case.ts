@@ -9,18 +9,19 @@ import type { User } from '@/types'
 class CreateFoodItemUseCase {
   constructor(
     private foodItemRepository: FoodItemRepository,
-    private storage: StorageService,
+    private storage: StorageService
   ) {}
 
   async execute(
     payload: Request.Body,
-    user: User.Selectable,
+    user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
-    if (user.role !== 'ADMIN'){
+    if (user.role !== 'ADMIN') {
       return Result.err({
         code: 'ERR_UNAUTHORIZED'
       })
     }
+
     const { image, ..._payload } = payload
 
     const uploadImageResult = await this.storage.upload(image)
