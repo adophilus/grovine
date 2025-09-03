@@ -109,7 +109,12 @@ type AdvertsTable = TimestampModel & {
   id: string
   media: Media
   expires_at: string
-  created_at: string
+  title: string | null
+  description: string | null
+  target_url: string | null
+  is_active: boolean
+  priority: number
+  deleted_at: string | null
 }
 
 type OrderItemTable = TimestampModel & {

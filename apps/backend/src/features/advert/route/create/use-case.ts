@@ -13,7 +13,7 @@ class CreateAdvertUseCase {
   async execute(
     payload: Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
-    const { image, ..._payload } = payload
+    const { image, title, description, target_url, is_active, priority, ..._payload } = payload
     const uploadImageResult = await this.storage.upload(image)
 
     if (uploadImageResult.isErr) {
@@ -26,7 +26,12 @@ class CreateAdvertUseCase {
     const createAdvertResult = await this.advertRepository.create({
       ..._payload,
       media: uploadedImage,
-      id: ulid()
+      id: ulid(),
+      title: title ?? null,
+      description: description ?? null,
+      target_url: target_url ?? null,
+      is_active: is_active ?? true,
+      priority: priority ?? 0
     })
 
     if (createAdvertResult.isErr) {
