@@ -50,4 +50,4 @@ The main structure of this monorepo is as follows
 
 ### Deployment guide
 
-The deployment is managed on a self-hosted VPS using dokploy. The github repo url has already been configured on the dokploy so it can just work without manually trigger a deployment. Whenever a pull-request is made/created, a preview deployment is created and whenever it is merged to main, a deployment is triggered automatically on the server. The mode of deployment on the server is docker. A docker image is created and deployed on the server.
+The deployment is managed on a self-hosted VPS using dokploy. The GitHub repo URL has already been configured on the dokploy so it can just work without manually triggering a deployment. Whenever a pull-request is made/created, a preview deployment is created and whenever it is merged to main, a deployment is triggered automatically on the server. The mode of deployment on the server is docker. A docker image is created and deployed on the server.
