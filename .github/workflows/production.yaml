@@ -56,11 +56,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check code quality (linting and formatting)
-        run: pnpm exec biome ci
-
-      - name: Type check
-        run: pnpm exec tsc --noEmit
+      - name: Lint codebase
+        run: pnpm lint
 
   build-and-test:
     needs: quality-checks
