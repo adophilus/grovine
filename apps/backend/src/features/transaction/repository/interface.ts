@@ -1,6 +1,6 @@
-import type { Transaction } from '@/types'
 import type { Result } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
+import type { Transaction } from '@/types'
 
 export type TransactionRepositoryError = 'ERR_UNEXPECTED'
 

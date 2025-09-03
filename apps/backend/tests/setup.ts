@@ -1,9 +1,9 @@
-import { createKyselyMigrator } from '@/features/database/kysely/migrator'
-import { bootstrap, initTestCache } from './utils'
 import { Container } from '@n8n/di'
-import { KyselyClient } from '@/features/database/kysely'
-import { Logger } from '@/features/logger'
 import { NO_MIGRATIONS } from 'kysely'
+import { KyselyClient } from '@/features/database/kysely'
+import { createKyselyMigrator } from '@/features/database/kysely/migrator'
+import { Logger } from '@/features/logger'
+import { bootstrap, initTestCache } from './utils'
 
 await bootstrap()
 

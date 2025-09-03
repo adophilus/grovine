@@ -1,10 +1,10 @@
-import AuthMiddleware from '@/features/auth/middleware'
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import CreateChefUseCase from './use-case'
+import { Hono } from 'hono'
+import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
+import type { Response } from './types'
+import CreateChefUseCase from './use-case'
 
 const CreateChefRoute = new Hono().post(
   '/',

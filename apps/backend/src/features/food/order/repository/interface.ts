@@ -1,6 +1,6 @@
-import type { Order, OrderItem } from '@/types'
 import type { Result } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
+import type { Order, OrderItem } from '@/types'
 
 export type OrderRepositoryError = 'ERR_UNEXPECTED'
 

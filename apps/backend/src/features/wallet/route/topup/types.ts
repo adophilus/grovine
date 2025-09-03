@@ -1,5 +1,5 @@
-import type { z } from 'zod'
 import { schema as apiSchema, type types } from '@grovine/api'
+import type { z } from 'zod'
 
 export namespace Request {
   export const body = apiSchema.schemas.Api_Wallet_Topup_Request_Body

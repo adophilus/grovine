@@ -1,4 +1,4 @@
-import RecipeService from './interface'
 import RecipeServiceImpl from './implementation'
+import RecipeService from './interface'
 
 export { RecipeService, RecipeServiceImpl }

@@ -1,8 +1,8 @@
+import { Container } from '@n8n/di'
 import { Hono } from 'hono'
 import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
 import type { Response } from './types'
-import { Container } from '@n8n/di'
 import ResendSignInVerificationEmailUseCase from './use-case'
 
 const ResendSignInVerificationEmailRoute = new Hono().post(

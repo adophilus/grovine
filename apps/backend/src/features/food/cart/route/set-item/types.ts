@@ -1,6 +1,6 @@
 import type { types } from '@grovine/api'
-import type { z } from 'zod'
 import { schema as apiSchema } from '@grovine/api'
+import type { z } from 'zod'
 
 export namespace Request {
   export const body = apiSchema.schemas.Api_Food_Cart_SetItem_Request_Body

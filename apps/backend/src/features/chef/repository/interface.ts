@@ -1,6 +1,6 @@
 import type { Result } from 'true-myth'
-import type { Chef } from '@/types'
 import type { Pagination } from '@/features/pagination'
+import type { Chef } from '@/types'
 
 export type ChefRepositoryError = 'ERR_UNEXPECTED'
 

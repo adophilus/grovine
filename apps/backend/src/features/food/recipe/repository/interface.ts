@@ -1,6 +1,6 @@
+import type { Result, Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
 import type { FoodRecipe } from '@/types'
-import type { Result, Unit } from 'true-myth'
 
 export type FoodRecipeRepositoryError = 'ERR_UNEXPECTED'
 

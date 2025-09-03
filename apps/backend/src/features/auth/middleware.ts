@@ -1,10 +1,10 @@
-import type { MiddlewareHandler } from 'hono'
-import type { User } from '@/types'
-import { StatusCodes } from '@/features/http'
 import type { types } from '@grovine/api'
+import { Container } from '@n8n/di'
+import type { MiddlewareHandler } from 'hono'
+import { StatusCodes } from '@/features/http'
+import type { User } from '@/types'
 import { AuthUserRepository } from './repository'
 import { verifyToken } from './utils/token'
-import { Container } from '@n8n/di'
 
 export type Response =
   | types.components['schemas']['Api.UnauthorizedError']

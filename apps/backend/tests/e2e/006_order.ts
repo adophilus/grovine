@@ -1,4 +1,4 @@
-import { describe, test, beforeAll, assert } from 'vitest'
+import { assert, beforeAll, describe, test } from 'vitest'
 import { client, getStore } from '../utils'
 
 describe('order', async () => {

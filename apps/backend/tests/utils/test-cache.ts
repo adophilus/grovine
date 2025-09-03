@@ -1,6 +1,6 @@
-import { Kysely, sql, SqliteDialect } from 'kysely'
-import SQLite from 'better-sqlite3'
 import path from 'node:path'
+import SQLite from 'better-sqlite3'
+import { Kysely, SqliteDialect, sql } from 'kysely'
 import type { TStoreState } from './store'
 
 const CACHE_DB_PATH = path.join(process.cwd(), '.test-cache.db')

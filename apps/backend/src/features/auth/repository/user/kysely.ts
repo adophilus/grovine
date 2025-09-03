@@ -1,15 +1,15 @@
-import type { User } from '@/types'
 import { Result } from 'true-myth'
-import type { AuthUserRepositoryError } from './interface'
-import type AuthUserRepository from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
+import type { User } from '@/types'
+import type AuthUserRepository from './interface'
+import type { AuthUserRepositoryError } from './interface'
 
 class KyselyAuthUserRepository implements AuthUserRepository {
   constructor(
     private client: KyselyClient,
     private logger: Logger
-  ) { }
+  ) {}
 
   public async create(
     payload: User.Insertable

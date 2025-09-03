@@ -1,7 +1,7 @@
 import type {
-  CreateWalletTopupInvoiceMetadataPayload,
-  CreateOrderInvoiceMetadataPayload,
   CreateInvoicePayload,
+  CreateOrderInvoiceMetadataPayload,
+  CreateWalletTopupInvoiceMetadataPayload,
   Metadata
 } from './types'
 

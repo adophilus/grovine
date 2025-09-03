@@ -1,12 +1,12 @@
-import { describe, test, assert } from 'vitest'
 import { faker } from '@faker-js/faker'
+import { Container } from '@n8n/di'
+import { assert, describe, test } from 'vitest'
 import {
   AuthTokenRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
 import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import { getStore, sleep, client, setTokens } from '../utils'
-import { Container } from '@n8n/di'
+import { client, getStore, setTokens, sleep } from '../utils'
 
 describe('auth', async () => {
   const authUserRepository = Container.get(AuthUserRepository)

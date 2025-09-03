@@ -1,8 +1,8 @@
-import type { Request, Response } from './types'
+import { Service } from '@n8n/di'
 import { Result } from 'true-myth'
 import type { StorageService, UploadedData } from '@/features/storage/service'
 import type { AdvertRepository } from '../../repository'
-import { Service } from '@n8n/di'
+import type { Request, Response } from './types'
 
 @Service()
 class UpdateAdvertUseCase {
@@ -25,7 +25,15 @@ class UpdateAdvertUseCase {
       return Result.err({ code: 'ERR_ADVERTISEMENT_NOT_FOUND' })
     }
 
-    const { image, title, description, target_url, is_active, priority, ..._payload } = payload
+    const {
+      image,
+      title,
+      description,
+      target_url,
+      is_active,
+      priority,
+      ..._payload
+    } = payload
 
     let updatedImage: UploadedData | undefined
 
@@ -48,23 +56,23 @@ class UpdateAdvertUseCase {
     if (updatedImage) {
       updatePayload.media = updatedImage
     }
-    
+
     if (title !== undefined) {
       updatePayload.title = title
     }
-    
+
     if (description !== undefined) {
       updatePayload.description = description
     }
-    
+
     if (target_url !== undefined) {
       updatePayload.target_url = target_url
     }
-    
+
     if (is_active !== undefined) {
       updatePayload.is_active = is_active
     }
-    
+
     if (priority !== undefined) {
       updatePayload.priority = priority
     }

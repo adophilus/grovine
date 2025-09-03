@@ -1,8 +1,8 @@
+import { Result } from 'true-myth'
 import { Pagination } from '@/features/pagination'
 import type { TransactionRepository } from '../../repository'
 import { serializeTransaction } from '../../utils'
 import type { Request, Response } from './types'
-import { Result } from 'true-myth'
 
 class ListTransactionsUseCase {
   constructor(private repository: TransactionRepository) {}

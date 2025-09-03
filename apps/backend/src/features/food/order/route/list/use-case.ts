@@ -1,9 +1,9 @@
-import type { User } from '@/types'
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import { serializeOrderWithItems } from '../../utils'
-import type { OrderRepository } from '../../repository'
 import { Pagination } from '@/features/pagination'
+import type { User } from '@/types'
+import type { OrderRepository } from '../../repository'
+import { serializeOrderWithItems } from '../../utils'
+import type { Request, Response } from './types'
 
 class ListOrdersUseCase {
   constructor(private orderRepository: OrderRepository) {}

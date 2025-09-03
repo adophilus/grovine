@@ -1,8 +1,8 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
+import { Pagination } from '@/features/pagination'
 import type { ChefRepository } from '../../repository'
 import { serializeChef } from '../../utils'
-import { Pagination } from '@/features/pagination'
+import type { Request, Response } from './types'
 
 class ListChefUseCase {
   constructor(private chefRepository: ChefRepository) {}

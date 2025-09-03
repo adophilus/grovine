@@ -1,9 +1,8 @@
-import { defineConfig } from 'kysely-ctl'
-import { TablePrefixPlugin, IndexPrefixPlugin } from 'kysely-plugin-prefix'
-import { config } from './src/features/config'
 import { PostgresDialect } from 'kysely'
-
+import { defineConfig } from 'kysely-ctl'
+import { IndexPrefixPlugin, TablePrefixPlugin } from 'kysely-plugin-prefix'
 import pg from 'pg'
+import { config } from './src/features/config'
 
 const { Pool } = pg
 

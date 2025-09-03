@@ -1,8 +1,8 @@
-import type { FoodItem } from '@/types'
 import { Result } from 'true-myth'
-import { Pagination } from '@/features/pagination'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
+import { Pagination } from '@/features/pagination'
+import type { FoodItem } from '@/types'
 
 export interface SearchOptions extends Pagination.Schema {
   q?: string

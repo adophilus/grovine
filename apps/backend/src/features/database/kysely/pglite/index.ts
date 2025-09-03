@@ -1,6 +1,6 @@
-import { config } from '@/features/config'
-import { TablePrefixPlugin, IndexPrefixPlugin } from 'kysely-plugin-prefix'
 import { KyselyPGlite } from 'kysely-pglite'
+import { IndexPrefixPlugin, TablePrefixPlugin } from 'kysely-plugin-prefix'
+import { config } from '@/features/config'
 import { KyselyClient } from '../interface'
 
 export const createKyselyPgLiteClient = async (): Promise<KyselyClient> => {

@@ -1,9 +1,9 @@
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import GetActiveChefProfileUseCase from './use-case'
+import { Hono } from 'hono'
 import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
+import type { Response } from './types'
+import GetActiveChefProfileUseCase from './use-case'
 
 const GetActiveChefProfileRoute = new Hono().get(
   '/',

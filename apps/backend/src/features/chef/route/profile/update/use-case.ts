@@ -1,9 +1,9 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefRepository } from '../../../repository'
+import { serializeChef } from '@/features/chef/utils'
 import type { StorageService, UploadedData } from '@/features/storage/service'
 import type { User } from '@/types'
-import { serializeChef } from '@/features/chef/utils'
+import type { ChefRepository } from '../../../repository'
+import type { Request, Response } from './types'
 
 class UpdateActiveChefProfileUseCase {
   constructor(

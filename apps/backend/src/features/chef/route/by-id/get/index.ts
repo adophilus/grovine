@@ -1,8 +1,8 @@
-import middleware from './middleware'
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
+import { Hono } from 'hono'
+import { StatusCodes } from '@/features/http'
+import middleware from './middleware'
+import type { Response } from './types'
 import GetChefUseCase from './use-case'
 
 const GetChefProfileByIdRoute = new Hono().get('/', middleware, async (c) => {

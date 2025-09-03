@@ -1,7 +1,7 @@
-import { assert, describe, test, beforeAll, afterAll } from 'vitest'
-import { client, bodySerializer } from '../utils'
-import { FoodItemRepository } from '@/features/food/item/repository'
 import { Container } from '@n8n/di'
+import { afterAll, assert, beforeAll, describe, test } from 'vitest'
+import { FoodItemRepository } from '@/features/food/item/repository'
+import { bodySerializer, client } from '../utils'
 
 describe('search food items', async () => {
   const foodItemRepository = Container.get(FoodItemRepository)

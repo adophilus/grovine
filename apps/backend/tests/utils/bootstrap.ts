@@ -1,33 +1,126 @@
 import 'reflect-metadata'
 
 import { Container } from '@n8n/di'
-import { KyselyClient } from '@/features/database/kysely'
-import { AdvertRepository } from '@/features/advert/repository'
-import { KyselyAdvertRepository } from '@/features/advert/repository'
+import {
+  AdvertRepository,
+  KyselyAdvertRepository
+} from '@/features/advert/repository'
 import {
   CreateAdvertUseCase,
   DeleteAdvertUseCase,
   ListAdvertUseCase,
   UpdateAdvertUseCase
 } from '@/features/advert/use-case'
-import { Logger } from '@/features/logger'
 import { HonoApp } from '@/features/app'
-import { config } from '@/features/config'
 import {
-  KyselyAuthTokenRepository,
   AuthTokenRepository,
-  KyselyAuthUserRepository,
-  AuthUserRepository
+  AuthUserRepository,
+  KyselyAuthTokenRepository,
+  KyselyAuthUserRepository
 } from '@/features/auth/repository'
 import {
-  SendSignInVerificationEmailUseCase,
+  GetUserProfileUseCase,
   ResendSignInVerificationEmailUseCase,
-  VerifySignInVerificationEmailUseCase,
-  SendSignUpVerificationEmailUseCase,
   ResendSignUpVerificationEmailUseCase,
-  VerifySignUpVerificationEmailUseCase,
-  GetUserProfileUseCase
+  SendSignInVerificationEmailUseCase,
+  SendSignUpVerificationEmailUseCase,
+  VerifySignInVerificationEmailUseCase,
+  VerifySignUpVerificationEmailUseCase
 } from '@/features/auth/use-case'
+import {
+  ChefRepository,
+  ChefUserLikeRepository,
+  ChefUserRatingRepository,
+  KyselyChefRepository,
+  KyselyChefUserLikeRepository,
+  KyselyChefUserRatingRepository
+} from '@/features/chef/repository'
+import { ChefService, ChefServiceImpl } from '@/features/chef/service'
+import {
+  CreateChefUseCase,
+  DislikeChefProfileByIdUseCase,
+  GetActiveChefProfileUseCase,
+  GetChefUseCase,
+  LikeChefProfileByIdUseCase,
+  ListChefUseCase,
+  RateChefProfileByIdUseCase,
+  UpdateActiveChefProfileUseCase
+} from '@/features/chef/use-case'
+import { config } from '@/features/config'
+import { KyselyClient } from '@/features/database/kysely'
+import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
+import { UpdateUserRoleUseCase } from '@/features/dev/users/use-case'
+import {
+  FoodCartKyselyRepository,
+  FoodCartRepository
+} from '@/features/food/cart/repository'
+import {
+  CartSetItemUseCase,
+  CheckoutCartUseCase,
+  GetCartUseCase
+} from '@/features/food/cart/use-case'
+import {
+  FoodItemKyselyRepository,
+  FoodItemRepository
+} from '@/features/food/item/repository'
+import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
+import DeleteFoodItemUseCase from '@/features/food/item/route/delete/use-case'
+import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
+import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
+import UpdateFoodItemUseCase from '@/features/food/item/route/update/use-case'
+import {
+  OrderKyselyRepository,
+  OrderRepository
+} from '@/features/food/order/repository'
+import {
+  GetOrderUseCase,
+  ListOrdersUseCase,
+  UpdateOrderStatusUseCase
+} from '@/features/food/order/use-case'
+import {
+  FoodRecipeRepository,
+  KyselyFoodRecipeRepository,
+  KyselyRecipeUserLikeRepository,
+  KyselyRecipeUserRatingRepository,
+  RecipeUserLikeRepository,
+  RecipeUserRatingRepository
+} from '@/features/food/recipe/repository'
+import CreateFoodRecipeUseCase from '@/features/food/recipe/route/create/use-case'
+import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-case'
+import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
+import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
+import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
+import {
+  RecipeService,
+  RecipeServiceImpl
+} from '@/features/food/recipe/service'
+import {
+  DislikeRecipeByIdUseCase,
+  LikeRecipeByIdUseCase,
+  RateRecipeByIdUseCase
+} from '@/features/food/recipe/use-case'
+import {
+  FoodSearchRepository,
+  KyselyFoodSearchRepository
+} from '@/features/food/search/repository'
+import SearchFoodItemsUseCase from '@/features/food/search/route/search/use-case'
+import { Logger } from '@/features/logger'
+import { Mailer, MockMailer } from '@/features/mailer'
+import { MockPaymentService, PaymentService } from '@/features/payment/service'
+import { WebhookUseCase } from '@/features/payment/use-case'
+import {
+  KyselyReferralRepository,
+  ReferralRepository
+} from '@/features/referral/repository'
+import { MockStorageService, StorageService } from '@/features/storage/service'
+import {
+  TransactionKyselyRepository,
+  TransactionRepository
+} from '@/features/transaction/repository'
+import {
+  GetTransactionUseCase,
+  ListTransactionsUseCase
+} from '@/features/transaction/use-case'
 import {
   WalletKyselyRepository,
   WalletRepository
@@ -37,97 +130,6 @@ import {
   TopupWalletUseCase,
   WithdrawWalletUseCase
 } from '@/features/wallet/use-case'
-import { Mailer, MockMailer } from '@/features/mailer'
-import { PaymentService, MockPaymentService } from '@/features/payment/service'
-import {
-  FoodItemRepository,
-  FoodItemKyselyRepository
-} from '@/features/food/item/repository'
-import UpdateFoodItemUseCase from '@/features/food/item/route/update/use-case'
-import DeleteFoodItemUseCase from '@/features/food/item/route/delete/use-case'
-import {
-  OrderRepository,
-  OrderKyselyRepository
-} from '@/features/food/order/repository'
-import {
-  ListOrdersUseCase,
-  GetOrderUseCase,
-  UpdateOrderStatusUseCase
-} from '@/features/food/order/use-case'
-import {
-  TransactionRepository,
-  TransactionKyselyRepository
-} from '@/features/transaction/repository'
-import {
-  ListTransactionsUseCase,
-  GetTransactionUseCase
-} from '@/features/transaction/use-case'
-import { StorageService, MockStorageService } from '@/features/storage/service'
-import {
-  FoodCartRepository,
-  FoodCartKyselyRepository
-} from '@/features/food/cart/repository'
-import {
-  CartSetItemUseCase,
-  GetCartUseCase,
-  CheckoutCartUseCase
-} from '@/features/food/cart/use-case'
-import { WebhookUseCase } from '@/features/payment/use-case'
-import CreateFoodItemUseCase from '@/features/food/item/route/create/use-case'
-import GetFoodItemUseCase from '@/features/food/item/route/get/use-case'
-import ListFoodItemsUseCase from '@/features/food/item/route/list/use-case'
-import SearchFoodItemsUseCase from '@/features/food/search/route/search/use-case'
-import { createKyselyPgLiteClient } from '@/features/database/kysely/pglite'
-import {
-  ChefRepository,
-  KyselyChefRepository,
-  ChefUserLikeRepository,
-  KyselyChefUserLikeRepository,
-  ChefUserRatingRepository,
-  KyselyChefUserRatingRepository
-} from '@/features/chef/repository'
-import { ChefService, ChefServiceImpl } from '@/features/chef/service'
-import {
-  CreateChefUseCase,
-  GetActiveChefProfileUseCase,
-  GetChefUseCase,
-  ListChefUseCase,
-  UpdateActiveChefProfileUseCase,
-  LikeChefProfileByIdUseCase,
-  DislikeChefProfileByIdUseCase,
-  RateChefProfileByIdUseCase
-} from '@/features/chef/use-case'
-import {
-  ReferralRepository,
-  KyselyReferralRepository
-} from '@/features/referral/repository'
-import {
-  FoodRecipeRepository,
-  KyselyFoodRecipeRepository,
-  RecipeUserLikeRepository,
-  KyselyRecipeUserLikeRepository,
-  RecipeUserRatingRepository,
-  KyselyRecipeUserRatingRepository
-} from '@/features/food/recipe/repository'
-import CreateFoodRecipeUseCase from '@/features/food/recipe/route/create/use-case'
-import DeleteFoodRecipeUseCase from '@/features/food/recipe/route/delete/use-case'
-import GetFoodRecipeUseCase from '@/features/food/recipe/route/get/use-case'
-import ListFoodRecipeUseCase from '@/features/food/recipe/route/list/use-case'
-import UpdateFoodRecipeUseCase from '@/features/food/recipe/route/update/use-case'
-import {
-  DislikeRecipeByIdUseCase,
-  LikeRecipeByIdUseCase,
-  RateRecipeByIdUseCase
-} from '@/features/food/recipe/use-case'
-import {
-  RecipeService,
-  RecipeServiceImpl
-} from '@/features/food/recipe/service'
-import {
-  FoodSearchRepository,
-  KyselyFoodSearchRepository
-} from '@/features/food/search/repository'
-import { UpdateUserRoleUseCase } from '@/features/dev/users/use-case'
 
 export const bootstrap = async () => {
   // Logger

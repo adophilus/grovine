@@ -1,11 +1,11 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { User } from '@/types'
 import { ulid } from 'ulidx'
-import type FoodCartRepository from '../../repository/interface'
 import type { OrderRepository } from '@/features/food/order/repository'
 import type { PaymentService } from '@/features/payment/service'
 import { createOrderInvoicePayload } from '@/features/payment/utils'
+import type { User } from '@/types'
+import type FoodCartRepository from '../../repository/interface'
+import type { Request, Response } from './types'
 
 class CheckoutCartUseCase {
   constructor(

@@ -1,5 +1,5 @@
-import { z } from 'zod'
 import _ from 'lodash'
+import { z } from 'zod'
 
 namespace Pagination {
   export const fields = ['page', 'per_page'] as const

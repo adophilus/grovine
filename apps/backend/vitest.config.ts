@@ -1,10 +1,10 @@
+import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
 import {
   BaseSequencer,
-  TestSpecification,
+  type TestSpecification,
   type Vitest as VitestFromVitestNode
 } from 'vitest/node'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tsconfigPaths()],

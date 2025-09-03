@@ -1,8 +1,8 @@
-import type { User } from '@/types'
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import { ulid } from 'ulidx'
+import type { User } from '@/types'
 import type { OnboardingRepository } from '../../repository/interface'
+import type { Request, Response } from './types'
 
 type Payload = Request.Body
 

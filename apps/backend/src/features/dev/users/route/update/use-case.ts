@@ -1,6 +1,6 @@
-import type { AuthUserRepository } from '@/features/auth/repository'
 import { Result } from 'true-myth'
-import type { Response, Request } from './types'
+import type { AuthUserRepository } from '@/features/auth/repository'
+import type { Request, Response } from './types'
 
 export default class UpdateUserRoleUseCase {
   constructor(private authUserRepository: AuthUserRepository) {}

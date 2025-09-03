@@ -1,9 +1,9 @@
+import { parseUrl, type UrlScheme } from '@grovine/media-server'
 import { Result, type Unit } from 'true-myth'
+import z from 'zod'
+import { StatusCodes } from '@/features/http'
 import type StorageService from './interface'
 import type { StorageServiceError, UploadedData } from './interface'
-import { parseUrl, type UrlScheme } from '@grovine/media-server'
-import { StatusCodes } from '@/features/http'
-import z from 'zod'
 
 class CloudinaryStorageService implements StorageService {
   private declare urlScheme: UrlScheme

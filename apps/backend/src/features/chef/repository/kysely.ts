@@ -1,10 +1,10 @@
-import type ChefRepository from './interface'
-import type { ChefRepositoryError } from './interface'
 import { Result } from 'true-myth'
 import type { KyselyClient } from '@/features/database/kysely'
-import type { Chef } from '@/types'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
+import type { Chef } from '@/types'
+import type ChefRepository from './interface'
+import type { ChefRepositoryError } from './interface'
 
 class KyselyChefRepository implements ChefRepository {
   constructor(

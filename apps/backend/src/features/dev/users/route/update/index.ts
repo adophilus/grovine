@@ -1,9 +1,9 @@
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import UpdateUserRoleUseCase from './use-case'
+import { Hono } from 'hono'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
+import type { Response } from './types'
+import UpdateUserRoleUseCase from './use-case'
 
 const UpdateUserRoute = new Hono().patch('/:id', ...middleware, async (c) => {
   let response: Response.Response

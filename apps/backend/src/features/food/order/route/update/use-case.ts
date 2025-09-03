@@ -1,6 +1,6 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import type { OrderRepository } from '../../repository'
+import type { Request, Response } from './types'
 
 type Payload = Request.Body & Request.Path
 

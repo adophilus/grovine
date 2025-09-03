@@ -1,10 +1,10 @@
-import AuthMiddleware from '@/features/auth/middleware'
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import DislikeChefProfileByIdUseCase from './use-case'
+import { Hono } from 'hono'
+import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
+import type { Response } from './types'
+import DislikeChefProfileByIdUseCase from './use-case'
 
 const DislikeChefProfileByIdRoute = new Hono().put(
   '/',

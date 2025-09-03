@@ -1,10 +1,10 @@
-import { Result } from 'true-myth'
-import type { Request, Response } from './types'
-import type { User } from '@/types'
-import { PaymentService } from '@/features/payment/service'
 import assert from 'node:assert'
-import type { WalletRepository } from '../../repository'
+import { Result } from 'true-myth'
+import type { PaymentService } from '@/features/payment/service'
 import { createWalletTopupInvoicePayload } from '@/features/payment/utils'
+import type { User } from '@/types'
+import type { WalletRepository } from '../../repository'
+import type { Request, Response } from './types'
 
 class TopupWalletUseCase {
   constructor(

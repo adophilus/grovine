@@ -1,6 +1,5 @@
-
-import { z } from 'zod'
 import type { types } from '@grovine/api'
+import { z } from 'zod'
 
 export namespace Request {
   export const path = z.object({

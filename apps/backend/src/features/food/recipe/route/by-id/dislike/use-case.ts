@@ -1,7 +1,7 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { RecipeService } from '../../../service'
 import type { User } from '@/types'
+import type { RecipeService } from '../../../service'
+import type { Request, Response } from './types'
 
 class DislikeRecipeByIdUseCase {
   constructor(private recipeService: RecipeService) {}

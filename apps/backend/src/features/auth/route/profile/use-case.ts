@@ -1,6 +1,6 @@
+import { Result } from 'true-myth'
 import type { User } from '@/types'
 import type { Response } from './types'
-import { Result } from 'true-myth'
 
 class GetUserProfileUseCase {
   async execute(

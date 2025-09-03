@@ -1,8 +1,8 @@
+import { Container } from '@n8n/di'
 import { Hono } from 'hono'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
 import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
-import { Container } from '@n8n/di'
 import UpdateAdvertUseCase from './use-case'
 
 export const UpdateAdvertRoute = new Hono().patch(

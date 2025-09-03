@@ -1,7 +1,7 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefService } from '../../../service'
 import type { User } from '@/types'
+import type { ChefService } from '../../../service'
+import type { Request, Response } from './types'
 
 class RateChefProfileByIdUseCase {
   constructor(private chefService: ChefService) {}

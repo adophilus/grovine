@@ -1,5 +1,5 @@
-import { Pagination } from '@/features/pagination'
 import type { types } from '@grovine/api'
+import { Pagination } from '@/features/pagination'
 
 export namespace Request {
   export const query = Pagination.schema

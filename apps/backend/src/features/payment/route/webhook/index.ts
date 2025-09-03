@@ -1,6 +1,6 @@
+import { Container } from '@n8n/di'
 import { Hono } from 'hono'
 import { StatusCodes } from '@/features/http'
-import { Container } from '@n8n/di'
 import WebhookUseCase from './use-case'
 
 const WebhookRoute = new Hono().post('/', async (c) => {

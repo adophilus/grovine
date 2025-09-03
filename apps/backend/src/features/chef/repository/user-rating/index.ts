@@ -1,4 +1,3 @@
-
 import ChefUserRatingRepository from './interface'
 import KyselyChefUserRatingRepository from './kysely'
 

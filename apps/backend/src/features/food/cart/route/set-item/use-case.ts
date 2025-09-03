@@ -1,7 +1,7 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type FoodCartRepository from '../../repository/interface'
 import type { User } from '@/types'
+import type FoodCartRepository from '../../repository/interface'
+import type { Request, Response } from './types'
 
 class CartSetItemUseCase {
   constructor(private cartRepository: FoodCartRepository) {}

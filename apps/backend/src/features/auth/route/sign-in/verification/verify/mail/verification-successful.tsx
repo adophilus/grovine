@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Body,
   Container,
@@ -10,6 +9,7 @@ import {
   Section,
   Text
 } from 'jsx-email'
+import React from 'react'
 import { config } from '@/features/config'
 import type { User } from '@/types'
 

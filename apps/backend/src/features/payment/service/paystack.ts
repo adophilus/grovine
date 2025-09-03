@@ -1,12 +1,12 @@
-import { Paystack } from 'paystack-sdk'
 import crypto from 'node:crypto'
+import { Paystack } from 'paystack-sdk'
 import { Result, type Unit } from 'true-myth'
-import { type CreateInvoicePayload, Webhook } from '../types'
 import { config } from '@/features/config'
-import type PaymentService from './interface'
-import type { PaymentServiceError } from './interface'
 import type { Logger } from '@/features/logger'
 import type { WalletRepository } from '@/features/wallet/repository'
+import { type CreateInvoicePayload, Webhook } from '../types'
+import type PaymentService from './interface'
+import type { PaymentServiceError } from './interface'
 
 class PaystackPaymentService implements PaymentService {
   private declare client: Paystack

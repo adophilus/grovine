@@ -1,8 +1,8 @@
-import type { Response, Request } from './types'
 import { Result } from 'true-myth'
+import { Pagination } from '@/features/pagination'
 import type { FoodSearchRepository } from '../../repository'
 import { serializeItem } from '../../utils'
-import { Pagination } from '@/features/pagination'
+import type { Request, Response } from './types'
 
 class SearchFoodItemsUseCase {
   constructor(private searchRepository: FoodSearchRepository) {}

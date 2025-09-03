@@ -1,5 +1,5 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
+import type { Request, Response } from './types'
 
 class WithdrawWalletUseCase {
   public async execute(

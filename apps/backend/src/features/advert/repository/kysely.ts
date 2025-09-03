@@ -1,10 +1,10 @@
-import type { Adverts } from '@/types'
 import { Result, type Unit } from 'true-myth'
-import { Pagination } from '@/features/pagination'
-import type AdvertRepository from './interface'
-import type { AdvertRepositoryError } from './interface'
 import type { KyselyClient } from '@/features/database/kysely/interface'
 import type { Logger } from '@/features/logger'
+import { Pagination } from '@/features/pagination'
+import type { Adverts } from '@/types'
+import type AdvertRepository from './interface'
+import type { AdvertRepositoryError } from './interface'
 
 class KyselyAdvertRepository implements AdvertRepository {
   constructor(
@@ -50,17 +50,17 @@ class KyselyAdvertRepository implements AdvertRepository {
   ): Promise<Result<Adverts.Selectable, AdvertRepositoryError>> {
     try {
       // Separate media from other fields since it needs special handling
-      const { media, ...otherFields } = payload;
-      
+      const { media, ...otherFields } = payload
+
       // Prepare update object
       const updateFields: Record<string, any> = {
         ...otherFields,
         updated_at: new Date().toISOString()
-      };
-      
+      }
+
       // If media is provided, include it in the update
       if (media !== undefined) {
-        updateFields.media = media;
+        updateFields.media = media
       }
 
       const advert = await this.client

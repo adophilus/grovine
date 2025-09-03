@@ -1,5 +1,5 @@
+import type { Result } from 'true-myth'
 import type { Wallet } from '@/types'
-import { Result } from 'true-myth'
 
 export type WalletRepositoryError = 'ERR_UNEXPECTED'
 

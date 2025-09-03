@@ -1,6 +1,6 @@
-import { Pagination } from '@/features/pagination'
 import type { types } from '@grovine/api'
 import type z from 'zod'
+import { Pagination } from '@/features/pagination'
 
 export namespace Request {
   export const query = Pagination.schema

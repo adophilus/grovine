@@ -1,12 +1,12 @@
+import AuthConfig from './auth'
 import DatabaseConfig from './database'
 import EnvironmentConfig from './environment'
 import MailConfig from './mail'
-import ServerConfig from './server'
-import UploadConfig from './upload'
-import StorageConfig from './storage'
-import AuthConfig from './auth'
-import PaymentConfig from './payment'
 import OtelConfig from './otel'
+import PaymentConfig from './payment'
+import ServerConfig from './server'
+import StorageConfig from './storage'
+import UploadConfig from './upload'
 
 export default {
   auth: AuthConfig,

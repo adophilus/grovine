@@ -1,6 +1,6 @@
-import { Migrator, FileMigrationProvider } from 'kysely'
 import { promises as fs } from 'node:fs'
 import * as path from 'node:path'
+import { FileMigrationProvider, Migrator } from 'kysely'
 import type { KyselyClient } from './interface'
 
 export const createKyselyMigrator = (

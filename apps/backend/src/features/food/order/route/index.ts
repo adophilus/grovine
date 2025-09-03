@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
-import ListOrdersRoute from './list'
 import GetOrderRoute from './get'
+import ListOrdersRoute from './list'
 import UpdateOrderStatusRoute from './update'
 
 const FoodOrderRouter = new Hono()

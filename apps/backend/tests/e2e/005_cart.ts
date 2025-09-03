@@ -1,7 +1,7 @@
-import { assert, beforeAll, describe, test } from 'vitest'
-import { ulid } from 'ulidx'
-import { bodySerializer, client, getStore } from '../utils'
 import { faker } from '@faker-js/faker'
+import { ulid } from 'ulidx'
+import { assert, beforeAll, describe, test } from 'vitest'
+import { bodySerializer, client, getStore } from '../utils'
 
 describe('cart', async () => {
   const store = await getStore()

@@ -1,8 +1,8 @@
-import openapiTS, { astToString } from 'openapi-typescript'
-import openapiSchema from '@grovine/docs-openapi/openapi.yaml?raw'
 import { writeFile } from 'node:fs/promises'
-import { generateZodClientFromOpenAPI } from 'openapi-zod-client'
 import SwaggerParser from '@apidevtools/swagger-parser'
+import openapiSchema from '@grovine/docs-openapi/openapi.yaml?raw'
+import openapiTS, { astToString } from 'openapi-typescript'
+import { generateZodClientFromOpenAPI } from 'openapi-zod-client'
 import type { oas30 } from 'openapi3-ts'
 import ts from 'typescript'
 
@@ -38,7 +38,7 @@ await generateZodClientFromOpenAPI({
   options: {
     withAlias: false,
     shouldExportAllSchemas: true,
-    withDocs: true,
+    withDocs: true
     // additionalPropertiesDefaultValue: false
   }
 })

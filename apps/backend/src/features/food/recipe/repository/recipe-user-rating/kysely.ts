@@ -1,11 +1,11 @@
-import { KyselyClient } from '@/features/database/kysely'
-import type RecipeUserRatingRepository from './interface'
-import type { RecipeRepositoryError } from './interface'
 import { Result, type Unit } from 'true-myth'
-import type { RecipeUserRating } from '@/types'
+import { ulid } from 'ulidx'
+import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
-import { ulid } from 'ulidx'
+import type { RecipeUserRating } from '@/types'
+import type RecipeUserRatingRepository from './interface'
+import type { RecipeRepositoryError } from './interface'
 
 class KyselyRecipeUserRatingRepository implements RecipeUserRatingRepository {
   constructor(
@@ -73,7 +73,10 @@ class KyselyRecipeUserRatingRepository implements RecipeUserRatingRepository {
     userId: string,
     options: Pagination.Options
   ): Promise<
-    Result<Pagination.Paginated<RecipeUserRating.Selectable>, RecipeRepositoryError>
+    Result<
+      Pagination.Paginated<RecipeUserRating.Selectable>,
+      RecipeRepositoryError
+    >
   > {
     try {
       const query = this.db
@@ -98,7 +101,10 @@ class KyselyRecipeUserRatingRepository implements RecipeUserRatingRepository {
 
       return Result.ok(paginatedItems)
     } catch (error) {
-      this.logger.error('Error finding many recipe user ratings by userId', error)
+      this.logger.error(
+        'Error finding many recipe user ratings by userId',
+        error
+      )
       return Result.err('ERR_UNEXPECTED')
     }
   }
@@ -160,7 +166,12 @@ class KyselyRecipeUserRatingRepository implements RecipeUserRatingRepository {
       } else {
         await this.db
           .insertInto('recipe_user_ratings')
-          .values({ id: ulid(), recipe_id: recipeId, user_id: userId, rating: rating })
+          .values({
+            id: ulid(),
+            recipe_id: recipeId,
+            user_id: userId,
+            rating: rating
+          })
           .execute()
       }
 

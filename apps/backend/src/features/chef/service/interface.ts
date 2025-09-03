@@ -1,4 +1,3 @@
-
 import type { Result, Unit } from 'true-myth'
 
 export type ChefServiceError = 'ERR_UNEXPECTED' | 'ERR_CHEF_PROFILE_NOT_FOUND'

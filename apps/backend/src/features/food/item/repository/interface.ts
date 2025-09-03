@@ -1,6 +1,6 @@
-import type { FoodItem } from '@/types'
 import type { Result, Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
+import type { FoodItem } from '@/types'
 
 export type FoodItemRepositoryError = 'ERR_UNEXPECTED'
 
