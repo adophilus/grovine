@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "tsx --watch server.ts",
     "build": "tsc",
-    "lint": "pnpm build && biome lint ."
+    "lint": "biome lint . && tsc"
   },
   "keywords": [],
   "author": "",
