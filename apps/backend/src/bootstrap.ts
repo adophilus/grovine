@@ -301,15 +301,13 @@ export const bootstrap = async () => {
   const chefService = new ChefServiceImpl(
     chefRepository,
     chefUserLikeRepository,
-    chefUserRatingRepository,
-    logger
+    chefUserRatingRepository
   )
   const createChefUseCase = new CreateChefUseCase(chefRepository)
   const getChefUseCase = new GetChefUseCase(chefRepository)
   const listChefUseCase = new ListChefUseCase(chefRepository)
   const getActiveChefProfileUseCase = new GetActiveChefProfileUseCase(
-    chefRepository,
-    logger
+    chefRepository
   )
   const updateActiveChefProfileUseCase = new UpdateActiveChefProfileUseCase(
     chefRepository,
@@ -340,8 +338,7 @@ export const bootstrap = async () => {
   const recipeService = new RecipeServiceImpl(
     foodRecipeRepository,
     recipeUserLikeRepository,
-    recipeUserRatingRepository,
-    logger
+    recipeUserRatingRepository
   )
   const createFoodRecipeUseCase = new CreateFoodRecipeUseCase(
     foodRecipeRepository,
