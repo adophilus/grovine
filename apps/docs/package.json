@@ -9,8 +9,7 @@
     "lint": "tsc",
     "dev": "vitepress dev docs",
     "build": "./scripts/build.sh",
-    "preview": "vitepress preview docs",
-    "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN"
+    "preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@grovine/docs-openapi": "workspace:^",

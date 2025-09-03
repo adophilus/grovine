@@ -25,7 +25,7 @@ class UpdateAdvertUseCase {
       return Result.err({ code: 'ERR_ADVERTISEMENT_NOT_FOUND' })
     }
 
-    const { image, ..._payload } = payload
+    const { image, title, description, target_url, is_active, priority, ..._payload } = payload
 
     let updatedImage: UploadedData | undefined
 
@@ -41,9 +41,32 @@ class UpdateAdvertUseCase {
       updatedImage = uploadImageResult.value
     }
 
-    const updatePayload = {
-      ..._payload,
-      image: updatedImage
+    const updatePayload: Record<string, any> = {
+      ..._payload
+    }
+
+    if (updatedImage) {
+      updatePayload.media = updatedImage
+    }
+    
+    if (title !== undefined) {
+      updatePayload.title = title
+    }
+    
+    if (description !== undefined) {
+      updatePayload.description = description
+    }
+    
+    if (target_url !== undefined) {
+      updatePayload.target_url = target_url
+    }
+    
+    if (is_active !== undefined) {
+      updatePayload.is_active = is_active
+    }
+    
+    if (priority !== undefined) {
+      updatePayload.priority = priority
     }
 
     const updateAdvertResult = await this.advertRepository.updateById(

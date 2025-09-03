@@ -1349,7 +1349,14 @@ namespace Api {
       id: Id;
       media: Media;
       expires_at: DateTime;
+      title: string | null;
+      description: string | null;
+      target_url: string | null;
+      is_active: boolean;
+      priority: integer;
       created_at: DateTime;
+      updated_at: DateTime | null;
+      deleted_at: DateTime | null;
     }
 
     namespace Create {
@@ -1362,6 +1369,11 @@ namespace Api {
         model Body {
           expires_at: HttpPart<DateTime>;
           image: HttpPart<ImageFile>;
+          title?: HttpPart<string>;
+          description?: HttpPart<string>;
+          target_url?: HttpPart<string>;
+          is_active?: HttpPart<boolean>;
+          priority?: HttpPart<integer>;
         }
       }
 
@@ -1429,6 +1441,11 @@ namespace Api {
         model Body {
           expires_at?: HttpPart<DateTime>;
           image?: HttpPart<ImageFile>;
+          title?: HttpPart<string>;
+          description?: HttpPart<string>;
+          target_url?: HttpPart<string>;
+          is_active?: HttpPart<boolean>;
+          priority?: HttpPart<integer>;
         }
       }
 

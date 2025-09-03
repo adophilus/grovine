@@ -2,7 +2,7 @@ import type { Adverts } from '@/types'
 import type { Result, Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
 
-export type AdvertRepositoryError = 'ERR_UNEXPECTED'
+export type AdvertRepositoryError = 'ERR_UNEXPECTED' | 'ERR_ADVERTISEMENT_NOT_FOUND'
 
 abstract class AdvertRepository {
   abstract create(
