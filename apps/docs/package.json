@@ -6,7 +6,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "lint": "biome lint . && tsc",
+    "lint": "pnpm build && biome lint .",
     "dev": "vitepress dev docs",
     "build": "./scripts/build.sh",
     "preview": "vitepress preview docs"

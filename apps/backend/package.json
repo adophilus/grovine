@@ -6,7 +6,7 @@
     "start": "tsx ./scripts/dev.ts",
     "dev": "tsx watch ./scripts/dev.ts",
     "build": "tsc && tsx ./scripts/build.ts",
-    "lint": "biome lint . && tsc",
+    "lint": "pnpm build && biome lint .",
     "test": "./scripts/test.sh",
     "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
     "db": "kysely"

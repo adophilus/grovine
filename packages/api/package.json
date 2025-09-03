@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "bun --watch ./scripts/typegen.ts",
     "build": "bun ./scripts/typegen.ts && tsc",
-    "lint": "biome lint . && tsc"
+    "lint": "pnpm build && biome lint ."
   },
   "dependencies": {
     "@grovine/docs-openapi": "workspace:^",
