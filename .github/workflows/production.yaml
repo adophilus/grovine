@@ -1,12 +1,13 @@
-name: production
+name: Production
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  quality-checks:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,6 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       - name: Load docs secrets
         uses: Infisical/secrets-action@v1.0.9
@@ -52,10 +54,78 @@ jobs:
           export-type: env
 
       - name: Install dependencies
-        run: NODE_ENV=development pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm exec biome ci .
+
+      - name: Lint code
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+
+  build-and-test:
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - name: Checkout current repo state
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Load docs secrets
+        uses: Infisical/secrets-action@v1.0.9
+        with:
+          method: universal
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          domain: ${{ secrets.INFISICAL_DOMAIN }}
+          env-slug: production
+          project-slug: grovine-docs
+          export-type: env
+
+      - name: Load backend secrets
+        uses: Infisical/secrets-action@v1.0.9
+        with:
+          method: universal
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+          domain: ${{ secrets.INFISICAL_DOMAIN }}
+          env-slug: production
+          project-slug: grovine-backend
+          export-type: env
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build stack
         run: pnpm build
 
       - name: Test stack
         run: pnpm test
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: |
+            apps/backend/build/
+            apps/docs/docs/.vitepress/dist/
+          if-no-files-found: error
