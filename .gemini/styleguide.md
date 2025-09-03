@@ -47,3 +47,7 @@ The main structure of this monorepo is as follows
   But to be honest, most of the time it's preferred you run the script at the root of the project (if it's a command that other packages have). For example: Rather run `pnpm --filter @grovine/backend build` it's much preferred if you run `pnpm build`. The reason being that since this workspace uses nx, if there's other dependent packages that also need their build phase to be run, it'll be run in order.
 
 - To perform database related tasks like creating a new migration, you can make use of the `db` script available in the backend package. E.g: `pnpm --filter @grovine/backend db migrate:make create_referrals_table` would create a new migration in the migrations folder in the backend package for creating referrals table.
+
+### Deployment guide
+
+The deployment is managed on a self-hosted VPS using dokploy. The GitHub repo URL has already been configured on the dokploy so it can just work without manually triggering a deployment. Whenever a pull-request is made/created, a preview deployment is created and whenever it is merged to main, a deployment is triggered automatically on the server. The mode of deployment on the server is docker. A docker image is created and deployed on the server.

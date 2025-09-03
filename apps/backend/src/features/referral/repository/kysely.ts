@@ -1,9 +1,9 @@
-import type ReferralRepository from './interface'
-import type { ReferralRepositoryError } from './interface'
 import { Result } from 'true-myth'
 import type { KyselyClient } from '@/features/database/kysely'
-import type { Referral } from '@/types'
 import type { Logger } from '@/features/logger'
+import type { Referral } from '@/types'
+import type ReferralRepository from './interface'
+import type { ReferralRepositoryError } from './interface'
 
 class KyselyReferralRepository implements ReferralRepository {
   constructor(

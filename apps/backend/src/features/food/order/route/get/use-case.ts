@@ -1,7 +1,7 @@
 import { Result } from 'true-myth'
-import type { Request, Response } from './types'
-import { serializeOrderWithItems } from '../../utils'
 import type { OrderRepository } from '../../repository'
+import { serializeOrderWithItems } from '../../utils'
+import type { Request, Response } from './types'
 
 class GetOrderUseCase {
   constructor(private orderRepository: OrderRepository) {}

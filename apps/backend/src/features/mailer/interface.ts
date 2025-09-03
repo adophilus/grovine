@@ -1,4 +1,4 @@
-import { Result, type Unit } from 'true-myth'
+import type { Result, Unit } from 'true-myth'
 
 export type MailerError = 'ERR_MAIL_NOT_SENT'
 

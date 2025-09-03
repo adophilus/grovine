@@ -1,10 +1,10 @@
+import { Container } from '@n8n/di'
 import { Hono } from 'hono'
-import type { Response } from './types'
+import AuthMiddleware from '@/features/auth/middleware'
 import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
-import { Container } from '@n8n/di'
+import type { Response } from './types'
 import SetUserPreferencesUseCase from './use-case'
-import AuthMiddleware from '@/features/auth/middleware'
 
 const SetUserPreferencesRoute = new Hono().post(
   '/',

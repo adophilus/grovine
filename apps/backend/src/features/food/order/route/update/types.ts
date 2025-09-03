@@ -1,6 +1,6 @@
 import type { types } from '@grovine/api'
-import { z } from 'zod'
 import { schema as apiSchema } from '@grovine/api'
+import { z } from 'zod'
 
 export namespace Request {
   export const body =

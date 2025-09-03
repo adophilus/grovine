@@ -1,10 +1,10 @@
-import middleware from './middleware'
-import { StatusCodes } from '@/features/http'
-import { Hono } from 'hono'
-import type { Response } from './types'
 import { Container } from '@n8n/di'
-import UpdateRecipeUseCase from './use-case'
+import { Hono } from 'hono'
 import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
+import middleware from './middleware'
+import type { Response } from './types'
+import UpdateRecipeUseCase from './use-case'
 
 const UpdateFoodRecipeRoute = new Hono().patch(
   '/:id',

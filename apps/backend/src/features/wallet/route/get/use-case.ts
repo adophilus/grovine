@@ -1,7 +1,7 @@
-import type { Response } from './types'
 import { Result } from 'true-myth'
 import type { User } from '@/types'
 import type { WalletRepository } from '../../repository'
+import type { Response } from './types'
 
 class GetWalletUseCase {
   constructor(private walletRepository: WalletRepository) {}

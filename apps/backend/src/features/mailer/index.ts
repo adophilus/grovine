@@ -1,5 +1,5 @@
 import Mailer from './interface'
-import NodemailerMailer from './nodemailer'
 import MockMailer from './mock'
+import NodemailerMailer from './nodemailer'
 
 export { Mailer, NodemailerMailer, MockMailer }

@@ -1,7 +1,7 @@
-import { FoodItemRepository } from '../../repository'
-import type { Response } from './types'
 import { Result } from 'true-myth'
+import type { FoodItemRepository } from '../../repository'
 import { serializeItem } from '../../utils'
+import type { Response } from './types'
 
 class GetFoodItemUseCase {
   constructor(private foodItemRepository: FoodItemRepository) {}

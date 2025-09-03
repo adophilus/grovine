@@ -6,9 +6,8 @@
     "start": "tsx ./scripts/dev.ts",
     "dev": "tsx watch ./scripts/dev.ts",
     "build": "tsc && tsx ./scripts/build.ts",
-    "lint": "tsc",
+    "lint": "biome lint . && tsc",
     "test": "./scripts/test.sh",
-    "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
     "db": "kysely"
   },
   "exports": {
@@ -59,6 +58,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.15.4",
     "@types/react": "^18.3.23",
+    "@vitest/coverage-v8": "3.2.4",
     "better-sqlite3": "^11.10.0",
     "effect": "^3.16.5",
     "json-form-data": "^1.7.2",

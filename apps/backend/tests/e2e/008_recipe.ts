@@ -1,6 +1,6 @@
-import { describe, test, assert } from 'vitest'
-import { client, getStore, bodySerializer } from '../utils/index.js'
 import { faker } from '@faker-js/faker'
+import { assert, describe, test } from 'vitest'
+import { bodySerializer, client, getStore } from '../utils/index.js'
 
 const mockRecipeDetails = () => ({
   title: faker.lorem.words(3),

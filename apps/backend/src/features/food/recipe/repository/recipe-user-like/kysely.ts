@@ -1,11 +1,11 @@
-import { KyselyClient } from '@/features/database/kysely'
-import type RecipeUserLikeRepository from './interface'
-import type { RecipeRepositoryError } from './interface'
 import { Result, type Unit } from 'true-myth'
-import type { RecipeUserLike } from '@/types'
+import { ulid } from 'ulidx'
+import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
 import { Pagination } from '@/features/pagination'
-import { ulid } from 'ulidx'
+import type { RecipeUserLike } from '@/types'
+import type RecipeUserLikeRepository from './interface'
+import type { RecipeRepositoryError } from './interface'
 
 class KyselyRecipeUserLikeRepository implements RecipeUserLikeRepository {
   constructor(
@@ -73,7 +73,10 @@ class KyselyRecipeUserLikeRepository implements RecipeUserLikeRepository {
     userId: string,
     options: Pagination.Options
   ): Promise<
-    Result<Pagination.Paginated<RecipeUserLike.Selectable>, RecipeRepositoryError>
+    Result<
+      Pagination.Paginated<RecipeUserLike.Selectable>,
+      RecipeRepositoryError
+    >
   > {
     try {
       const query = this.db
@@ -159,7 +162,13 @@ class KyselyRecipeUserLikeRepository implements RecipeUserLikeRepository {
       } else {
         await this.db
           .insertInto('recipe_user_likes')
-          .values({ id: ulid(), recipe_id: recipeId, user_id: userId, is_liked: true, is_disliked: false })
+          .values({
+            id: ulid(),
+            recipe_id: recipeId,
+            user_id: userId,
+            is_liked: true,
+            is_disliked: false
+          })
           .execute()
       }
 
@@ -191,7 +200,13 @@ class KyselyRecipeUserLikeRepository implements RecipeUserLikeRepository {
       } else {
         await this.db
           .insertInto('recipe_user_likes')
-          .values({ id: ulid(), recipe_id: recipeId, user_id: userId, is_disliked: true, is_liked: false })
+          .values({
+            id: ulid(),
+            recipe_id: recipeId,
+            user_id: userId,
+            is_disliked: true,
+            is_liked: false
+          })
           .execute()
       }
 

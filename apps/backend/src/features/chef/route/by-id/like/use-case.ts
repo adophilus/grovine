@@ -1,7 +1,7 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import type { ChefService } from '../../../service'
 import type { User } from '@/types'
+import type { ChefService } from '../../../service'
+import type { Request, Response } from './types'
 
 class LikeChefProfileByIdUseCase {
   constructor(private chefService: ChefService) {}
@@ -10,10 +10,7 @@ class LikeChefProfileByIdUseCase {
     payload: Request.Path,
     user: User.Selectable
   ): Promise<Result<Response.Success, Response.Error>> {
-    const result = await this.chefService.handleLikeToggle(
-      payload.id,
-      user.id
-    )
+    const result = await this.chefService.handleLikeToggle(payload.id, user.id)
 
     if (result.isErr) {
       return Result.err({

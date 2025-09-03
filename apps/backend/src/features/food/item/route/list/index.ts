@@ -1,8 +1,8 @@
+import { Container } from '@n8n/di'
 import { Hono } from 'hono'
-import type { Response } from './types'
 import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
-import { Container } from '@n8n/di'
+import type { Response } from './types'
 import ListFoodItemsUseCase from './use-case'
 
 const ListFoodItemsRoute = new Hono().get('/', middleware, async (c) => {

@@ -1,8 +1,8 @@
-import type { Wallet } from '@/types'
-import { Result } from 'true-myth'
 import { sql } from 'kysely'
-import type { Logger } from '@/features/logger'
+import { Result } from 'true-myth'
 import type { KyselyClient } from '@/features/database/kysely'
+import type { Logger } from '@/features/logger'
+import type { Wallet } from '@/types'
 import type WalletRepository from './interface'
 import type { WalletRepositoryError } from './interface'
 

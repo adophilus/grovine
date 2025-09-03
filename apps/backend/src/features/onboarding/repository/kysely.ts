@@ -1,7 +1,7 @@
-import type { UserPreference } from '@/types'
 import { Result } from 'true-myth'
-import type { Logger } from '@/features/logger'
 import type { KyselyClient } from '@/features/database/kysely'
+import type { Logger } from '@/features/logger'
+import type { UserPreference } from '@/types'
 import type {
   OnboardingRepository,
   OnboardingRepositoryError

@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/build"],
       "cache": true
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": true
     }
   }
 }

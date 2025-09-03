@@ -1,5 +1,5 @@
-import { z } from 'zod'
 import { schema as apiSchema, type types } from '@grovine/api'
+import { z } from 'zod'
 
 const formDataJsonArraySchema = z.union([
   z.string().transform((val, ctx) => {
@@ -9,7 +9,7 @@ const formDataJsonArraySchema = z.union([
         return [parsed]
       }
       return parsed
-    } catch (err) {
+    } catch (_err) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Invalid JSON string'

@@ -1,6 +1,6 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
 import type { FoodRecipeRepository } from '../../repository'
+import type { Request, Response } from './types'
 
 class GetFoodRecipeUseCase {
   constructor(private readonly recipeRepository: FoodRecipeRepository) {}

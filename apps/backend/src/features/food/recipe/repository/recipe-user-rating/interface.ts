@@ -1,6 +1,6 @@
+import type { Result, Unit } from 'true-myth'
 import type { Pagination } from '@/features/pagination'
 import type { RecipeUserRating } from '@/types'
-import type { Result, Unit } from 'true-myth'
 
 export type RecipeRepositoryError = 'ERR_UNEXPECTED'
 
@@ -22,7 +22,10 @@ abstract class RecipeUserRatingRepository {
     userId: string,
     options: Pagination.Options
   ): Promise<
-    Result<Pagination.Paginated<RecipeUserRating.Selectable>, RecipeRepositoryError>
+    Result<
+      Pagination.Paginated<RecipeUserRating.Selectable>,
+      RecipeRepositoryError
+    >
   >
 
   public abstract updateById(

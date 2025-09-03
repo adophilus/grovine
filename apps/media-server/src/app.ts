@@ -1,8 +1,8 @@
-import { Hono } from 'hono'
 import { serveStatic } from '@hono/node-server/serve-static'
-import router from './router'
-import { logger } from 'hono/logger'
+import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { logger } from 'hono/logger'
+import router from './router'
 
 export const app = new Hono()
   .use(logger())

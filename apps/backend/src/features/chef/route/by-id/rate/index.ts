@@ -1,10 +1,10 @@
-import AuthMiddleware from '@/features/auth/middleware'
-import { Hono } from 'hono'
-import type { Request, Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import RateChefProfileByIdUseCase from './use-case'
+import { Hono } from 'hono'
+import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
+import type { Request, Response } from './types'
+import RateChefProfileByIdUseCase from './use-case'
 
 const RateChefProfileByIdRoute = new Hono().put(
   '/',

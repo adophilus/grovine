@@ -1,14 +1,14 @@
-import { Result } from 'true-myth'
-import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import type { Request, Response } from './types'
-import { Mailer } from '@/features/mailer'
-import VerificationSuccessful from './mail/verification-successful'
 import { compareAsc } from 'date-fns'
-import { generateTokens } from '@/features/auth/utils/token'
-import {
+import { Result } from 'true-myth'
+import type {
   AuthTokenRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
+import { generateTokens } from '@/features/auth/utils/token'
+import type { Mailer } from '@/features/mailer'
+import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
+import VerificationSuccessful from './mail/verification-successful'
+import type { Request, Response } from './types'
 
 class VerifySignUpVerificationEmailUseCase {
   constructor(
@@ -78,7 +78,7 @@ class VerifySignUpVerificationEmailUseCase {
     await this.mailer.send({
       recipients: [user.email],
       subject: 'Verification Successful',
-      email: VerificationSuccessful({ user })
+      email: VerificationSuccessful()
     })
 
     const tokens = await generateTokens(user)

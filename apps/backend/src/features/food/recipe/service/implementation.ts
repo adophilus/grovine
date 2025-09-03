@@ -1,17 +1,15 @@
-import type RecipeService from './interface'
-import type { RecipeServiceError } from './interface'
 import { Result, Unit } from 'true-myth'
 import type { FoodRecipeRepository } from '../repository'
 import type { RecipeUserLikeRepository } from '../repository/recipe-user-like'
 import type { RecipeUserRatingRepository } from '../repository/recipe-user-rating'
-import type { Logger } from '@/features/logger'
+import type RecipeService from './interface'
+import type { RecipeServiceError } from './interface'
 
 class RecipeServiceImpl implements RecipeService {
   constructor(
     private recipeRepository: FoodRecipeRepository,
     private recipeUserLikeRepository: RecipeUserLikeRepository,
-    private recipeUserRatingRepository: RecipeUserRatingRepository,
-    private logger: Logger
+    private recipeUserRatingRepository: RecipeUserRatingRepository
   ) {}
 
   public async handleLikeToggle(

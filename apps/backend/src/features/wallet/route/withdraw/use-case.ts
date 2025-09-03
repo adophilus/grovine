@@ -1,9 +1,9 @@
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
+import type { Request, Response } from './types'
 
 class WithdrawWalletUseCase {
   public async execute(
-    payload: Request.Body
+    _payload: Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
     // TODO: more logic is required here
 

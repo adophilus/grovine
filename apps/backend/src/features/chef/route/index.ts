@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
+import ChefByIdRouter from './by-id'
 import CreateChefRoute from './create'
 import ListChefRoute from './list'
 import ChefProfileRoute from './profile'
-import ChefByIdRouter from './by-id'
 
 const ChefRouter = new Hono()
   .route('/', CreateChefRoute)

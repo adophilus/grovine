@@ -11,7 +11,7 @@ const formDataJsonArraySchema = z
         return [parsed]
       }
       return parsed
-    } catch (err) {
+    } catch (_err) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Invalid JSON string'

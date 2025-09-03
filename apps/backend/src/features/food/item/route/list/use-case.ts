@@ -1,8 +1,8 @@
-import { FoodItemRepository } from '../../repository'
-import type { Request, Response } from './types'
 import { Result } from 'true-myth'
-import { serializeItem } from '../../utils'
 import { Pagination } from '@/features/pagination'
+import type { FoodItemRepository } from '../../repository'
+import { serializeItem } from '../../utils'
+import type { Request, Response } from './types'
 
 class ListFoodItemsUseCase {
   constructor(private foodItemRepository: FoodItemRepository) {}

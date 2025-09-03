@@ -1,18 +1,15 @@
-
-import type ChefService from './interface'
-import type { ChefServiceError } from './interface'
 import { Result, Unit } from 'true-myth'
 import type { ChefRepository } from '../repository'
 import type { ChefUserLikeRepository } from '../repository/user-like'
 import type { ChefUserRatingRepository } from '../repository/user-rating'
-import type { Logger } from '@/features/logger'
+import type ChefService from './interface'
+import type { ChefServiceError } from './interface'
 
 class ChefServiceImpl implements ChefService {
   constructor(
     private chefRepository: ChefRepository,
     private chefUserLikeRepository: ChefUserLikeRepository,
-    private chefUserRatingRepository: ChefUserRatingRepository,
-    private logger: Logger
+    private chefUserRatingRepository: ChefUserRatingRepository
   ) {}
 
   public async handleLikeToggle(
@@ -36,15 +33,20 @@ class ChefServiceImpl implements ChefService {
     }
 
     // Update cached likes count
-    const likesCount = await this.chefUserLikeRepository.countLikesByChefId(chefId)
+    const likesCount =
+      await this.chefUserLikeRepository.countLikesByChefId(chefId)
     if (likesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    const dislikesCount = await this.chefUserLikeRepository.countDislikesByChefId(chefId)
+    const dislikesCount =
+      await this.chefUserLikeRepository.countDislikesByChefId(chefId)
     if (dislikesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    await this.chefRepository.updateById(chefId, { likes: likesCount.value, dislikes: dislikesCount.value })
+    await this.chefRepository.updateById(chefId, {
+      likes: likesCount.value,
+      dislikes: dislikesCount.value
+    })
 
     return Result.ok(Unit)
   }
@@ -70,15 +72,20 @@ class ChefServiceImpl implements ChefService {
     }
 
     // Update cached likes count
-    const likesCount = await this.chefUserLikeRepository.countLikesByChefId(chefId)
+    const likesCount =
+      await this.chefUserLikeRepository.countLikesByChefId(chefId)
     if (likesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    const dislikesCount = await this.chefUserLikeRepository.countDislikesByChefId(chefId)
+    const dislikesCount =
+      await this.chefUserLikeRepository.countDislikesByChefId(chefId)
     if (dislikesCount.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    await this.chefRepository.updateById(chefId, { likes: likesCount.value, dislikes: dislikesCount.value })
+    await this.chefRepository.updateById(chefId, {
+      likes: likesCount.value,
+      dislikes: dislikesCount.value
+    })
 
     return Result.ok(Unit)
   }
@@ -106,11 +113,14 @@ class ChefServiceImpl implements ChefService {
     }
 
     // Update cached average rating
-    const averageRating = await this.chefUserRatingRepository.getAverageRatingByChefId(chefId)
+    const averageRating =
+      await this.chefUserRatingRepository.getAverageRatingByChefId(chefId)
     if (averageRating.isErr) {
       return Result.err('ERR_UNEXPECTED')
     }
-    await this.chefRepository.updateById(chefId, { rating: averageRating.value })
+    await this.chefRepository.updateById(chefId, {
+      rating: averageRating.value
+    })
 
     return Result.ok(Unit)
   }

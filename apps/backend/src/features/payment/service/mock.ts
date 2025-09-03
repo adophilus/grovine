@@ -1,10 +1,10 @@
-import { Result, type Unit } from 'true-myth'
-import { Webhook, type CreateInvoicePayload } from '../types'
-import type { PaymentServiceError } from './interface'
-import type PaymentService from './interface'
-import type { WalletRepository } from '@/features/wallet/repository'
-import { decodeBase64UrlString, encodeBase64Url } from 'effect/Encoding'
 import { Either } from 'effect'
+import { decodeBase64UrlString, encodeBase64Url } from 'effect/Encoding'
+import { Result, type Unit } from 'true-myth'
+import type { WalletRepository } from '@/features/wallet/repository'
+import { type CreateInvoicePayload, Webhook } from '../types'
+import type PaymentService from './interface'
+import type { PaymentServiceError } from './interface'
 
 class MockPaymentService implements PaymentService {
   constructor(private walletRepository: WalletRepository) {}
@@ -51,7 +51,7 @@ class MockPaymentService implements PaymentService {
     try {
       const payload = JSON.parse(payloadString)
       event = Webhook.Events.all.parse(payload)
-    } catch (err) {
+    } catch (_err) {
       return Result.err()
     }
 

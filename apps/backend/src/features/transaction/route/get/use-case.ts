@@ -1,7 +1,7 @@
+import { Result } from 'true-myth'
 import type { TransactionRepository } from '../../repository'
 import { serializeTransaction } from '../../utils'
 import type { Response } from './types'
-import { Result } from 'true-myth'
 
 class GetTransactionUseCase {
   constructor(private repository: TransactionRepository) {}

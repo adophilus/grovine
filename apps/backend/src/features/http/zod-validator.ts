@@ -1,8 +1,7 @@
-import type { Env, ValidationTargets, Input, MiddlewareHandler } from 'hono'
-import type { ZodSchema } from 'zod'
-import type { z } from 'zod'
-import { type Hook, zValidator as zValidatorHono } from '@hono/zod-validator'
 import type { types } from '@grovine/api'
+import { type Hook, zValidator as zValidatorHono } from '@hono/zod-validator'
+import type { Env, Input, MiddlewareHandler, ValidationTargets } from 'hono'
+import type { ZodSchema, z } from 'zod'
 import { StatusCodes } from './status-codes'
 
 type HasUndefined<T> = undefined extends T ? true : false
@@ -34,11 +33,10 @@ export function zValidator<
 >(
   target: Target,
   schema: T,
-  hook?: Hook<z.TypeOf<T>, E, P, Target, {}> | undefined
+  hook?: Hook<z.TypeOf<T>, E, P, Target, Record<string, unknown>> | undefined
 ): MiddlewareHandler<E, P, V>
 
 export function zValidator(target: unknown, schema: unknown) {
-  // biome-ignore lint/suspicious/noExplicitAny: too complex for me
   return zValidatorHono(target as any, schema as any, (result, c) => {
     let response: types.components['schemas']['Api.BadRequestError']
 

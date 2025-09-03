@@ -1,11 +1,11 @@
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
-import middleware from './middleware'
-import AuthMiddleware from '@/features/auth/middleware'
 import { Container } from '@n8n/di'
-import ListOrdersUseCase from './use-case'
+import { Hono } from 'hono'
+import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
 import type { User } from '@/types'
+import middleware from './middleware'
+import type { Response } from './types'
+import ListOrdersUseCase from './use-case'
 
 const ListOrdersRoute = new Hono().get(
   '/',

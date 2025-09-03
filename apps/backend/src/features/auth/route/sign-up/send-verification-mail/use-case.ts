@@ -1,18 +1,18 @@
-import { Result } from 'true-myth'
-import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import type { Mailer } from '@/features/mailer'
-import SignUpVerificationMail from './mail/sign-up-verification'
-import { ulid } from 'ulidx'
-import { config } from '@/features/config'
 import { addSeconds } from 'date-fns'
-import type { Request, Response } from './types'
-import { generateToken } from '@/features/auth/utils/token'
-import type { WalletRepository } from '@/features/wallet/repository'
+import { Result } from 'true-myth'
+import { ulid } from 'ulidx'
 import type {
   AuthTokenRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
+import { generateToken } from '@/features/auth/utils/token'
+import { config } from '@/features/config'
+import type { Mailer } from '@/features/mailer'
 import type { ReferralRepository } from '@/features/referral/repository'
+import type { WalletRepository } from '@/features/wallet/repository'
+import { SIGN_UP_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
+import SignUpVerificationMail from './mail/sign-up-verification'
+import type { Request, Response } from './types'
 
 class SendSignUpVerificationEmailUseCase {
   constructor(
@@ -21,7 +21,7 @@ class SendSignUpVerificationEmailUseCase {
     private walletRepository: WalletRepository,
     private referralRepository: ReferralRepository,
     private mailer: Mailer
-  ) { }
+  ) {}
 
   async execute(
     payload: Request.Body

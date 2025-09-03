@@ -1,9 +1,9 @@
-import type { FoodItem } from '@/types'
 import { Result, type Unit } from 'true-myth'
-import { Pagination } from '@/features/pagination'
-import type FoodItemRepository from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
+import { Pagination } from '@/features/pagination'
+import type { FoodItem } from '@/types'
+import type FoodItemRepository from './interface'
 import type { FindManyOptions, FoodItemRepositoryError } from './interface'
 
 class KyselyFoodItemRepository implements FoodItemRepository {

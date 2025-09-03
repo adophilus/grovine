@@ -1,12 +1,12 @@
 import { Hono } from 'hono'
-import CreateFoodRecipeRoute from './create'
-import ListFoodRecipeRoute from './list'
-import GetFoodRecipeRoute from './get'
-import UpdateFoodRecipeRoute from './update'
-import DeleteFoodRecipeRoute from './delete'
-import LikeRecipeByIdRoute from './by-id/like'
 import DislikeRecipeByIdRoute from './by-id/dislike'
+import LikeRecipeByIdRoute from './by-id/like'
 import RateRecipeByIdRoute from './by-id/rate'
+import CreateFoodRecipeRoute from './create'
+import DeleteFoodRecipeRoute from './delete'
+import GetFoodRecipeRoute from './get'
+import ListFoodRecipeRoute from './list'
+import UpdateFoodRecipeRoute from './update'
 
 const FoodRecipeRouter = new Hono()
   .route('/', CreateFoodRecipeRoute)

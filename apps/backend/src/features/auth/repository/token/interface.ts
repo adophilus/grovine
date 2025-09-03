@@ -1,5 +1,5 @@
+import type { Result } from 'true-myth'
 import type { Token } from '@/types'
-import { Result } from 'true-myth'
 
 export type AuthTokenRepositoryError = 'ERR_UNEXPECTED'
 

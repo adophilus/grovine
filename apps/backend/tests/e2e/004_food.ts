@@ -1,8 +1,8 @@
-import { assert, beforeAll, afterAll, describe, test } from 'vitest'
-import { ulid } from 'ulidx'
-import { client, bodySerializer, getStore } from '../utils'
-import { FoodItemRepository } from '@/features/food/item/repository'
 import { Container } from '@n8n/di'
+import { ulid } from 'ulidx'
+import { assert, beforeAll, describe, test } from 'vitest'
+import { FoodItemRepository } from '@/features/food/item/repository'
+import { bodySerializer, client, getStore } from '../utils'
 
 describe('food items', async () => {
   const store = await getStore()

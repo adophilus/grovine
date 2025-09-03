@@ -1,9 +1,9 @@
-import { Hono } from 'hono'
-import middleware from './middleware'
-import { StatusCodes } from '@/features/http'
-import AuthMiddleware from '@/features/auth/middleware'
-import type { Response } from './types'
 import { Container } from '@n8n/di'
+import { Hono } from 'hono'
+import AuthMiddleware from '@/features/auth/middleware'
+import { StatusCodes } from '@/features/http'
+import middleware from './middleware'
+import type { Response } from './types'
 import TopupWalletUseCase from './use-case'
 
 const TopupWalletRoute = new Hono().post(

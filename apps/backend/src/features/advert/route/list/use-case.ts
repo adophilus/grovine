@@ -1,6 +1,6 @@
+import { Result } from 'true-myth'
 import type { AdvertRepository } from '../../repository'
 import type { Request, Response } from './types'
-import { Result } from 'true-myth'
 
 class ListAdvertUseCase {
   constructor(public advertRepository: AdvertRepository) {}

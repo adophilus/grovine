@@ -1,10 +1,10 @@
-import type { Order } from '@/types'
 import { Result } from 'true-myth'
-import { Pagination } from '@/features/pagination'
-import type OrderRepository from './interface'
-import type { OrderRepositoryError, OrderWithItems } from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
+import { Pagination } from '@/features/pagination'
+import type { Order } from '@/types'
+import type OrderRepository from './interface'
+import type { OrderRepositoryError, OrderWithItems } from './interface'
 
 class KyselyOrderRepository implements OrderRepository {
   constructor(

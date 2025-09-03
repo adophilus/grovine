@@ -1,12 +1,12 @@
 import { Command, Options } from '@effect/cli'
-import { Effect, Option } from 'effect'
-import { NodeContext, NodeRuntime } from '@effect/platform-node'
 import { Command as PlatformCommand } from '@effect/platform'
+import { NodeContext, NodeRuntime } from '@effect/platform-node'
+import { Effect, Option } from 'effect'
 
 type Target = 'production' | 'staging' | 'development'
 
 const buildSource = (target: Target) =>
-  Effect.gen(function*() {
+  Effect.gen(function* () {
     const buildDirectory = './build'
 
     const entrypoint =
@@ -55,7 +55,7 @@ const cli = Command.make(
     )
   },
   ({ target }) =>
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const _target = target.pipe(
         Option.match({
           onSome: (target: Target) => target,

@@ -1,9 +1,9 @@
-import { Hono } from 'hono'
-import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
 import { Container } from '@n8n/di'
-import SearchFoodItemsUseCase from './use-case'
+import { Hono } from 'hono'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
+import type { Response } from './types'
+import SearchFoodItemsUseCase from './use-case'
 
 const SearchFoodItemsRoute = new Hono().get('/', middleware, async (c) => {
   let response: Response.Response

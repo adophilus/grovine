@@ -1,5 +1,5 @@
-import { serve } from '@hono/node-server'
 import { bootstrap } from '@grovine/backend'
+import { serve } from '@hono/node-server'
 
 const { app, logger, config, openTelemetryService } = await bootstrap()
 openTelemetryService.initialize()

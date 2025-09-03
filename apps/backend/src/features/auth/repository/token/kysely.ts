@@ -1,9 +1,9 @@
-import type { Token } from '@/types'
 import { Result } from 'true-myth'
-import type { AuthTokenRepositoryError } from './interface'
-import type AuthTokenRepository from './interface'
 import type { KyselyClient } from '@/features/database/kysely'
 import type { Logger } from '@/features/logger'
+import type { Token } from '@/types'
+import type AuthTokenRepository from './interface'
+import type { AuthTokenRepositoryError } from './interface'
 
 class KyselyAuthTokenRepository implements AuthTokenRepository {
   constructor(

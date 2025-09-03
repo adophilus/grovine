@@ -1,16 +1,16 @@
-import { Result } from 'true-myth'
-import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
-import { Mailer } from '@/features/mailer'
-import SignUpVerificationMail from './mail/sign-up-verification'
-import { ulid } from 'ulidx'
-import { config } from '@/features/config'
 import { addSeconds } from 'date-fns'
-import type { Request, Response } from './types'
-import { generateToken } from '@/features/auth/utils/token'
+import { Result } from 'true-myth'
+import { ulid } from 'ulidx'
 import type {
   AuthTokenRepository,
   AuthUserRepository
 } from '@/features/auth/repository'
+import { generateToken } from '@/features/auth/utils/token'
+import { config } from '@/features/config'
+import type { Mailer } from '@/features/mailer'
+import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY } from '@/types'
+import SignUpVerificationMail from './mail/sign-up-verification'
+import type { Request, Response } from './types'
 
 class SendSignInVerificationEmailUseCase {
   constructor(

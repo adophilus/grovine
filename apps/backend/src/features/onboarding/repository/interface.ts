@@ -1,5 +1,5 @@
-import type { UserPreference } from '@/types'
 import type { Result } from 'true-myth'
+import type { UserPreference } from '@/types'
 
 export type OnboardingRepositoryError = 'ERR_UNEXPECTED'
 

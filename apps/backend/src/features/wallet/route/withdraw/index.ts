@@ -1,8 +1,8 @@
+import { Container } from '@n8n/di'
 import { Hono } from 'hono'
+import { StatusCodes } from '@/features/http'
 import middleware from './middleware'
 import type { Response } from './types'
-import { StatusCodes } from '@/features/http'
-import { Container } from '@n8n/di'
 import WithdrawWalletUseCase from './use-case'
 
 const WithdrawWalletRoute = new Hono().post('/', middleware, async (c) => {

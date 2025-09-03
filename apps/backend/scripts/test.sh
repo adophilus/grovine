@@ -12,7 +12,7 @@ fi
 
 # Run tests with realtime output
 echo "Running tests..."
-NODE_ENV=test vitest run
+NODE_ENV=test vitest run $@
 test_code=$?
 
 # Run teardown

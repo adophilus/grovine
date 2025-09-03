@@ -1,9 +1,9 @@
-import { Logger } from '@/features/logger'
 import {
   LoggerProvider,
   SimpleLogRecordProcessor
 } from '@opentelemetry/sdk-logs'
 import { config } from '@/features/config'
+import { Logger } from '@/features/logger'
 import type { OpenTelemetryServiceImplementation } from './service'
 
 type TsLogLogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'FATAL'

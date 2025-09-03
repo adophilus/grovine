@@ -1,8 +1,8 @@
-import nodemailer from 'nodemailer'
-import { config } from '../config'
-import { Result, type Unit } from 'true-myth'
 import { render, renderPlainText } from 'jsx-email'
+import nodemailer from 'nodemailer'
+import { Result, type Unit } from 'true-myth'
 import type { Logger } from '@/features/logger'
+import { config } from '../config'
 import type { MailerError } from './interface'
 
 class NodemailerMailer {

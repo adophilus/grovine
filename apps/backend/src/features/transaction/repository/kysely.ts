@@ -1,8 +1,8 @@
-import type { Transaction } from '@/types'
 import { Result } from 'true-myth'
-import { Pagination } from '@/features/pagination'
-import type { Logger } from '@/features/logger'
 import type { KyselyClient } from '@/features/database/kysely'
+import type { Logger } from '@/features/logger'
+import { Pagination } from '@/features/pagination'
+import type { Transaction } from '@/types'
 import type TransactionRepository from './interface'
 import type { TransactionRepositoryError } from './interface'
 
@@ -39,7 +39,7 @@ class KyselyTransactionRepository implements TransactionRepository {
       })
 
       return Result.ok(paginatedTransactions)
-    } catch (err) {
+    } catch (_err) {
       this.logger.error('failed to get transactions')
       return Result.err('ERR_UNEXPECTED')
     }

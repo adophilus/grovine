@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
-import VerifySignUpVerificationEmailRoute from './verify'
 import ResendSignUpVerificationEmailRoute from './resend'
+import VerifySignUpVerificationEmailRoute from './verify'
 
 const SignUpVerificationRoute = new Hono()
   .route('/', VerifySignUpVerificationEmailRoute)

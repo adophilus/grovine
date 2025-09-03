@@ -1,4 +1,4 @@
-import { zValidator } from "@/features/http";
-import { Request } from "./types"
+import { zValidator } from '@/features/http'
+import { Request } from './types'
 
-export default zValidator("query", Request.query)
+export default zValidator('query', Request.query)

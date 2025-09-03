@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "tsp compile .",
-    "dev": "pnpm build --watch"
+    "dev": "pnpm build --watch",
+    "lint": "pnpm build"
   },
   "devDependencies": {
     "@typespec/compiler": "^1.1.0",

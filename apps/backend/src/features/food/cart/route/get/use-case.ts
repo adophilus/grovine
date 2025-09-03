@@ -1,8 +1,8 @@
 import { Result } from 'true-myth'
-import type { Response } from './types'
-import type FoodCartRepository from '../../repository/interface'
 import type { User } from '@/types'
+import type FoodCartRepository from '../../repository/interface'
 import type { CartWithGroupedItems } from '../../repository/interface'
+import type { Response } from './types'
 
 class GetCartUseCase {
   constructor(private cartRepository: FoodCartRepository) {}

@@ -1,10 +1,10 @@
-import opentelemetry from '@opentelemetry/sdk-node'
 // import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
-import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api'
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http'
-import type OpenTelemetryService from './interface'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import opentelemetry from '@opentelemetry/sdk-node'
 import { config } from '@/features/config'
+import type OpenTelemetryService from './interface'
 
 class OpenTelemetryServiceImplementation implements OpenTelemetryService {
   private declare readonly sdk: opentelemetry.NodeSDK
