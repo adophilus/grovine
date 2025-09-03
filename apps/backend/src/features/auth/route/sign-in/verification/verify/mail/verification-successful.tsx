@@ -1,16 +1,4 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Img,
-  Link,
-  Section,
-  Text
-} from 'jsx-email'
-import React from 'react'
-import { config } from '@/features/config'
+import { Body, Container, Head, Heading, Html, Img, Text } from 'jsx-email'
 import type { User } from '@/types'
 
 interface Props {
@@ -62,7 +50,7 @@ const secondary = {
   textAlign: 'center' as const
 }
 
-const codeContainer = {
+const _codeContainer = {
   background: 'rgba(0,0,0,.05)',
   borderRadius: '4px',
   margin: '16px auto 14px',
@@ -70,7 +58,7 @@ const codeContainer = {
   width: '280px'
 }
 
-const code = {
+const _code = {
   color: '#000',
   display: 'inline-block',
   fontFamily: 'HelveticaNeue-Bold',
@@ -85,7 +73,7 @@ const code = {
   textAlign: 'center' as const
 }
 
-const paragraph = {
+const _paragraph = {
   color: '#444',
   fontSize: '15px',
   fontFamily: 'HelveticaNeue,Helvetica,Arial,sans-serif',
@@ -96,7 +84,7 @@ const paragraph = {
   textAlign: 'center' as const
 }
 
-const link = {
+const _link = {
   color: '#444',
   textDecoration: 'underline'
 }

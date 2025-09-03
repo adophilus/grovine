@@ -10,7 +10,7 @@ const VerifySignUpVerificationEmailRoute = new Hono().post(
   middleware,
   async (c) => {
     let response: Response.Response
-    let statusCode: StatusCodes
+    let _statusCode: StatusCodes
 
     const payload = c.req.valid('json')
 
@@ -21,18 +21,18 @@ const VerifySignUpVerificationEmailRoute = new Hono().post(
       switch (result.error.code) {
         case 'ERR_INVALID_OR_EXPIRED_TOKEN': {
           response = result.error
-          statusCode = StatusCodes.BAD_REQUEST
+          _statusCode = StatusCodes.BAD_REQUEST
           break
         }
         default: {
           response = result.error
-          statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+          _statusCode = StatusCodes.INTERNAL_SERVER_ERROR
           break
         }
       }
     } else {
       response = result.value
-      statusCode = StatusCodes.OK
+      _statusCode = StatusCodes.OK
     }
 
     return c.json(response)

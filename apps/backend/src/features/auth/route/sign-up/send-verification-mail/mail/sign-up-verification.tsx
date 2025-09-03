@@ -9,7 +9,6 @@ import {
   Section,
   Text
 } from 'jsx-email'
-import React from 'react'
 import { config } from '@/features/config'
 import type { Token } from '@/types'
 

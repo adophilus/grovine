@@ -57,7 +57,7 @@ class PaystackPaymentService implements PaymentService {
 
     try {
       jsonBody = Webhook.Events.all.parse(JSON.parse(textBody))
-    } catch (err) {
+    } catch (_err) {
       return Result.err('ERR_VALIDATION')
     }
 

@@ -51,7 +51,7 @@ class MockPaymentService implements PaymentService {
     try {
       const payload = JSON.parse(payloadString)
       event = Webhook.Events.all.parse(payload)
-    } catch (err) {
+    } catch (_err) {
       return Result.err()
     }
 

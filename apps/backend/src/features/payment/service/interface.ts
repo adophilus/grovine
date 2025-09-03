@@ -1,5 +1,5 @@
 import type { Result, Unit } from 'true-myth'
-import type { CreateInvoicePayload, Webhook } from '../types'
+import type { CreateInvoicePayload } from '../types'
 
 export type PaymentServiceError = 'ERR_UNEXPECTED'
 

@@ -1,5 +1,4 @@
 import { Result, Unit } from 'true-myth'
-import type { Logger } from '@/features/logger'
 import type { ChefRepository } from '../repository'
 import type { ChefUserLikeRepository } from '../repository/user-like'
 import type { ChefUserRatingRepository } from '../repository/user-rating'
@@ -10,8 +9,7 @@ class ChefServiceImpl implements ChefService {
   constructor(
     private chefRepository: ChefRepository,
     private chefUserLikeRepository: ChefUserLikeRepository,
-    private chefUserRatingRepository: ChefUserRatingRepository,
-    private logger: Logger
+    private chefUserRatingRepository: ChefUserRatingRepository
   ) {}
 
   public async handleLikeToggle(

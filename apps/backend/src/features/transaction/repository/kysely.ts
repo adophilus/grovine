@@ -39,7 +39,7 @@ class KyselyTransactionRepository implements TransactionRepository {
       })
 
       return Result.ok(paginatedTransactions)
-    } catch (err) {
+    } catch (_err) {
       this.logger.error('failed to get transactions')
       return Result.err('ERR_UNEXPECTED')
     }

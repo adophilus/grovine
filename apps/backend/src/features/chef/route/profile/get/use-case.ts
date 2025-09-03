@@ -1,15 +1,11 @@
 import { Result } from 'true-myth'
 import { serializeChef } from '@/features/chef/utils'
-import type { Logger } from '@/features/logger'
 import type { User } from '@/types'
 import type { ChefRepository } from '../../../repository'
 import type { Response } from './types'
 
 class GetActiveChefProfileUseCase {
-  constructor(
-    private chefRepository: ChefRepository,
-    private logger: Logger
-  ) {}
+  constructor(private chefRepository: ChefRepository) {}
 
   async execute(
     user: User.Selectable

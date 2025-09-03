@@ -1,6 +1,6 @@
 import { Container } from '@n8n/di'
 import { ulid } from 'ulidx'
-import { afterAll, assert, beforeAll, describe, test } from 'vitest'
+import { assert, beforeAll, describe, test } from 'vitest'
 import { FoodItemRepository } from '@/features/food/item/repository'
 import { bodySerializer, client, getStore } from '../utils'
 

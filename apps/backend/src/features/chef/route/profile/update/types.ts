@@ -9,7 +9,7 @@ const formDataJsonArraySchema = z.union([
         return [parsed]
       }
       return parsed
-    } catch (err) {
+    } catch (_err) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Invalid JSON string'
