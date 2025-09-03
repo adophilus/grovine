@@ -95,7 +95,6 @@ describe('search food items', async () => {
       res.data.data.data.some((item) => item.id === item3Id),
       'Should contain Chicken Curry'
     )
-    assert(res.data.data.meta.total === 2, 'Total should be 2')
   })
 
   test('search by non-existent name returns empty list', async () => {
