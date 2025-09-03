@@ -8,7 +8,6 @@
     "build": "tsc && tsx ./scripts/build.ts",
     "lint": "biome lint . && tsc",
     "test": "./scripts/test.sh",
-    "deploy": "vercel deploy --prebuilt --token $VERCEL_TOKEN",
     "db": "kysely"
   },
   "exports": {
