@@ -107,7 +107,7 @@ jobs:
           export-type: env
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --prod false
 
       - name: Build stack
         run: pnpm build
