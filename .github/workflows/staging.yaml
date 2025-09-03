@@ -178,7 +178,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run extended tests
-        run: pnpm test -- --coverage
+        run: |
+          pnpm build
+          pnpm test -- --coverage
 
       - name: Security audit
         run: pnpm audit
