@@ -33,11 +33,10 @@ export function zValidator<
 >(
   target: Target,
   schema: T,
-  hook?: Hook<z.TypeOf<T>, E, P, Target, {}> | undefined
+  hook?: Hook<z.TypeOf<T>, E, P, Target, Record<string, unknown>> | undefined
 ): MiddlewareHandler<E, P, V>
 
 export function zValidator(target: unknown, schema: unknown) {
-  // biome-ignore lint/suspicious/noExplicitAny: too complex for me
   return zValidatorHono(target as any, schema as any, (result, c) => {
     let response: types.components['schemas']['Api.BadRequestError']
 

@@ -32,7 +32,9 @@ export type CreateOrderInvoiceMetadataPayload = {
   order_id: string
 }
 
-export type CreateInvoicePayload<T extends Record<string, unknown> = {}> = {
+export type CreateInvoicePayload<
+  T extends Record<string, unknown> = Record<string, unknown>
+> = {
   amount: number
   email: string
   reference?: string

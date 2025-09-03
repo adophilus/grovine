@@ -1,9 +1,4 @@
 import { Body, Container, Head, Heading, Html, Img, Text } from 'jsx-email'
-import type { User } from '@/types'
-
-interface Props {
-  user: User.Selectable
-}
 
 const main = {
   backgroundColor: '#ffffff',
@@ -50,48 +45,9 @@ const secondary = {
   textAlign: 'center' as const
 }
 
-const _codeContainer = {
-  background: 'rgba(0,0,0,.05)',
-  borderRadius: '4px',
-  margin: '16px auto 14px',
-  verticalAlign: 'middle',
-  width: '280px'
-}
-
-const _code = {
-  color: '#000',
-  display: 'inline-block',
-  fontFamily: 'HelveticaNeue-Bold',
-  fontSize: '32px',
-  fontWeight: 700,
-  letterSpacing: '6px',
-  lineHeight: '40px',
-  paddingBottom: '8px',
-  paddingTop: '8px',
-  margin: '0 auto',
-  width: '100%',
-  textAlign: 'center' as const
-}
-
-const _paragraph = {
-  color: '#444',
-  fontSize: '15px',
-  fontFamily: 'HelveticaNeue,Helvetica,Arial,sans-serif',
-  letterSpacing: '0',
-  lineHeight: '23px',
-  padding: '0 40px',
-  margin: '0',
-  textAlign: 'center' as const
-}
-
-const _link = {
-  color: '#444',
-  textDecoration: 'underline'
-}
-
 const logoUrl = 'https://via.placeholder.com/512'
 
-export default function VerificationSuccessful({ user }: Props) {
+export default function VerificationSuccessful() {
   return (
     <Html>
       <Head />

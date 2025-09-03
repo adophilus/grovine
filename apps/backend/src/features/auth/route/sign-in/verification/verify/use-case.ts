@@ -79,7 +79,7 @@ class VerifySignInVerificationEmailUseCase {
     await this.mailer.send({
       recipients: [user.email],
       subject: 'Verification Successful',
-      email: VerificationSuccessful({ user })
+      email: VerificationSuccessful()
     })
 
     const tokens = await generateTokens(user)
