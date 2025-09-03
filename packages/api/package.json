@@ -10,8 +10,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./scripts/typegen.ts",
-    "build": "bun ./scripts/typegen.ts && tsc",
-    "lint": "biome lint . && tsc"
+    "typegen": "bun ./scripts/typegen.ts",
+    "build": "pnpm typegen && tsc",
+    "lint": "pnpm typegen && biome lint . && tsc"
   },
   "dependencies": {
     "@grovine/docs-openapi": "workspace:^",
