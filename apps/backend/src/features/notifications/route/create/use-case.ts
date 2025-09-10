@@ -1,6 +1,6 @@
 import { Result } from 'true-myth'
 import { ulid } from 'ulidx'
-import type { StorageService } from '@/features/storage/service'
+import type { StorageService, UploadedData } from '@/features/storage/service'
 import type { NotificationsRepository } from '../../repository'
 import type { Request, Response } from './types'
 
@@ -13,9 +13,10 @@ class CreateNotificationUseCase {
   async execute(
     payload: Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
-    const { image, content, date, count, ..._payload } = payload
+    const { image, content, date, ..._payload } = payload
 
-    let uploadedImage
+    let uploadedImage: UploadedData | null = null
+
     if (image) {
       const uploadImageResult = await this.storage.upload(image)
       if (uploadImageResult.isErr) {
