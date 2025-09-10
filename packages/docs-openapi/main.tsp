@@ -1342,6 +1342,130 @@ namespace Api {
     }
   }
 
+  @tag("Notification")
+  @route("/notifications")
+  namespace Notification {
+    model Notification {
+      id: Id;
+      date: DateTime;
+      content: string;
+      image?: Media | null;
+    }
+
+    namespace Create {
+      namespace Request {
+        model Headers {
+          @header
+          contentType: "multipart/form-data";
+        }
+
+        model Body {
+          date: HttpPart<DateTime>;
+          content: HttpPart<string>;
+          image: HttpPart<ImageFile>;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 201;
+            code: "NOTIFICATION_CREATED";
+          }
+        }
+
+        namespace Error {
+          alias Error = BadRequestError | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @post
+      @doc("Create new notification")
+      op createNotification(
+        ...Request.Headers,
+        @multipartBody body: Request.Body,
+      ): Response.Response;
+    }
+
+    namespace List {
+      namespace Request {
+        alias Query = Pagination.Query;
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            code: "LIST";
+            data: Pagination.Paginated<Notification>;
+          }
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("List notifications")
+      op listNotifications(...Request.Query): Response.Response;
+    }
+
+    @route("/count")
+    namespace Count {
+      namespace Response {
+        namespace Success {
+          model Success {
+            code: "COUNT";
+            total: int32;
+          }
+        }
+
+        namespace Error {
+          alias Error = UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @get
+      @doc("Get total number of notifications")
+      op getNotificationCount(): Response.Response;
+    }
+
+    @route("/{id}")
+    namespace Delete {
+      namespace Request {
+        model Path {
+          @path
+          id: Id;
+        }
+      }
+
+      namespace Response {
+        namespace Success {
+          model Success {
+            @statusCode _code: 200;
+            code: "NOTIFICATION_DELETED";
+          }
+        }
+
+        namespace Error {
+          alias Error = NotFoundError<"NOTIFICATION"> | UnexpectedError;
+        }
+
+        alias Response = Success.Success | Error.Error;
+      }
+
+      @delete
+      @doc("Delete a notification by id")
+      op deleteNotificationById(...Request.Path): Response.Response;
+    }
+  }
+
   @tag("Advertisement")
   @route("/ads")
   namespace Advertisement {
@@ -2023,4 +2147,3 @@ namespace Api {
     }
   }
 }
-
