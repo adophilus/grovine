@@ -190,6 +190,15 @@ type RecipeUserLikeTable = TimestampModel & {
   is_disliked: boolean
 }
 
+type NotificationsTable = TimestampModel & {
+  id: string
+  date: string
+  content: string
+  image?: Media | null
+  created_at: string
+  deleted_at: string | null
+}
+
 type RecipeUserRatingTable = TimestampModel & {
   id: string
   recipe_id: string
@@ -217,4 +226,5 @@ export type KyselyDatabaseTables = {
   recipe_user_likes: RecipeUserLikeTable
   recipe_user_ratings: RecipeUserRatingTable
   referrals: ReferralsTable
+  notifications: NotificationsTable
 }
