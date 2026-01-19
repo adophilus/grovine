@@ -6,9 +6,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "lint": "biome lint . && tsc",
-    "dev": "vitepress dev docs",
-    "build": "./scripts/build.sh",
+    "build": "vitepress build docs",
+    "dev": "vitepress dev docs --port $DOCS_PORT",
+    "lint": "biome lint",
+    "start": "vitepress serve docs --port $DOCS_PORT",
+    "typecheck": "tsc",
     "preview": "vitepress preview docs"
   },
   "devDependencies": {
