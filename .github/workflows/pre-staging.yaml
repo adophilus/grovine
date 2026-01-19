@@ -1,9 +1,9 @@
-name: Staging
+name: Pre Staging
 
 on:
-  push:
-    branches:
-      - staging
+  pull_request:
+    branches: [staging]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
@@ -27,11 +27,12 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/grovine:staging
+          push: false
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/grovine:pre-staging
           secrets: |
             INFISICAL_ENV=staging
             INFISICAL_CLIENT_ID=${{ secrets.INFISICAL_CLIENT_ID }}
             INFISICAL_CLIENT_SECRET=${{ secrets.INFISICAL_CLIENT_SECRET }}
             INFISICAL_PROJECT_ID=${{ secrets.INFISICAL_PROJECT_ID }}
             INFISICAL_DOMAIN=${{ secrets.INFISICAL_DOMAIN }}
+
