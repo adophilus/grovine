@@ -15,9 +15,13 @@ const buildSource = () =>
       'bun',
       'build',
       entrypoint,
-      '--target=node',
-      `--outdir=${buildDirectory}`,
-      '--entry-naming=[dir]/server.mjs'
+      '--target',
+      'node',
+      '--outdir',
+      buildDirectory,
+      '--production',
+      '--entry-naming',
+      '[dir]/server.mjs'
     ).pipe(
       PlatformCommand.stdout('inherit'),
       PlatformCommand.stderr('inherit'),
