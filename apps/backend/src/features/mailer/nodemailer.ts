@@ -9,10 +9,8 @@ class NodemailerMailer {
   declare transporter: nodemailer.Transporter
 
   constructor(private logger: Logger) {
-    console.log('config.environment.PRODUCTION:', config.environment.PRODUCTION)
     this.transporter = nodemailer.createTransport({
       url: config.mail.url,
-      secure: config.environment.PRODUCTION,
       headers: { 'Content-Transfer-Encoding': 'quoted-printable' }
     })
 
