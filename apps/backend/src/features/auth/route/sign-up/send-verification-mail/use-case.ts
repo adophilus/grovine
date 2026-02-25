@@ -100,11 +100,17 @@ class SendSignUpVerificationEmailUseCase {
 
     const token = tokenCreationResult.value
 
-    await this.mailer.send({
+    const sendMailResult = await this.mailer.send({
       recipients: [user.email],
       subject: 'Verify your account',
       email: SignUpVerificationMail({ token })
     })
+
+    if (sendMailResult.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
 
     return Result.ok({
       code: 'VERIFICATION_EMAIL_SENT'
