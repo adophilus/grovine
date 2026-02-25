@@ -26,8 +26,11 @@ class SendSignUpVerificationEmailUseCase {
   async execute(
     payload: Request.Body
   ): Promise<Result<Response.Success, Response.Error>> {
+    const normalizedEmail = payload.email.trim().toLowerCase()
+    const normalizedPayload = { ...payload, email: normalizedEmail }
+
     const existingUserResult = await this.authUserRepository.findByEmail(
-      payload.email
+      normalizedPayload.email
     )
     if (existingUserResult.isErr) {
       return Result.err({
@@ -55,7 +58,7 @@ class SendSignUpVerificationEmailUseCase {
     const referralCode = referralResult.value
 
     const userCreationResult = await this.authUserRepository.create({
-      ...payload,
+      ...normalizedPayload,
       role: 'USER',
       referral_code: referralCode,
       id: userId

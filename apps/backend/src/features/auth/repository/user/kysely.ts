@@ -31,10 +31,12 @@ class KyselyAuthUserRepository implements AuthUserRepository {
     email: string
   ): Promise<Result<User.Selectable | null, AuthUserRepositoryError>> {
     try {
+      const normalizedEmail = email.trim()
+
       const user = await this.client
         .selectFrom('users')
         .selectAll()
-        .where('email', '=', email)
+        .where('email', 'ilike', normalizedEmail)
         .executeTakeFirst()
       return Result.ok(user ?? null)
     } catch (err) {
