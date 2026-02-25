@@ -11,7 +11,6 @@ import type { Mailer } from '@/features/mailer'
 import { SIGN_IN_VERIFICATION_TOKEN_PURPOSE_KEY, type Token } from '@/types'
 import SignUpVerificationMail from './mail/sign-up-verification'
 import type { Request, Response } from './types'
-import { generateKey } from 'node:crypto'
 
 class SendSignInVerificationEmailUseCase {
   constructor(
@@ -92,11 +91,17 @@ class SendSignInVerificationEmailUseCase {
       token = tokenUpdateResult.value
     }
 
-    await this.mailer.send({
+    const sendMailResult = await this.mailer.send({
       recipients: [user.email],
       subject: "Here's your verification code",
       email: SignUpVerificationMail({ token })
     })
+
+    if (sendMailResult.isErr) {
+      return Result.err({
+        code: 'ERR_UNEXPECTED'
+      })
+    }
 
     return Result.ok({
       code: 'VERIFICATION_EMAIL_SENT'
